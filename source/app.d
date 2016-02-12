@@ -9,7 +9,7 @@ shared static this()
 string configFileName = "/wrong/path/to/file.json";
 bool debugEnabled = false;
 
-int main(string[] args)
+void readOpts(string[] args)
 {
     try
     {
@@ -25,6 +25,31 @@ int main(string[] args)
     }
 
     if(!debugEnabled) sharedLog.logLevel = LogLevel.warning;
+}
+
+import vibe.data.bson;
+
+private Bson _cfg;
+
+void readConfig()
+{
+    import std.file;
+
+    try
+    {
+        auto text = readText(configFileName);
+        _cfg = Bson(text);
+    }
+    catch(Exception e)
+    {
+        fatal(e.msg);
+    }
+}
+
+int main(string[] args)
+{
+    readOpts(args);
+    readConfig();
 
     return 0;
 }
