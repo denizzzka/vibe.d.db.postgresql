@@ -41,6 +41,9 @@ synchronized class ConnectionPool
 
     private Connection getConnection()
     {
+        if(alive.unshare.empty)
+            throw new PoolException(PoolException.Type.NO_USABLE_CONNECTIONS, __FILE__, __LINE__);
+
         Connection c = alive.unshare.front;
         alive.unshare.removeFront(1);
         inUse.unshare.insertBack(c);
@@ -56,10 +59,22 @@ synchronized class ConnectionPool
             dead.unshare.insertBack(c);
     }
 
-    void registerSessionTask(SessionDgArgs args)
+    private auto registerSessionTask(SessionDgArgs args)
     {
         auto t = sessionTask(this, args);
         (cast()taskPool).put(t);
+
+        return t;
+    }
+
+    immutable(Result[]) makeTransaction(SessionDgArgs args)
+    {
+        auto t = registerSessionTask(args);
+        t.yieldForce();
+
+        // if time is out throw exception
+
+        return null;
     }
 
     //~ private void reanimateConnections()
@@ -116,7 +131,23 @@ synchronized class ConnectionPool
     //~ }
 }
 
-//alias SessionDg = Result[] delegate(Connection, SessionDgArgs);
+class PoolException : Exception
+{
+    enum Type
+    {
+        NO_USABLE_CONNECTIONS,
+        ATTEMPTS_COUNT_EXPIRED
+    }
+
+    Type type;
+
+    this(Type t, string file, size_t line)
+    {
+        type = t;
+
+        super(to!string(type), file, line);
+    }
+}
 
 struct SessionDgArgs
 {
@@ -146,7 +177,7 @@ void sessionWorker(shared ConnectionPool pool, SessionDgArgs args)
         else
         {
             warning("No more attempts");
-            throw new PoolException("Connection error, attempts count has expired", __FILE__, __LINE__);
+            throw new PoolException(PoolException.Type.ATTEMPTS_COUNT_EXPIRED, __FILE__, __LINE__);
         }
     }
 
@@ -154,11 +185,3 @@ void sessionWorker(shared ConnectionPool pool, SessionDgArgs args)
 }
 
 alias sessionTask = task!(sessionWorker, shared ConnectionPool, SessionDgArgs);
-
-class PoolException : Exception
-{
-    this(string msg, string file, size_t line)
-    {
-        super(msg, file, line);
-    }
-}
