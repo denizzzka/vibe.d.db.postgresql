@@ -124,7 +124,7 @@ struct SessionDgArgs
     size_t attemptsRemaining;
 }
 
-void doSessionTask(shared ConnectionPool pool, SessionDgArgs args)
+void sessionWorker(shared ConnectionPool pool, SessionDgArgs args)
 {
     Connection conn = pool.getConnection;
 
@@ -153,7 +153,7 @@ void doSessionTask(shared ConnectionPool pool, SessionDgArgs args)
     pool.retrieveConnection(conn, true);
 }
 
-alias sessionTask = task!(doSessionTask, shared ConnectionPool, SessionDgArgs);
+alias sessionTask = task!(sessionWorker, shared ConnectionPool, SessionDgArgs);
 
 class PoolException : Exception
 {
