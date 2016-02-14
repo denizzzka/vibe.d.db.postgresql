@@ -33,6 +33,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
         LockedConnection conn;
 
         // get usable connection and send SQL command
+        conn_loop:
         foreach(unused_var; 0..6)
         {
             try
@@ -55,6 +56,12 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
 
                     switch(conn.poll)
                     {
+                        case PGRES_POLLING_OK:
+                            trace("sending query");
+                            conn.sendQuery(args.sqlCommand);
+                            conn.destroy(); // reverts locked connection to pool
+                            break conn_loop;
+
                         case PGRES_POLLING_READING:
                             trace("waiting for socket ready for reading");
                             sock.select(readWriteSet, null, errSet); // waiting for socket ready for reading
@@ -64,27 +71,6 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                             trace("waiting for socket ready for writing");
                             sock.select(null, readWriteSet, errSet); // waiting for socket ready for writing
                             continue; // need polling again
-
-                        case PGRES_POLLING_OK:
-                            trace("sending query");
-                            conn.sendQuery(args.sqlCommand);
-
-                            conn.consumeInput();
-
-                            immutable(Result)[] res;
-
-                            while(true)
-                            {
-                                auto r = conn.getResult();
-                                if(r)
-                                    res ~= r;
-                                else
-                                    break;
-                            }
-
-                            //revert connection
-                            conn.destroy(); // reverts locked connection to pool
-                            return res;
 
                         case PGRES_POLLING_FAILED:
                             throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
