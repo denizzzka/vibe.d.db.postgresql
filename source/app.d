@@ -27,35 +27,41 @@ void readOpts(string[] args)
     if(!debugEnabled) sharedLog.logLevel = LogLevel.warning;
 }
 
+import vibe.data.json;
 import vibe.data.bson;
 
 private Bson _cfg;
 
-void readConfig()
+Bson readConfig()
 {
     import std.file;
+
+    Bson cfg;
 
     try
     {
         auto text = readText(configFileName);
-        _cfg = Bson(text);
+        cfg = Bson(parseJsonString(text));
     }
     catch(Exception e)
     {
         fatal(e.msg);
+        throw e;
     }
+
+    return cfg;
 }
 
 int main(string[] args)
 {
     readOpts(args);
-    readConfig();
+    Bson cfg = readConfig();
 
     version(IntegrationTest)
     {
         import pool = pgator2.pool;
 
-        pool.__integration_test("conn string here plz");
+        pool.__integration_test(cfg["sqlServer"]["connString"].get!string);
     }
     else
     {
