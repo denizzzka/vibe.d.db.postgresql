@@ -64,7 +64,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
 
                         case PGRES_POLLING_READING:
                             trace("waiting for socket ready for reading");
-                            sock.select(readWriteSet, null, errSet); // waiting for socket ready for reading
+                            //sock.select(readWriteSet, null, errSet); // waiting for socket ready for reading
                             continue; // need polling again
 
                         case PGRES_POLLING_WRITING:
@@ -106,8 +106,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
             assert(false);
         }
 
-        assert(false);
-        // awaiting for answer
+        return null;
     }
 }
 
