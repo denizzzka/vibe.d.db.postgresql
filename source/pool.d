@@ -28,7 +28,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
         return c;
     }
 
-    void makeTransaction(TransactionArgs args)
+    immutable(Result)[] makeTransaction(TransactionArgs args)
     {
         LockedConnection conn;
 
@@ -80,7 +80,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
 
                         //revert connection
                         conn.destroy(); // reverts locked connection to pool
-                        break;
+                        return res;
                     }
                 }
 
