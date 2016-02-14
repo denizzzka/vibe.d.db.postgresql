@@ -6,3 +6,12 @@ copyright "Copyright © 2016"
 dependency "dpq2" version="~dev"
 dependency "vibe-d:core" version="~>0.7.27"
 targetType "executable"
+
+configuration "release_app" {
+    buildType "release"
+}
+
+configuration "integration_test" {
+    versions "IntegrationTest"
+    buildType "unittest"
+}

@@ -51,5 +51,15 @@ int main(string[] args)
     readOpts(args);
     readConfig();
 
+    version(IntegrationTest)
+    {
+        import pool = pgator2.pool;
+
+        pool.__integration_test("conn string here plz");
+    }
+    else
+    {
+    }
+
     return 0;
 }
