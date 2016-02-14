@@ -61,7 +61,8 @@ int main(string[] args)
     {
         import pool = pgator2.pool;
 
-        pool.__integration_test(cfg["sqlServer"]["connString"].get!string);
+        auto server = cfg["sqlServer"];
+        pool.__integration_test(server["connString"].get!string);
     }
     else
     {

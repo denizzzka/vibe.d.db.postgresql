@@ -39,25 +39,71 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
             {
                 trace("get connection from pool");
                 conn = lockConnection();
-                trace("conn=", conn, ", send query");
-                conn.sendQuery(args.sqlCommand);
+
+                // obtained connection should be ready to send
+
+                if(conn.status == CONNECTION_BAD) // need to reconnect this connection
+                    throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
+
+                auto pollRes = conn.poll;
+
+                if(pollRes != PGRES_POLLING_FAILED)
+                {
+                    import std.socket;
+
+                    if(pollRes == PGRES_POLLING_READING) // received some (garbage) data such as SQL NOTIFY or from previous buggy query?
+                    {
+                        assert(false);
+                    }
+
+                    if(pollRes == PGRES_POLLING_OK)
+                    {
+                        trace("sending query");
+                        conn.sendQuery(args.sqlCommand);
+
+                        // waiting for data
+                        // TODO: need true socket data waiting
+                        while(conn.poll != PGRES_POLLING_READING){}
+
+                        conn.consumeInput();
+
+                        immutable(Result)[] res;
+
+                        while(true)
+                        {
+                            auto r = conn.getResult();
+                            if(r)
+                                res ~= r;
+                            else
+                                break;
+                        }
+
+                        //revert connection
+                        conn.destroy(); // reverts locked connection to pool
+                        break;
+                    }
+                }
+
+                // unsuitable to send state of connection, revert it to pool and try another
+
+                trace("unsuitable to send, status=", conn.status);
+                conn.destroy(); // reverts locked connection to pool
+                continue;
             }
             catch(ConnectionException e)
             {
+                // this block just starts reconnection and immediately loops back
                 warning("Connection failed");
 
                 // try to restore connection because pool isn't do this job by itself
-                try
-                {
-                    conn.connectStart();
-                }
+                try conn.connectStart();
                 catch(ConnectionException e){}
 
                 conn.destroy(); // reverts locked connection
                 continue;
             }
 
-            break;
+            assert(false);
         }
 
         // awaiting for answer
@@ -89,10 +135,9 @@ unittest
     }
 }
 
-version(IntegrationTest)
-void __integration_test(string connString)
+version(IntegrationTest) void __integration_test(string connString)
 {
-    auto pool = new ConnectionPool(connString, 2);
+    auto pool = new ConnectionPool(connString, 3);
 
     {
         TransactionArgs args;
