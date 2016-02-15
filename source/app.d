@@ -59,10 +59,10 @@ int main(string[] args)
 
     version(IntegrationTest)
     {
-        import pool = pgator2.pool;
+        import database = vibe.db.postgresql.database;
 
         auto server = cfg["sqlServer"];
-        pool.__integration_test(server["connString"].get!string);
+        database.__integration_test(server["connString"].get!string);
     }
     else
     {

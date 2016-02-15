@@ -1,4 +1,4 @@
-module pgator2.pool;
+module vibe.db.postgresql.database;
 
 import dpq2;
 import vibe = vibe.core.connectionpool;
@@ -6,9 +6,9 @@ import std.experimental.logger;
 import core.time: Duration;
 import std.exception: enforce;
 
-alias LockedConnection = vibe.LockedConnection!Connection;
+package alias LockedConnection = vibe.LockedConnection!Connection;
 
-class ConnectionPool
+class Database
 {
     private vibe.ConnectionPool!Connection pool;
     private const string connString;
@@ -154,7 +154,7 @@ unittest
     }
 }
 
-private immutable(Result) doSimpleSqlCmd(ConnectionPool pool, string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+private immutable(Result) doSimpleSqlCmd(Database pool, string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
 {
     immutable(Result)[] res;
 
@@ -195,7 +195,7 @@ private immutable(Result) doSimpleSqlCmd(ConnectionPool pool, string sqlCommand,
 
 version(IntegrationTest) void __integration_test(string connString)
 {
-    auto pool = new ConnectionPool(connString, 3, true);
+    auto pool = new Database(connString, 3, true);
 
     {
         auto res1 = pool.doSimpleSqlCmd("SELECT 123, 567, 'asd fgh'", dur!"seconds"(5), true);
