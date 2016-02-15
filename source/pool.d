@@ -43,7 +43,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                 trace("get connection from a pool");
                 conn = lockConnection();
 
-                while(true)
+                while(true) // need only for polling with waitForEstablishConn
                 {
                     if(conn.status == CONNECTION_BAD) // need to reconnect this connection
                         throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
@@ -51,21 +51,21 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                     auto pollRes = conn.poll;
                     if(pollRes != CONNECTION_MADE)
                     {
-                        if(waitForEstablishConn)
+                        if(!waitForEstablishConn)
                         {
-                            // waiting for any socket changes
+                            trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
+                            conn.destroy(); // reverts locked connection
+                            continue pick_conn; // need try other connection
+                        }
+                        else
+                        {
+                            // waiting for any socket changes and try polling again
                             auto set = new SocketSet;
                             set.add(conn.socket);
 
                             trace("waiting for any socket changes");
                             auto sockNum = Socket.select(set, null, set);
                             continue;
-                        }
-                        else
-                        {
-                            trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
-                            conn.destroy(); // reverts locked connection
-                            continue pick_conn; // need try other connection
                         }
                     }
 
