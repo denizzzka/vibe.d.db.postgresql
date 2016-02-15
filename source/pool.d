@@ -7,15 +7,17 @@ import std.socket;
 
 alias LockedConnection = vibe.LockedConnection!Connection;
 
-class ConnectionPool : vibe.ConnectionPool!(Connection)
+class ConnectionPool
 {
+    private vibe.ConnectionPool!Connection pool;
     private const string connString;
 
+    // TODO: it would be nice if connNum possible to set up automatically by number of CPU kernels on Postgres side
     this(string connString, uint connNum)
     {
         this.connString = connString;
 
-        super(&connectionFactory, connNum);
+        pool = new vibe.ConnectionPool!Connection(&connectionFactory, connNum);
     }
 
     private Connection connectionFactory()
@@ -36,12 +38,12 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
         // Try to get usable connection and send SQL command
         // Doesn't make sense to do MUCH more attempts to pick a connection than it available
         pick_conn:
-        foreach(unused_var; 0..(maxConcurrency * 2))
+        foreach(unused_var; 0..(pool.maxConcurrency * 2))
         {
             try
             {
                 trace("get connection from a pool");
-                conn = lockConnection();
+                conn = pool.lockConnection();
 
                 while(true) // need only for polling with waitForEstablishConn
                 {
