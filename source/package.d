@@ -53,63 +53,65 @@ class PostgresClient
         LockedConnection conn;
 
         // Try to get usable connection and send SQL command
-        // Doesn't make sense to do MUCH more attempts to pick a connection than it available
-        pick_conn:
-        foreach(unused_var; 0..(pool.maxConcurrency * 2))
+        try
         {
-            try
+            trace("get connection from a pool");
+            conn = pool.lockConnection();
+
+            while(true) // cycle is need only for polling with waitForEstablishConn
             {
-                trace("get connection from a pool");
-                conn = pool.lockConnection();
+                if(conn.status == CONNECTION_BAD) // need to reconnect this connection
+                    throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
 
-                while(true) // need only for polling with waitForEstablishConn
+                auto pollRes = conn.poll;
+                if(pollRes != CONNECTION_MADE)
                 {
-                    if(conn.status == CONNECTION_BAD) // need to reconnect this connection
-                        throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
-
-                    auto pollRes = conn.poll;
-                    if(pollRes != CONNECTION_MADE)
+                    if(!waitForEstablishConn)
                     {
-                        if(!waitForEstablishConn)
-                        {
-                            trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
-                            conn.destroy(); // reverts locked connection
-                            continue pick_conn; // need try other connection
-                        }
-                        else
-                        {
-                            // waiting for socket changes for reading
-                            conn.waitForReading;
-                            continue;
-                        }
+                        trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
+                        conn.destroy(); // reverts locked connection
                     }
-
-                    break;
+                    else
+                    {
+                        // waiting for socket changes for reading
+                        conn.waitForReading;
+                        continue;
+                    }
                 }
 
-                trace("doesQuery() call");
-                doesQueryAndCollectsResults(conn);
-                return;
+                break;
             }
-            catch(ConnectionException e)
-            {
-                // this block just starts reconnection and immediately loops back
-                warning("Connection failed: ", e.msg);
 
-                // try to restore connection because pool isn't do this job by itself
-                try
+            trace("doesQuery() call");
+            doesQueryAndCollectsResults(conn);
+            conn.destroy(); // reverts locked connection
+            return;
+        }
+        catch(ConnectionException e)
+        {
+            // this block just starts reconnection and immediately loops back
+            warning("Connection failed: ", e.msg);
+
+            // try to restore connection because pool isn't do this job by itself
+            try
+            {
+                if(conn is null)
                 {
+                    trace("conn isn't initialised (conn == null)");
+                }
+                else
+                {
+                    trace("try to restore not null connection");
                     conn.disconnect();
                     conn.connectStart();
                 }
-                catch(ConnectionException e)
-                {
-                    warning("Connection restore failed: ", e.msg);
-                }
-
-                conn.destroy(); // reverts locked connection
-                continue;
             }
+            catch(ConnectionException e)
+            {
+                warning("Connection restore failed: ", e.msg);
+            }
+
+            conn.destroy(); // reverts locked connection
         }
 
         throw new PostgresClientException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
@@ -211,7 +213,7 @@ version(IntegrationTest) void __integration_test(string connString)
     auto client = connectPostgresDB(connString, 3);
 
     {
-        auto res1 = client.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5), true);
+        auto res1 = client.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5));
 
         assert(res1.getAnswer[0][1].as!PGinteger == 567);
     }

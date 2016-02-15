@@ -1,4 +1,4 @@
-name "vibe-postgresql"
+name "vibe-d-postgresql"
 description "PostgreSQL support for Vibe.d"
 authors "Denis Feklushkin <denis.feklushkin@gmail.com>"
 license "MIT"
