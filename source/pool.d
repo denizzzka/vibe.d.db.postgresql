@@ -3,7 +3,6 @@ module pgator2.pool;
 import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
-import std.socket;
 
 alias LockedConnection = vibe.LockedConnection!Connection;
 
@@ -31,7 +30,7 @@ class ConnectionPool
         return c;
     }
 
-    immutable(Result)[] makeTransaction(TransactionArgs argsm, bool waitForEstablishConn = false)
+    private void makeTransaction(void delegate(Connection) doesQuery, bool waitForEstablishConn = false)
     {
         LockedConnection conn;
 
@@ -61,12 +60,8 @@ class ConnectionPool
                         }
                         else
                         {
-                            // waiting for any socket changes and try polling again
-                            auto set = new SocketSet;
-                            set.add(conn.socket);
-
-                            trace("waiting for any socket changes");
-                            auto sockNum = Socket.select(set, null, set);
+                            // waiting for socket changes for reading
+                            conn.waitForReading;
                             continue;
                         }
                     }
@@ -74,7 +69,9 @@ class ConnectionPool
                     break;
                 }
 
-                return doQuery(conn);
+                trace("doesQuery() call");
+                doesQuery(conn);
+                return;
             }
             catch(ConnectionException e)
             {
@@ -101,43 +98,19 @@ class ConnectionPool
     }
 }
 
-private immutable(Result)[] doQuery(Connection conn)
+package void waitForReading(Connection conn)
 {
-    conn.sendQuery("SELECT 123, 567, 'asd fgh'");
+    import std.socket;
+    import std.exception: enforce;
 
-    auto sock = conn.socket();
+    auto socket = conn.socket;
+    auto set = new SocketSet;
+    set.add(socket);
 
-    import core.time;
+    trace("waiting for socket changes for reading");
+    auto sockNum = Socket.select(set, null, set);
 
-    auto readSet = new SocketSet;
-    auto errSet = new SocketSet;
-    readSet.add(sock);
-    errSet.add(sock);
-
-    trace("waiting for data on the socket");
-    auto sockNum = Socket.select(readSet, errSet, null, dur!"seconds"(10));
-
-    if(sockNum == 0) // query timeout occured
-    {
-        trace("Exceeded Posgres query time limit");
-        conn.cancel(); // cancel sql query
-    }
-
-    conn.consumeInput();
-
-    immutable(Result)[] res;
-    
-    while(true)
-    {
-        auto r = conn.getResult();
-        if(r is null) break;
-        res ~= r;
-    }
-
-    if(sockNum == 0) // query timeout occured
-        throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
-
-    return res;
+    enforce(sockNum > 0);
 }
 
 class PoolException : Exception
@@ -181,20 +154,61 @@ version(IntegrationTest) void __integration_test(string connString)
         TransactionArgs args;
         args.sqlCommand = "SELECT 123";
 
-        auto results = pool.makeTransaction(args, true);
+        immutable(Result)[] res;
+
+        void doQuery(Connection conn)
+        {
+            conn.sendQuery("SELECT 123, 567, 'asd fgh'");
+
+            auto sock = conn.socket();
+
+            import std.socket;
+            import core.time;
+
+            auto readSet = new SocketSet;
+            auto errSet = new SocketSet;
+            readSet.add(sock);
+            errSet.add(sock);
+
+            trace("waiting for data on the socket");
+            auto sockNum = Socket.select(readSet, null, errSet);//, dur!"seconds"(10));
+
+            if(sockNum == 0) // query timeout occured
+            {
+                trace("Exceeded Posgres query time limit");
+                conn.cancel(); // cancel sql query
+            }
+
+            trace("consumeInput()");
+            conn.consumeInput();
+
+            while(true)
+            {
+                trace("getResult()");
+                auto r = conn.getResult();
+                if(r is null) break;
+                res ~= r;
+            }
+
+            if(sockNum == 0) // query timeout occured
+                throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
+        }
+
+        pool.makeTransaction(&doQuery, true);
 
         import std.stdio;
-        writeln("results=", results);
+        writeln("results=", res);
 
-        foreach(r; results)
+        foreach(r; res)
         {
             import std.stdio;
             writeln("res=", r.getAnswer);
         }
 
-        results = pool.makeTransaction(args);
+        res.length = 0;
+        pool.makeTransaction(&doQuery, true);
 
-        foreach(r; results)
+        foreach(r; res)
         {
             import std.stdio;
             writeln("res=", r.getAnswer);
