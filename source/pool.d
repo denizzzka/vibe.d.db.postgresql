@@ -14,11 +14,22 @@ class ConnectionPool
     private const string connString;
 
     // TODO: it would be nice if connNum possible to set up automatically by number of CPU kernels on Postgres side
-    this(string connString, uint connNum)
+    this(string connString, uint connNum, bool startImmediately)
     {
         this.connString = connString;
 
         pool = new vibe.ConnectionPool!Connection(&connectionFactory, connNum);
+
+        if(startImmediately)
+        {
+            auto conn = new LockedConnection[pool.maxConcurrency];
+
+            foreach(i; 0..pool.maxConcurrency)
+                conn[i] = pool.lockConnection();
+
+            foreach(i; 0..pool.maxConcurrency)
+                conn[i].destroy();
+        }
     }
 
     private Connection connectionFactory()
@@ -184,7 +195,7 @@ private immutable(Result) doSimpleSqlCmd(ConnectionPool pool, string sqlCommand,
 
 version(IntegrationTest) void __integration_test(string connString)
 {
-    auto pool = new ConnectionPool(connString, 3);
+    auto pool = new ConnectionPool(connString, 3, true);
 
     {
         auto res1 = pool.doSimpleSqlCmd("SELECT 123, 567, 'asd fgh'", dur!"seconds"(5), true);
