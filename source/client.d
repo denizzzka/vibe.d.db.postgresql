@@ -2,12 +2,12 @@ module vibe.db.postgresql.client;
 
 import vibe.db.postgresql.database;
 
-class MongoClient
+class PostgresClient
 {
-    private Database pool;
+    private Database db;
 
-    package this(string connString)
+    package this(Database database)
     {
-        
+        db = database;
     }
 }
