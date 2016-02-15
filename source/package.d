@@ -151,7 +151,7 @@ class Database
             if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
                 throw new DatabaseException("Exceeded Posgres query time limit", __FILE__, __LINE__);
 
-            enforce(res.length == 1, "query isn't received?");
+            enforce(res.length == 1, "Result isn't received?");
         }
 
         doQuery(&dg, waitForEstablishConn);
