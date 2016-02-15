@@ -14,7 +14,6 @@ class Database
     private vibe.ConnectionPool!Connection pool;
     private const string connString;
 
-    // TODO: it would be nice if connNum possible to set up automatically by number of CPU kernels on Postgres side
     this(string connString, uint connNum, bool startImmediately = false)
     {
         this.connString = connString;
