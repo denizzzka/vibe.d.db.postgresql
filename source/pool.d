@@ -34,7 +34,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
 
         // get usable connection and send SQL command
         conn_loop:
-        foreach(unused_var; 0..6)
+        foreach(unused_var; 0..100)
         {
             try
             {
@@ -46,50 +46,20 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                 if(conn.status == CONNECTION_BAD) // need to reconnect this connection
                     throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
 
-                while(true) // data transfer
+                auto pollRes = conn.poll;
+                if(pollRes != CONNECTION_MADE)
                 {
-                    auto sock = conn.socket();
-
-                    import std.socket;
-                    auto readWriteSet = new SocketSet;
-                    auto errSet = new SocketSet;
-
-                    switch(conn.poll)
-                    {
-                        case PGRES_POLLING_OK:
-                            trace("sending query");
-                            conn.sendQuery(args.sqlCommand);
-                            conn.destroy(); // reverts locked connection to pool
-                            break conn_loop;
-
-                        case PGRES_POLLING_READING:
-                            trace("waiting for socket ready for reading");
-                            //sock.select(readWriteSet, null, errSet); // waiting for socket ready for reading
-                            continue; // need polling again
-
-                        case PGRES_POLLING_WRITING:
-                            trace("waiting for socket ready for writing");
-                            sock.select(null, readWriteSet, errSet); // waiting for socket ready for writing
-                            continue; // need polling again
-
-                        case PGRES_POLLING_FAILED:
-                            throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
-
-                        default:
-                            continue;
-                    }
+                    trace("connection isn't suitable to do query, pollRes=", pollRes, ", conn status=", conn.status);
+                    conn.destroy(); // reverts locked connection
+                    continue; // need try other connection
                 }
 
-                // unsuitable to send state of connection, revert it to pool and try another
-
-                trace("unsuitable to send, status=", conn.status);
-                conn.destroy(); // reverts locked connection to pool
-                continue;
+                return doQuery(conn);
             }
             catch(ConnectionException e)
             {
                 // this block just starts reconnection and immediately loops back
-                warning("Connection failed");
+                warning("Connection failed: ", e.msg);
 
                 // try to restore connection because pool isn't do this job by itself
                 try
@@ -97,7 +67,10 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                     conn.disconnect();
                     conn.connectStart();
                 }
-                catch(ConnectionException e){}
+                catch(ConnectionException e)
+                {
+                    warning("Connection restore failed: ", e.msg);
+                }
 
                 conn.destroy(); // reverts locked connection
                 continue;
@@ -108,6 +81,36 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
 
         return null;
     }
+}
+
+private immutable(Result)[] doQuery(Connection conn)
+{
+    conn.sendQuery("SELECT 123, 567, 'asd fgh'");
+
+    auto sock = conn.socket();
+
+    import std.socket;
+    import core.time;
+
+    auto readSet = new SocketSet;
+    auto errSet = new SocketSet;
+
+    trace("waiting for data on the socket");
+    //while(){}
+    //sock.select(readSet, errSet, null, dur!"seconds"(10));
+
+    conn.consumeInput();
+
+    immutable(Result)[] res;
+    
+    while(true)
+    {
+        auto r = conn.getResult();
+        if(r is null) break;
+        res ~= r;
+    }
+
+    return res;
 }
 
 struct TransactionArgs
@@ -147,7 +150,8 @@ version(IntegrationTest) void __integration_test(string connString)
 
         foreach(r; results)
         {
-            import std.stdio; writeln(r);
+            import std.stdio;
+            writeln("res=", r.getAnswer);
         }
     }
 }
