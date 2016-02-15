@@ -3,6 +3,7 @@ module pgator2.pool;
 import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
+import core.time: Duration;
 
 alias LockedConnection = vibe.LockedConnection!Connection;
 
@@ -146,72 +147,67 @@ unittest
     }
 }
 
+private immutable(Result) doSimpleSqlCmd(ConnectionPool pool, string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+{
+    immutable(Result)[] res;
+
+    void dg(Connection conn)
+    {
+        conn.sendQuery(sqlCommand);
+
+        auto sock = conn.socket();
+        import std.socket; // replase it by waitForReading()
+
+        auto readSet = new SocketSet;
+        auto errSet = new SocketSet;
+        readSet.add(sock);
+        errSet.add(sock);
+
+        trace("waiting for data on the socket");
+        auto sockNum = Socket.select(readSet, null, errSet, timeout);
+
+        if(sockNum == 0) // query timeout occured
+        {
+            trace("Exceeded Posgres query time limit");
+            conn.cancel(); // cancel sql query
+        }
+
+        trace("consumeInput()");
+        conn.consumeInput();
+
+        while(true)
+        {
+            trace("getResult()");
+            auto r = conn.getResult();
+            if(r is null) break;
+            res ~= r;
+        }
+
+        enforce(res.length <= 1, "simple query can return only one Result instance");
+
+        if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
+            throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
+
+        enforce(res.length == 1, "query isn't received?");
+    }
+
+    pool.doQuery(&dg, waitForEstablishConn);
+
+    return res[0];
+}
+
 version(IntegrationTest) void __integration_test(string connString)
 {
     auto pool = new ConnectionPool(connString, 3);
 
     {
-        TransactionArgs args;
-        args.sqlCommand = "SELECT 123";
-
-        immutable(Result)[] res;
-
-        void doQuery(Connection conn)
-        {
-            conn.sendQuery("SELECT 123, 567, 'asd fgh'");
-
-            auto sock = conn.socket();
-
-            import std.socket;
-            import core.time;
-
-            auto readSet = new SocketSet;
-            auto errSet = new SocketSet;
-            readSet.add(sock);
-            errSet.add(sock);
-
-            trace("waiting for data on the socket");
-            auto sockNum = Socket.select(readSet, null, errSet);//, dur!"seconds"(10));
-
-            if(sockNum == 0) // query timeout occured
-            {
-                trace("Exceeded Posgres query time limit");
-                conn.cancel(); // cancel sql query
-            }
-
-            trace("consumeInput()");
-            conn.consumeInput();
-
-            while(true)
-            {
-                trace("getResult()");
-                auto r = conn.getResult();
-                if(r is null) break;
-                res ~= r;
-            }
-
-            if(sockNum == 0) // query timeout occured
-                throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
-        }
-
-        pool.doQuery(&doQuery, true);
+        auto res1 = pool.doSimpleSqlCmd("SELECT 123, 567, 'asd fgh'", Duration.zero, true);
 
         import std.stdio;
-        writeln("results=", res);
+        writeln("res1=", res1.getAnswer);
 
-        foreach(r; res)
-        {
-            import std.stdio;
-            writeln("res=", r.getAnswer);
-        }
+        auto res2 = pool.doSimpleSqlCmd("SELECT 12366666", Duration.zero, true);
 
-        res.length = 0;
-        pool.doQuery(&doQuery, true);
-
-        foreach(r; res)
-        {
-            import std.stdio;
-            writeln("res=", r.getAnswer);
-        }
+        writeln("res2=", res2.getAnswer);
     }
 }
