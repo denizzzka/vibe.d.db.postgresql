@@ -3,6 +3,7 @@ module pgator2.pool;
 import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
+import std.socket;
 
 alias LockedConnection = vibe.LockedConnection!Connection;
 
@@ -28,12 +29,13 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
         return c;
     }
 
-    immutable(Result)[] makeTransaction(TransactionArgs args)
+    immutable(Result)[] makeTransaction(TransactionArgs argsm, bool waitForEstablishConn = false)
     {
         LockedConnection conn;
 
         // Try to get usable connection and send SQL command
         // Doesn't make sense to do MUCH more attempts to pick a connection than it available
+        pick_conn:
         foreach(unused_var; 0..(maxConcurrency * 2))
         {
             try
@@ -41,15 +43,33 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                 trace("get connection from a pool");
                 conn = lockConnection();
 
-                if(conn.status == CONNECTION_BAD) // need to reconnect this connection
-                    throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
-
-                auto pollRes = conn.poll;
-                if(pollRes != CONNECTION_MADE)
+                while(true)
                 {
-                    trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
-                    conn.destroy(); // reverts locked connection
-                    continue; // need try other connection
+                    if(conn.status == CONNECTION_BAD) // need to reconnect this connection
+                        throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
+
+                    auto pollRes = conn.poll;
+                    if(pollRes != CONNECTION_MADE)
+                    {
+                        if(waitForEstablishConn)
+                        {
+                            // waiting for any socket changes
+                            auto set = new SocketSet;
+                            set.add(conn.socket);
+
+                            trace("waiting for any socket changes");
+                            auto sockNum = Socket.select(set, null, set);
+                            continue;
+                        }
+                        else
+                        {
+                            trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
+                            conn.destroy(); // reverts locked connection
+                            continue pick_conn; // need try other connection
+                        }
+                    }
+
+                    break;
                 }
 
                 return doQuery(conn);
@@ -85,7 +105,6 @@ private immutable(Result)[] doQuery(Connection conn)
 
     auto sock = conn.socket();
 
-    import std.socket;
     import core.time;
 
     auto readSet = new SocketSet;
@@ -160,7 +179,7 @@ version(IntegrationTest) void __integration_test(string connString)
         TransactionArgs args;
         args.sqlCommand = "SELECT 123";
 
-        auto results = pool.makeTransaction(args);
+        auto results = pool.makeTransaction(args, true);
 
         import std.stdio;
         writeln("results=", results);
