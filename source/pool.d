@@ -30,7 +30,7 @@ class ConnectionPool
         return c;
     }
 
-    private void makeTransaction(void delegate(Connection) doesQuery, bool waitForEstablishConn = false)
+    private void doQuery(void delegate(Connection) doesQueryAndCollectsResults, bool waitForEstablishConn = false)
     {
         LockedConnection conn;
 
@@ -70,7 +70,7 @@ class ConnectionPool
                 }
 
                 trace("doesQuery() call");
-                doesQuery(conn);
+                doesQueryAndCollectsResults(conn);
                 return;
             }
             catch(ConnectionException e)
@@ -194,7 +194,7 @@ version(IntegrationTest) void __integration_test(string connString)
                 throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
         }
 
-        pool.makeTransaction(&doQuery, true);
+        pool.doQuery(&doQuery, true);
 
         import std.stdio;
         writeln("results=", res);
@@ -206,7 +206,7 @@ version(IntegrationTest) void __integration_test(string connString)
         }
 
         res.length = 0;
-        pool.makeTransaction(&doQuery, true);
+        pool.doQuery(&doQuery, true);
 
         foreach(r; res)
         {
