@@ -190,14 +190,14 @@ class PostgresClientException : Dpq2Exception
 
 unittest
 {
-    auto db = new PostgresClient("wrong connect string", 2);
+    auto client = connectPostgresDB("wrong connect string", 2);
 
     {
         bool raised = false;
 
         try
         {
-            db.execCommand("SELECT 123");
+            client.execCommand("SELECT 123");
         }
         catch(PostgresClientException e)
             raised = true;
@@ -208,10 +208,10 @@ unittest
 
 version(IntegrationTest) void __integration_test(string connString)
 {
-    auto db = connectPostgresDB(connString, 3);
+    auto client = connectPostgresDB(connString, 3);
 
     {
-        auto res1 = db.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5), true);
+        auto res1 = client.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5), true);
 
         assert(res1.getAnswer[0][1].as!PGinteger == 567);
     }
