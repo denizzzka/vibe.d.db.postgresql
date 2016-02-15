@@ -1,0 +1,27 @@
+﻿language: d
+
+d:
+  - dmd
+  - gdc
+  - ldc
+
+addons:
+  postgresql: 9.4
+
+services: postgresql
+
+before_install:
+  - dub fetch dscanner
+
+before_script:
+  - psql -c 'create database "vibe-test"' -U postgres
+
+script:
+  - dub test
+  - dub run --config=integration_test -- --conninfo="dbname=vibe-test"
+
+  - if [ ${DC} = "dmd" ]; then dub run dscanner -- -s; fi
+#  - if [ ${DC} = "dmd" ]; then dub run dscanner -- -S; fi #disabled due to assertion failure in dsymbol
+
+after_success:
+  - if [ ${DC} = "dmd" ]; then bash <(curl -s https://codecov.io/bash); fi
