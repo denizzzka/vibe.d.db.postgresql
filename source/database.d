@@ -210,11 +210,6 @@ version(IntegrationTest) void __integration_test(string connString)
     {
         auto res1 = db.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5), true);
 
-        import std.stdio;
-        writeln("res1=", res1.getAnswer);
-
-        auto res2 = db.execCommand("SELECT 12366666::integer", dur!"seconds"(5), true);
-
-        writeln("res2=", res2.getAnswer);
+        assert(res1.getAnswer[0][1].as!PGinteger == 567);
     }
 }
