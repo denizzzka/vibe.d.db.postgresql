@@ -7,14 +7,19 @@ import std.experimental.logger;
 import core.time: Duration;
 import std.exception: enforce;
 
+PostgresClient connectPostgresDB(string connString, uint connNum, bool startImmediately = false)
+{
+    return new PostgresClient(connString,connNum, startImmediately);
+}
+
 package alias LockedConnection = vibe.LockedConnection!Connection;
 
-class Database
+class PostgresClient
 {
     private vibe.ConnectionPool!Connection pool;
     private const string connString;
 
-    this(string connString, uint connNum, bool startImmediately = false)
+    private this(string connString, uint connNum, bool startImmediately = false)
     {
         this.connString = connString;
 
@@ -107,10 +112,10 @@ class Database
             }
         }
 
-        throw new DatabaseException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
+        throw new PostgresClientException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
     }
 
-    immutable(Result) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+    immutable(Answer) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
     {
         QueryParams p;
         p.resultFormat = ValueFormat.BINARY;
@@ -119,7 +124,7 @@ class Database
         return execCommand(p, timeout, waitForEstablishConn);
     }
 
-    immutable(Result) execCommand(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+    immutable(Answer) execCommand(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
     {
         immutable(Result)[] res;
 
@@ -148,14 +153,14 @@ class Database
             enforce(res.length <= 1, "simple query can return only one Result instance");
 
             if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
-                throw new DatabaseException("Exceeded Posgres query time limit", __FILE__, __LINE__);
+                throw new PostgresClientException("Exceeded Posgres query time limit", __FILE__, __LINE__);
 
             enforce(res.length == 1, "Result isn't received?");
         }
 
         doQuery(&dg, waitForEstablishConn);
 
-        return res[0];
+        return res[0].getAnswer;
     }
 }
 
@@ -175,7 +180,7 @@ package size_t waitForReading(Connection conn, Duration timeout = Duration.zero)
     return sockNum;
 }
 
-class DatabaseException : Dpq2Exception
+class PostgresClientException : Dpq2Exception
 {
     this(string msg, string file, size_t line)
     {
@@ -185,7 +190,7 @@ class DatabaseException : Dpq2Exception
 
 unittest
 {
-    auto db = new Database("wrong connect string", 2);
+    auto db = new PostgresClient("wrong connect string", 2);
 
     {
         bool raised = false;
@@ -194,7 +199,7 @@ unittest
         {
             db.execCommand("SELECT 123");
         }
-        catch(DatabaseException e)
+        catch(PostgresClientException e)
             raised = true;
 
         assert(raised);
@@ -203,7 +208,7 @@ unittest
 
 version(IntegrationTest) void __integration_test(string connString)
 {
-    auto db = new Database(connString, 3, true);
+    auto db = new PostgresClient(connString, 3, true);
 
     {
         auto res1 = db.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5), true);
