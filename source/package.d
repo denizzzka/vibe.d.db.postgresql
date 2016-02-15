@@ -1,4 +1,4 @@
-module vibe.db.postgresql.database;
+module vibe.db.postgresql;
 
 public import dpq2.answer;
 import dpq2;
@@ -212,4 +212,9 @@ version(IntegrationTest) void __integration_test(string connString)
 
         assert(res1.getAnswer[0][1].as!PGinteger == 567);
     }
+}
+
+shared static this()
+{
+    sharedLog.logLevel = LogLevel.warning;
 }

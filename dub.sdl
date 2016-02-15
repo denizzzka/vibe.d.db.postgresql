@@ -5,7 +5,7 @@ license "Boost"
 copyright "Copyright © 2016"
 dependency "dpq2" version="~dev"
 dependency "vibe-d:core" version="~>0.7.27"
-targetType "executable"
+targetType "none"
 
 configuration "release_app" {
     buildType "release"
@@ -14,4 +14,5 @@ configuration "release_app" {
 configuration "integration_test" {
     versions "IntegrationTest"
     buildType "unittest"
+    targetType "executable"
 }
