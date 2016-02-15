@@ -19,7 +19,7 @@ class PostgresClient
     private vibe.ConnectionPool!Connection pool;
     private const string connString;
 
-    private this(string connString, uint connNum, bool startImmediately = false)
+    private this(string connString, uint connNum, bool startImmediately)
     {
         this.connString = connString;
 
@@ -48,7 +48,7 @@ class PostgresClient
         return c;
     }
 
-    private void doQuery(void delegate(Connection) doesQueryAndCollectsResults, bool waitForEstablishConn = false)
+    private void doQuery(void delegate(Connection) doesQueryAndCollectsResults, bool waitForEstablishConn)
     {
         LockedConnection conn;
 
@@ -115,7 +115,7 @@ class PostgresClient
         throw new PostgresClientException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
     }
 
-    immutable(Answer) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+    immutable(Answer) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
     {
         QueryParams p;
         p.resultFormat = ValueFormat.BINARY;
@@ -124,7 +124,7 @@ class PostgresClient
         return execCommand(p, timeout, waitForEstablishConn);
     }
 
-    immutable(Answer) execCommand(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+    immutable(Answer) execCommand(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
     {
         immutable(Result)[] res;
 
@@ -208,7 +208,7 @@ unittest
 
 version(IntegrationTest) void __integration_test(string connString)
 {
-    auto db = new PostgresClient(connString, 3, true);
+    auto db = connectPostgresDB(connString, 3);
 
     {
         auto res1 = db.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5), true);
