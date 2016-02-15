@@ -186,15 +186,14 @@ class DatabaseException : Dpq2Exception
 
 unittest
 {
-    auto pool = new Database("wrong connect string", 2);
+    auto db = new Database("wrong connect string", 2);
 
     {
         bool raised = false;
 
         try
         {
-            auto c = pool.lockConnection;
-            c.exec("SELECT 123");
+            db.execCommand("SELECT 123");
         }
         catch(DatabaseException e)
             raised = true;
