@@ -8,7 +8,7 @@ import std.stdio: writefln;
 
 PostgresClient client;
 
-static this()
+void test()
 {
 	auto result = client.execCommand(
 		"SELECT 123 as first_num, 567 as second_num, 'abc'::text as third_text "~
