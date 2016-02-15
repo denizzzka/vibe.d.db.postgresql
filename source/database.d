@@ -113,11 +113,20 @@ class Database
 
     immutable(Result) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
     {
+        QueryParams p;
+        p.resultFormat = ValueFormat.BINARY;
+        p.sqlCommand = sqlCommand;
+
+        return execCommand(p, timeout, waitForEstablishConn);
+    }
+
+    immutable(Result) execCommand(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+    {
         immutable(Result)[] res;
 
         void dg(Connection conn)
         {
-            conn.sendQuery(sqlCommand);
+            conn.sendQuery(params);
             auto sockNum = conn.waitForReading(timeout);
 
             if(sockNum == 0) // query timeout occured
@@ -199,12 +208,12 @@ version(IntegrationTest) void __integration_test(string connString)
     auto db = new Database(connString, 3, true);
 
     {
-        auto res1 = db.execCommand("SELECT 123, 567, 'asd fgh'", dur!"seconds"(5), true);
+        auto res1 = db.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5), true);
 
         import std.stdio;
         writeln("res1=", res1.getAnswer);
 
-        auto res2 = db.execCommand("SELECT 12366666", dur!"seconds"(5), true);
+        auto res2 = db.execCommand("SELECT 12366666::integer", dur!"seconds"(5), true);
 
         writeln("res2=", res2.getAnswer);
     }
