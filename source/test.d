@@ -18,7 +18,10 @@ version(IntegrationTest)
     int main(string[] args)
     {
         readOpts(args);
-        if(debugEnabled) sharedLog.logLevel = LogLevel.trace;
+        if(debugEnabled)
+            sharedLog.logLevel = LogLevel.trace;
+        else
+            sharedLog.logLevel = LogLevel.warning;
 
         import db = vibe.db.postgresql;
         db.__integration_test(connString);

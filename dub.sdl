@@ -9,6 +9,7 @@ targetType "none"
 
 configuration "release_app" {
     buildType "release"
+    versions "StdLoggerDisableLogging"
 }
 
 configuration "integration_test" {
