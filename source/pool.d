@@ -32,16 +32,14 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
     {
         LockedConnection conn;
 
-        // get usable connection and send SQL command
-        conn_loop:
-        foreach(unused_var; 0..100)
+        // Try to get usable connection and send SQL command
+        // Doesn't make sense to do MUCH more attempts to pick a connection than it available
+        foreach(unused_var; 0..(maxConcurrency * 2))
         {
             try
             {
-                trace("get connection from pool");
+                trace("get connection from a pool");
                 conn = lockConnection();
-
-                // obtained connection should be ready to send
 
                 if(conn.status == CONNECTION_BAD) // need to reconnect this connection
                     throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
@@ -49,7 +47,7 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                 auto pollRes = conn.poll;
                 if(pollRes != CONNECTION_MADE)
                 {
-                    trace("connection isn't suitable to do query, pollRes=", pollRes, ", conn status=", conn.status);
+                    trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
                     conn.destroy(); // reverts locked connection
                     continue; // need try other connection
                 }
@@ -75,11 +73,9 @@ class ConnectionPool : vibe.ConnectionPool!(Connection)
                 conn.destroy(); // reverts locked connection
                 continue;
             }
-
-            assert(false);
         }
 
-        return null;
+        throw new PoolException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
     }
 }
 
@@ -102,8 +98,8 @@ private immutable(Result)[] doQuery(Connection conn)
 
     if(sockNum == 0) // query timeout occured
     {
-        warning("Exceeded Posgres query time limit");
-        conn.cancel(); // cancel query
+        trace("Exceeded Posgres query time limit");
+        conn.cancel(); // cancel sql query
     }
 
     conn.consumeInput();
@@ -165,6 +161,17 @@ version(IntegrationTest) void __integration_test(string connString)
         args.sqlCommand = "SELECT 123";
 
         auto results = pool.makeTransaction(args);
+
+        import std.stdio;
+        writeln("results=", results);
+
+        foreach(r; results)
+        {
+            import std.stdio;
+            writeln("res=", r.getAnswer);
+        }
+
+        results = pool.makeTransaction(args);
 
         foreach(r; results)
         {
