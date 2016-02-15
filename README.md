@@ -1,5 +1,8 @@
-version(IntegrationTest):
+PostgreSQL support for Vibe.d
+====
 
+Example:
+```D
 import vibe.db.postgresql;
 import std.stdio: writefln;
 
@@ -22,6 +25,13 @@ static this()
 shared static this()
 {
 	// params: conninfo string, number of simultaneous connections
-	client = connectPostgresDB(/*"dbname=vibe-test"*/ "dbname=pgator-test user=postgres", 4);
+	client = connectPostgresDB("dbname=vibe-test user=postgres", 4);
 }
+```
 
+Output:
+```
+Found entry: 123
+Found entry: 567
+Found entry: "abc"
+```
