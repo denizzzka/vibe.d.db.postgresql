@@ -112,9 +112,8 @@ class PostgresClient
             }
 
             conn.destroy(); // reverts locked connection
+            throw e;
         }
-
-        throw new PostgresClientException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
     }
 
     immutable(Answer) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
@@ -201,7 +200,7 @@ unittest
         {
             client.execCommand("SELECT 123");
         }
-        catch(PostgresClientException e)
+        catch(ConnectionException e)
             raised = true;
 
         assert(raised);
