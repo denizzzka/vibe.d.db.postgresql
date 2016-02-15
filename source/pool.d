@@ -98,8 +98,13 @@ private immutable(Result)[] doQuery(Connection conn)
     errSet.add(sock);
 
     trace("waiting for data on the socket");
-    //while(){}
-    Socket.select(readSet, errSet, null, dur!"seconds"(10));
+    auto sockNum = Socket.select(readSet, errSet, null, dur!"seconds"(10));
+
+    if(sockNum == 0) // query timeout occured
+    {
+        warning("Exceeded Posgres query time limit");
+        conn.cancel(); // cancel query
+    }
 
     conn.consumeInput();
 
@@ -112,7 +117,18 @@ private immutable(Result)[] doQuery(Connection conn)
         res ~= r;
     }
 
+    if(sockNum == 0) // query timeout occured
+        throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
+
     return res;
+}
+
+class PoolException : Exception
+{
+    this(string msg, string file, size_t line)
+    {
+        super(msg, file, line);
+    }
 }
 
 struct TransactionArgs
