@@ -187,12 +187,12 @@ version(IntegrationTest) void __integration_test(string connString)
     auto pool = new ConnectionPool(connString, 3);
 
     {
-        auto res1 = pool.doSimpleSqlCmd("SELECT 123, 567, 'asd fgh'", Duration.zero, true);
+        auto res1 = pool.doSimpleSqlCmd("SELECT 123, 567, 'asd fgh'", dur!"seconds"(5), true);
 
         import std.stdio;
         writeln("res1=", res1.getAnswer);
 
-        auto res2 = pool.doSimpleSqlCmd("SELECT 12366666", Duration.zero, true);
+        auto res2 = pool.doSimpleSqlCmd("SELECT 12366666", dur!"seconds"(5), true);
 
         writeln("res2=", res2.getAnswer);
     }
