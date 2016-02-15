@@ -109,6 +109,45 @@ class Database
 
         throw new PoolException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
     }
+
+    immutable(Result) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
+    {
+        immutable(Result)[] res;
+
+        void dg(Connection conn)
+        {
+            conn.sendQuery(sqlCommand);
+            auto sockNum = conn.waitForReading(timeout);
+
+            if(sockNum == 0) // query timeout occured
+            {
+                trace("Exceeded Posgres query time limit");
+                conn.cancel(); // cancel sql query
+            }
+
+            trace("consumeInput()");
+            conn.consumeInput();
+
+            while(true)
+            {
+                trace("getResult()");
+                auto r = conn.getResult();
+                if(r is null) break;
+                res ~= r;
+            }
+
+            enforce(res.length <= 1, "simple query can return only one Result instance");
+
+            if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
+                throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
+
+            enforce(res.length == 1, "query isn't received?");
+        }
+
+        doQuery(&dg, waitForEstablishConn);
+
+        return res[0];
+    }
 }
 
 package size_t waitForReading(Connection conn, Duration timeout = Duration.zero)
@@ -154,56 +193,17 @@ unittest
     }
 }
 
-private immutable(Result) doSimpleSqlCmd(Database pool, string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
-{
-    immutable(Result)[] res;
-
-    void dg(Connection conn)
-    {
-        conn.sendQuery(sqlCommand);
-        auto sockNum = conn.waitForReading(timeout);
-
-        if(sockNum == 0) // query timeout occured
-        {
-            trace("Exceeded Posgres query time limit");
-            conn.cancel(); // cancel sql query
-        }
-
-        trace("consumeInput()");
-        conn.consumeInput();
-
-        while(true)
-        {
-            trace("getResult()");
-            auto r = conn.getResult();
-            if(r is null) break;
-            res ~= r;
-        }
-
-        enforce(res.length <= 1, "simple query can return only one Result instance");
-
-        if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
-            throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
-
-        enforce(res.length == 1, "query isn't received?");
-    }
-
-    pool.doQuery(&dg, waitForEstablishConn);
-
-    return res[0];
-}
-
 version(IntegrationTest) void __integration_test(string connString)
 {
-    auto pool = new Database(connString, 3, true);
+    auto db = new Database(connString, 3, true);
 
     {
-        auto res1 = pool.doSimpleSqlCmd("SELECT 123, 567, 'asd fgh'", dur!"seconds"(5), true);
+        auto res1 = db.execCommand("SELECT 123, 567, 'asd fgh'", dur!"seconds"(5), true);
 
         import std.stdio;
         writeln("res1=", res1.getAnswer);
 
-        auto res2 = pool.doSimpleSqlCmd("SELECT 12366666", dur!"seconds"(5), true);
+        auto res2 = db.execCommand("SELECT 12366666", dur!"seconds"(5), true);
 
         writeln("res2=", res2.getAnswer);
     }
