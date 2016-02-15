@@ -4,6 +4,7 @@ import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
 import core.time: Duration;
+import std.exception: enforce;
 
 alias LockedConnection = vibe.LockedConnection!Connection;
 
@@ -99,19 +100,20 @@ class ConnectionPool
     }
 }
 
-package void waitForReading(Connection conn)
+package size_t waitForReading(Connection conn, Duration timeout = Duration.zero)
 {
     import std.socket;
-    import std.exception: enforce;
 
     auto socket = conn.socket;
     auto set = new SocketSet;
     set.add(socket);
 
     trace("waiting for socket changes for reading");
-    auto sockNum = Socket.select(set, null, set);
+    auto sockNum = Socket.select(set, null, set, timeout);
 
-    enforce(sockNum > 0);
+    enforce(sockNum >= 0);
+
+    return sockNum;
 }
 
 class PoolException : Exception
@@ -120,12 +122,6 @@ class PoolException : Exception
     {
         super(msg, file, line);
     }
-}
-
-struct TransactionArgs
-{
-    string sqlCommand;
-    string[] sqlArgs;
 }
 
 unittest
@@ -154,17 +150,7 @@ private immutable(Result) doSimpleSqlCmd(ConnectionPool pool, string sqlCommand,
     void dg(Connection conn)
     {
         conn.sendQuery(sqlCommand);
-
-        auto sock = conn.socket();
-        import std.socket; // replase it by waitForReading()
-
-        auto readSet = new SocketSet;
-        auto errSet = new SocketSet;
-        readSet.add(sock);
-        errSet.add(sock);
-
-        trace("waiting for data on the socket");
-        auto sockNum = Socket.select(readSet, null, errSet, timeout);
+        auto sockNum = conn.waitForReading(timeout);
 
         if(sockNum == 0) // query timeout occured
         {
