@@ -94,10 +94,12 @@ private immutable(Result)[] doQuery(Connection conn)
 
     auto readSet = new SocketSet;
     auto errSet = new SocketSet;
+    readSet.add(sock);
+    errSet.add(sock);
 
     trace("waiting for data on the socket");
     //while(){}
-    //sock.select(readSet, errSet, null, dur!"seconds"(10));
+    Socket.select(readSet, errSet, null, dur!"seconds"(10));
 
     conn.consumeInput();
 
