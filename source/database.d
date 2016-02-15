@@ -1,5 +1,6 @@
 module vibe.db.postgresql.database;
 
+public import dpq2.answer;
 import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
@@ -107,7 +108,7 @@ class Database
             }
         }
 
-        throw new PoolException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
+        throw new DatabaseException("All connections to the Postgres server aren't suitable for query", __FILE__, __LINE__);
     }
 
     immutable(Result) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = false)
@@ -139,7 +140,7 @@ class Database
             enforce(res.length <= 1, "simple query can return only one Result instance");
 
             if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
-                throw new PoolException("Exceeded Posgres query time limit", __FILE__, __LINE__);
+                throw new DatabaseException("Exceeded Posgres query time limit", __FILE__, __LINE__);
 
             enforce(res.length == 1, "query isn't received?");
         }
@@ -166,7 +167,7 @@ package size_t waitForReading(Connection conn, Duration timeout = Duration.zero)
     return sockNum;
 }
 
-class PoolException : Exception
+class DatabaseException : Dpq2Exception
 {
     this(string msg, string file, size_t line)
     {
