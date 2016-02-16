@@ -1,5 +1,7 @@
 module vibe.db.postgresql;
 
+@trusted:
+
 public import dpq2.result;
 import dpq2;
 import vibe = vibe.core.connectionpool;
