@@ -1,6 +1,6 @@
 module vibe.db.postgresql;
 
-public import dpq2.answer;
+public import dpq2.result;
 import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
