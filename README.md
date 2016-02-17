@@ -10,7 +10,7 @@ PostgresClient client;
 
 void test()
 {
-	auto result = client.execCommand(
+	auto result = client.execStatement(
 		"SELECT 123 as first_num, 567 as second_num, 'abc'::text as third_text "~
 		"UNION ALL "~
 		"SELECT 890, 233, 'fgh'::text as third_text",

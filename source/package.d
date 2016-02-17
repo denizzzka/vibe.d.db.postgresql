@@ -154,7 +154,7 @@ class PostgresClient
         return res[0];
     }
 
-    immutable(Answer) execCommand(
+    immutable(Answer) execStatement(
         string sqlCommand,
         ValueFormat resultFormat = ValueFormat.TEXT,
         Duration timeout = Duration.zero,
@@ -165,10 +165,10 @@ class PostgresClient
         p.resultFormat = resultFormat;
         p.sqlCommand = sqlCommand;
 
-        return execCommand(p, timeout, waitForEstablishConn);
+        return execStatement(p, timeout, waitForEstablishConn);
     }
 
-    immutable(Answer) execCommand(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
+    immutable(Answer) execStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
     {
         void dg(Connection conn)
         {
@@ -189,10 +189,17 @@ class PostgresClient
     )
     {
         return runStatementBlockingManner(
-                (conn){conn.prepare(statementName, sqlStatement, nParams);},
+                (conn){conn.sendPrepare(statementName, sqlStatement, nParams);},
                 timeout,
                 waitForEstablishConn
             );
+    }
+
+    immutable(Answer) execPreparedStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
+    {
+        auto res = runStatementBlockingManner((conn){conn.sendQueryPrepared(params);}, timeout, waitForEstablishConn);
+
+        return res.getAnswer;
     }
 }
 
@@ -227,7 +234,7 @@ version(IntegrationTest) void __integration_test(string connString)
     auto client = connectPostgresDB(connString, 3);
 
     {
-        auto res1 = client.execCommand(
+        auto res1 = client.execStatement(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
             ValueFormat.BINARY,
             dur!"seconds"(5)
@@ -239,8 +246,13 @@ version(IntegrationTest) void __integration_test(string connString)
     {
         auto r = client.prepareStatement("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
         assert(r.status == PGRES_COMMAND_OK);
-
+    }
+    {
         QueryParams p;
         p.preparedStatementName = "stmnt_name";
+
+        auto r = client.execPreparedStatement(p, dur!"seconds"(5));
+
+        assert(r.getAnswer[0][0].as!PGinteger == 123);
     }
 }
