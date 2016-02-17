@@ -3,7 +3,7 @@ description "PostgreSQL support for Vibe.d"
 authors "Denis Feklushkin <denis.feklushkin@gmail.com>"
 license "MIT"
 copyright "Copyright © 2016"
-dependency "dpq2" version="~>0.3.9"
+dependency "dpq2" version="~>0.4.0"
 dependency "vibe-d:core" version="~>0.7.27"
 targetType "none"
 
