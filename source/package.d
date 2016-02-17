@@ -62,11 +62,8 @@ class PostgresClient
 
             while(true) // cycle is need only for polling with waitForEstablishConn
             {
-                if(conn.status == CONNECTION_BAD) // need to reconnect this connection
-                    throw new ConnectionException(conn.__conn, __FILE__, __LINE__);
-
                 auto pollRes = conn.poll;
-                if(pollRes != CONNECTION_MADE)
+                if(pollRes != PGRES_POLLING_OK)
                 {
                     if(!waitForEstablishConn)
                     {
@@ -76,7 +73,7 @@ class PostgresClient
                     else
                     {
                         // waiting for socket changes for reading
-                        waitForReading(conn);
+                        conn.waitEndOf(WaitType.READ); // FIXME: need timeout check
                         continue;
                     }
                 }
@@ -120,14 +117,15 @@ class PostgresClient
 
     private immutable(Result) runStatementBlockingManner(void delegate(Connection) sendsStatement, Duration timeout, bool waitForEstablishConn)
     {
+        trace("runStatementBlockingManner");
         immutable(Result)[] res;
 
         doQuery((conn)
             {
                 sendsStatement(conn);
-                auto sockNum = waitForReading(conn, timeout);
+                auto timeoutNotOccurred = conn.waitEndOf(WaitType.READ, timeout);
 
-                if(sockNum == 0) // query timeout occured
+                if(!timeoutNotOccurred) // query timeout occurred
                 {
                     trace("Exceeded Posgres query time limit");
                     conn.cancel(); // cancel sql query
@@ -146,7 +144,7 @@ class PostgresClient
 
                 enforce(res.length <= 1, "simple query can return only one Result instance");
 
-                if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
+                if(!timeoutNotOccurred && res.length != 1) // query timeout occured and result isn't received
                     throw new PostgresClientException("Exceeded Posgres query time limit", __FILE__, __LINE__);
             },
         waitForEstablishConn);
@@ -196,22 +194,6 @@ class PostgresClient
                 waitForEstablishConn
             );
     }
-}
-
-package size_t waitForReading(Connection conn, Duration timeout = Duration.zero)
-{
-    import std.socket;
-
-    auto socket = conn.socket;
-    auto set = new SocketSet;
-    set.add(socket);
-
-    trace("waiting for socket changes for reading");
-    auto sockNum = Socket.select(set, null, set, timeout);
-
-    enforce(sockNum >= 0);
-
-    return sockNum;
 }
 
 class PostgresClientException : Dpq2Exception
