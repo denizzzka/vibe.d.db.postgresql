@@ -220,7 +220,7 @@ unittest
 
         try
         {
-            client.execCommand("SELECT 123");
+            client.execStatement("SELECT 123");
         }
         catch(ConnectionException e)
             raised = true;
