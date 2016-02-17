@@ -118,10 +118,15 @@ class PostgresClient
         }
     }
 
-    immutable(Answer) execCommand(string sqlCommand, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
+    immutable(Answer) execCommand(
+        string sqlCommand,
+        ValueFormat resultFormat = ValueFormat.TEXT,
+        Duration timeout = Duration.zero,
+        bool waitForEstablishConn = true
+    )
     {
         QueryParams p;
-        p.resultFormat = ValueFormat.BINARY;
+        p.resultFormat = resultFormat;
         p.sqlCommand = sqlCommand;
 
         return execCommand(p, timeout, waitForEstablishConn);
@@ -214,7 +219,11 @@ version(IntegrationTest) void __integration_test(string connString)
     auto client = connectPostgresDB(connString, 3);
 
     {
-        auto res1 = client.execCommand("SELECT 123::integer, 567::integer, 'asd fgh'::text", dur!"seconds"(5));
+        auto res1 = client.execCommand(
+            "SELECT 123::integer, 567::integer, 'asd fgh'::text",
+            ValueFormat.BINARY,
+            dur!"seconds"(5)
+        );
 
         assert(res1.getAnswer[0][1].as!PGinteger == 567);
     }
