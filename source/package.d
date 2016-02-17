@@ -76,7 +76,7 @@ class PostgresClient
                     else
                     {
                         // waiting for socket changes for reading
-                        conn.waitForReading;
+                        waitForReading(conn);
                         continue;
                     }
                 }
@@ -118,6 +118,44 @@ class PostgresClient
         }
     }
 
+    private immutable(Result) runStatementBlockingManner(void delegate(Connection) sendsStatement, Duration timeout, bool waitForEstablishConn)
+    {
+        immutable(Result)[] res;
+
+        doQuery((conn)
+            {
+                sendsStatement(conn);
+                auto sockNum = waitForReading(conn, timeout);
+
+                if(sockNum == 0) // query timeout occured
+                {
+                    trace("Exceeded Posgres query time limit");
+                    conn.cancel(); // cancel sql query
+                }
+
+                trace("consumeInput()");
+                conn.consumeInput();
+
+                while(true)
+                {
+                    trace("getResult()");
+                    auto r = conn.getResult();
+                    if(r is null) break;
+                    res ~= r;
+                }
+
+                enforce(res.length <= 1, "simple query can return only one Result instance");
+
+                if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
+                    throw new PostgresClientException("Exceeded Posgres query time limit", __FILE__, __LINE__);
+            },
+        waitForEstablishConn);
+
+        enforce(res.length == 1, "Result isn't received?");
+
+        return res[0];
+    }
+
     immutable(Answer) execCommand(
         string sqlCommand,
         ValueFormat resultFormat = ValueFormat.TEXT,
@@ -134,41 +172,19 @@ class PostgresClient
 
     immutable(Answer) execCommand(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
     {
-        immutable(Result)[] res;
-
         void dg(Connection conn)
         {
             conn.sendQuery(params);
-            auto sockNum = conn.waitForReading(timeout);
-
-            if(sockNum == 0) // query timeout occured
-            {
-                trace("Exceeded Posgres query time limit");
-                conn.cancel(); // cancel sql query
-            }
-
-            trace("consumeInput()");
-            conn.consumeInput();
-
-            while(true)
-            {
-                trace("getResult()");
-                auto r = conn.getResult();
-                if(r is null) break;
-                res ~= r;
-            }
-
-            enforce(res.length <= 1, "simple query can return only one Result instance");
-
-            if(sockNum == 0 && res.length != 1) // query timeout occured and result isn't received
-                throw new PostgresClientException("Exceeded Posgres query time limit", __FILE__, __LINE__);
-
-            enforce(res.length == 1, "Result isn't received?");
         }
 
-        doQuery(&dg, waitForEstablishConn);
+        auto res = runStatementBlockingManner(&dg, timeout, waitForEstablishConn);
 
-        return res[0].getAnswer;
+        return res.getAnswer;
+    }
+
+    void prepareStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
+    {
+        
     }
 }
 
