@@ -182,9 +182,19 @@ class PostgresClient
         return res.getAnswer;
     }
 
-    void prepareStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
+    immutable(Result) prepareStatement(
+        string statementName,
+        string sqlStatement,
+        size_t nParams,
+        Duration timeout = Duration.zero,
+        bool waitForEstablishConn = true
+    )
     {
-        
+        return runStatementBlockingManner(
+                (conn){conn.prepare(statementName, sqlStatement, nParams);},
+                timeout,
+                waitForEstablishConn
+            );
     }
 }
 
@@ -242,5 +252,13 @@ version(IntegrationTest) void __integration_test(string connString)
         );
 
         assert(res1.getAnswer[0][1].as!PGinteger == 567);
+    }
+
+    {
+        auto r = client.prepareStatement("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
+        assert(r.status == PGRES_COMMAND_OK);
+
+        QueryParams p;
+        p.preparedStatementName = "stmnt_name";
     }
 }
