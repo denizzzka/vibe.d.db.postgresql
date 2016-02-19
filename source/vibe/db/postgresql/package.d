@@ -3,6 +3,7 @@ module vibe.db.postgresql;
 @trusted:
 
 public import dpq2.result;
+public import dpq2.query: QueryParams;
 import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
@@ -21,11 +22,14 @@ class PostgresClient
     private vibe.ConnectionPool!Connection pool;
     private const string connString;
 
-    private this(string connString, uint connNum, bool startImmediately)
+    this(string connString, uint connNum, bool startImmediately, Connection delegate() connFactory = null)
     {
         this.connString = connString;
 
-        pool = new vibe.ConnectionPool!Connection(&connectionFactory, connNum);
+        pool = new vibe.ConnectionPool!Connection(
+                (connFactory is null ? &connectionFactory :  connFactory),
+                connNum
+            );
 
         if(startImmediately)
         {
@@ -200,6 +204,22 @@ class PostgresClient
         auto res = runStatementBlockingManner((conn){conn.sendQueryPrepared(params);}, timeout, waitForEstablishConn);
 
         return res.getAnswer;
+    }
+
+    void applyToAllConnections(void delegate(Connection) dg)
+    {
+        trace("applyToAllConnections(), connections to apply: ", pool.maxConcurrency);
+
+        auto c = new LockedConnection[pool.maxConcurrency];
+
+        foreach(i; 0 .. c.length)
+        {
+            c[i] = pool.lockConnection();
+            dg(c[i]);
+        }
+
+        foreach(i; 0 .. c.length)
+            c[i].destroy(); // reverts locked connection
     }
 }
 
