@@ -3,7 +3,9 @@ module vibe.db.postgresql;
 @trusted:
 
 public import dpq2.result;
+public import dpq2.connection: ConnectionException;
 public import dpq2.query: QueryParams;
+public import derelict.pq.pq;
 import dpq2;
 import vibe = vibe.core.connectionpool;
 import std.experimental.logger;
@@ -184,7 +186,7 @@ class PostgresClient
         return res.getAnswer;
     }
 
-    immutable(Result) prepareStatement(
+    void prepareStatement(
         string statementName,
         string sqlStatement,
         size_t nParams,
@@ -192,11 +194,14 @@ class PostgresClient
         bool waitForEstablishConn = true
     )
     {
-        return runStatementBlockingManner(
+        auto r = runStatementBlockingManner(
                 (conn){conn.sendPrepare(statementName, sqlStatement, nParams);},
                 timeout,
                 waitForEstablishConn
             );
+
+        if(r.status != PGRES_COMMAND_OK)
+            throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
     }
 
     immutable(Answer) execPreparedStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
@@ -273,9 +278,18 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
-        auto r = client.prepareStatement("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
-        assert(r.status == PGRES_COMMAND_OK);
+        client.prepareStatement("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
+
+        bool throwFlag = false;
+
+        try
+            client.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT", 0, dur!"seconds"(5));
+        catch(PostgresClientException e)
+            throwFlag = true;
+
+        assert(throwFlag);
     }
+
     {
         QueryParams p;
         p.preparedStatementName = "stmnt_name";
