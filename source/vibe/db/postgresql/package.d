@@ -221,6 +221,15 @@ class PostgresClient
         foreach(i; 0 .. c.length)
             c[i].destroy(); // reverts locked connection
     }
+
+    string escapeIdentifier(string s)
+    {
+        auto conn = pool.lockConnection();
+        string res = conn.escapeIdentifier(s);
+        conn.destroy(); // reverts locked connection
+
+        return res;
+    }
 }
 
 class PostgresClientException : Dpq2Exception
@@ -274,5 +283,9 @@ version(IntegrationTest) void __integration_test(string connString)
         auto r = client.execPreparedStatement(p, dur!"seconds"(5));
 
         assert(r.getAnswer[0][0].as!PGinteger == 123);
+    }
+
+    {
+        assert(client.escapeIdentifier("abc") == "\"abc\"");
     }
 }
