@@ -13,7 +13,7 @@ configuration "release_app" {
 }
 
 configuration "integration_test" {
-    versions "IntegrationTest"
-    buildType "unittest"
     targetType "executable"
+    buildType "unittest"
+    versions "IntegrationTest"
 }

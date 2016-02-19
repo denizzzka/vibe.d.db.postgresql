@@ -1,3 +1,5 @@
+module vibe.db.postgresql.test;
+
 version(IntegrationTest)
 {
     import std.getopt;
