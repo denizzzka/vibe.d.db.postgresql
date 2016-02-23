@@ -1,4 +1,4 @@
-﻿language: d
+language: d
 
 d:
   - dmd
@@ -17,7 +17,7 @@ before_script:
   - psql -c 'create database "vibe-test"' -U postgres
 
 script:
-  - .test.sh "dbname=vibe-test"
+  - ./.test.sh "dbname=vibe-test"
 
 after_success:
   - if [ ${DC} = "dmd" ]; then bash <(curl -s https://codecov.io/bash); fi
