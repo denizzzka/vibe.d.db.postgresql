@@ -300,6 +300,21 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
+        // try to use unprepared statement
+        QueryParams qp;
+        qp.preparedStatementName = "unprepared statement";
+
+        bool flag = false;
+
+        try
+            auto r = client.execPreparedStatement(qp);
+        catch(AnswerException e)
+            flag = true;
+
+        assert(flag);
+    }
+
+    {
         assert(client.escapeIdentifier("abc") == "\"abc\"");
     }
 }
