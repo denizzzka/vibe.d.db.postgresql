@@ -5,7 +5,7 @@ license "MIT"
 copyright "Copyright © 2016"
 dependency "dpq2" version="~master"
 dependency "vibe-d:core" version="~>0.7.27"
-targetType "none"
+targetType "sourceLibrary"
 
 configuration "release_app" {
     buildType "release"
