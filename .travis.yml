@@ -2,7 +2,7 @@ language: d
 
 d:
   - dmd
-  - gdc
+  #- gdc is disabled, waiting for std.experimental.logger
   - ldc
 
 addons:
