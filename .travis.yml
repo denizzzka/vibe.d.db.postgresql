@@ -16,7 +16,8 @@ before_install:
 before_script:
   - psql -c 'create database "vibe-test"' -U postgres
 
-script: .test.sh "dbname=vibe-test"
+script:
+  - .test.sh "dbname=vibe-test"
 
 after_success:
   - if [ ${DC} = "dmd" ]; then bash <(curl -s https://codecov.io/bash); fi
