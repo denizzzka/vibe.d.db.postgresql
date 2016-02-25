@@ -7,7 +7,8 @@ public import dpq2.connection: ConnectionException;
 public import dpq2.query: QueryParams;
 public import derelict.pq.pq;
 import dpq2;
-import vibe = vibe.core.connectionpool;
+import vibeConnPool = vibe.core.connectionpool;
+import vibe.core.concurrency;
 import std.experimental.logger;
 import core.time: Duration;
 import std.exception: enforce;
@@ -17,18 +18,18 @@ PostgresClient connectPostgresDB(string connString, uint connNum, bool startImme
     return new PostgresClient(connString,connNum, startImmediately);
 }
 
-package alias LockedConnection = vibe.LockedConnection!Connection;
+package alias LockedConnection = vibeConnPool.LockedConnection!Connection;
 
 class PostgresClient
 {
-    private vibe.ConnectionPool!Connection pool;
+    private vibeConnPool.ConnectionPool!Connection pool;
     private const string connString;
 
     this(string connString, uint connNum, bool startImmediately, Connection delegate() connFactory = null)
     {
         this.connString = connString;
 
-        pool = new vibe.ConnectionPool!Connection(
+        pool = new vibeConnPool.ConnectionPool!Connection(
                 (connFactory is null ? &connectionFactory :  connFactory),
                 connNum
             );
@@ -209,22 +210,6 @@ class PostgresClient
         auto res = runStatementBlockingManner((conn){conn.sendQueryPrepared(params);}, timeout, waitForEstablishConn);
 
         return res.getAnswer;
-    }
-
-    void applyToAllConnections(void delegate(Connection) dg)
-    {
-        trace("applyToAllConnections(), connections to apply: ", pool.maxConcurrency);
-
-        auto c = new LockedConnection[pool.maxConcurrency];
-
-        foreach(i; 0 .. c.length)
-        {
-            c[i] = pool.lockConnection();
-            dg(c[i]);
-        }
-
-        foreach(i; 0 .. c.length)
-            c[i].destroy(); // reverts locked connection
     }
 
     string escapeIdentifier(string s)
