@@ -57,6 +57,11 @@ class PostgresClient
         return c;
     }
 
+    LockedConnection lockConnection()
+    {
+        return pool.lockConnection();
+    }
+
     private void doQuery(void delegate(Connection) doesQueryAndCollectsResults, bool waitForEstablishConn)
     {
         LockedConnection conn;
@@ -65,7 +70,7 @@ class PostgresClient
         try
         {
             trace("get connection from a pool");
-            conn = pool.lockConnection();
+            conn = lockConnection();
 
             while(true) // cycle is need only for polling with waitForEstablishConn
             {
