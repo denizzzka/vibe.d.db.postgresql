@@ -3,7 +3,7 @@ module vibe.db.postgresql;
 @trusted:
 
 public import dpq2.result;
-public import dpq2.connection: ConnectionException;
+public import dpq2.connection: ConnectionException, connStringCheck;
 public import dpq2.query: QueryParams;
 public import derelict.pq.pq;
 import dpq2: ValueFormat, Dpq2Exception, WaitType;
@@ -27,6 +27,7 @@ class PostgresClient(TConnection = Connection)
 
     this(string connString, uint connNum, bool startImmediately, TConnection delegate() connFactory = null)
     {
+        connString.connStringCheck;
         this.connString = connString;
 
         pool = new vibeConnPool.ConnectionPool!TConnection(
@@ -108,7 +109,7 @@ class PostgresClient(TConnection = Connection)
             {
                 if(conn is null)
                 {
-                    trace("conn isn't initialised (conn == null)");
+                    assert(false, "conn isn't initialised (conn == null)");
                 }
                 else
                 {
@@ -237,20 +238,16 @@ class PostgresClientException : Dpq2Exception
 
 unittest
 {
-    auto client = connectPostgresDB("wrong connect string", 2);
+    bool raised = false;
 
+    try
     {
-        bool raised = false;
-
-        try
-        {
-            client.execStatement("SELECT 123");
-        }
-        catch(ConnectionException e)
-            raised = true;
-
-        assert(raised);
+        auto client = connectPostgresDB("wrong connect string", 2);
     }
+    catch(ConnectionException e)
+        raised = true;
+
+    assert(raised);
 }
 
 version(IntegrationTest) void __integration_test(string connString)
