@@ -104,19 +104,14 @@ class PostgresClient(TConnection = Connection)
             // this block just starts reconnection and immediately loops back
             warning("Connection failed: ", e.msg);
 
+            assert(conn, "conn isn't initialised (conn == null)");
+
             // try to restore connection because pool isn't do this job by itself
             try
             {
-                if(conn is null)
-                {
-                    assert(false, "conn isn't initialised (conn == null)");
-                }
-                else
-                {
-                    trace("try to restore not null connection");
-                    conn.disconnect();
-                    conn.connectStart();
-                }
+                trace("try to restore not null connection");
+                conn.disconnect();
+                conn.connectStart();
             }
             catch(ConnectionException e)
             {
