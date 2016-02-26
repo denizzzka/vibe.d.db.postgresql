@@ -3,7 +3,7 @@ module vibe.db.postgresql;
 @trusted:
 
 public import dpq2.result;
-public import dpq2.connection: ConnectionException, connStringCheck;
+public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
 public import dpq2.query: QueryParams;
 public import derelict.pq.pq;
 import dpq2: ValueFormat, Dpq2Exception, WaitType;
@@ -50,9 +50,7 @@ class PostgresClient(TConnection = Connection)
     private TConnection connectionFactory()
     {
         trace("creating new connection");
-        auto c = new TConnection;
-        c.connString = connString;
-        c.connectStart;
+        auto c = new TConnection(ConnectionStart(), connString);
         trace("new connection is started");
 
         return c;
@@ -110,8 +108,7 @@ class PostgresClient(TConnection = Connection)
             try
             {
                 trace("try to restore not null connection");
-                conn.disconnect();
-                conn.connectStart();
+                conn.resetStart();
             }
             catch(ConnectionException e)
             {
