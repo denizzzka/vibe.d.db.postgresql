@@ -15,7 +15,16 @@ import std.exception: enforce;
 
 PostgresClient!TConnection connectPostgresDB(TConnection = dpq2.Connection)(string connString, uint connNum, bool startImmediately = false)
 {
-    return new PostgresClient!TConnection(connString, connNum, startImmediately);
+    TConnection connectionFactory()
+    {
+        trace("creating new connection");
+        auto c = new TConnection(ConnectionStart(), connString);
+        trace("new connection is started");
+
+        return c;
+    }
+
+    return new PostgresClient!TConnection(connString, connNum, startImmediately, &connectionFactory);
 }
 
 class PostgresClient(TConnection = Connection)
@@ -25,15 +34,12 @@ class PostgresClient(TConnection = Connection)
     private vibeConnPool.ConnectionPool!TConnection pool;
     private const string connString;
 
-    this(string connString, uint connNum, bool startImmediately, TConnection delegate() connFactory = null)
+    this(string connString, uint connNum, bool startImmediately, TConnection delegate() connFactory)
     {
         connString.connStringCheck;
         this.connString = connString;
 
-        pool = new vibeConnPool.ConnectionPool!TConnection(
-                (connFactory is null ? &connectionFactory :  connFactory),
-                connNum
-            );
+        pool = new vibeConnPool.ConnectionPool!TConnection(connFactory, connNum);
 
         if(startImmediately)
         {
@@ -45,15 +51,6 @@ class PostgresClient(TConnection = Connection)
             foreach(i; 0..pool.maxConcurrency)
                 conn[i].destroy();
         }
-    }
-
-    private TConnection connectionFactory()
-    {
-        trace("creating new connection");
-        auto c = new TConnection(ConnectionStart(), connString);
-        trace("new connection is started");
-
-        return c;
     }
 
     LockedConnection lockConnection()
