@@ -6,30 +6,30 @@ public import dpq2.result;
 public import dpq2.connection: ConnectionException;
 public import dpq2.query: QueryParams;
 public import derelict.pq.pq;
-import dpq2;
+import dpq2: ValueFormat, Dpq2Exception, WaitType;
 import vibeConnPool = vibe.core.connectionpool;
 import vibe.core.concurrency;
 import std.experimental.logger;
 import core.time: Duration;
 import std.exception: enforce;
 
-PostgresClient connectPostgresDB(string connString, uint connNum, bool startImmediately = false)
+PostgresClient!TConnection connectPostgresDB(TConnection = dpq2.Connection)(string connString, uint connNum, bool startImmediately = false)
 {
-    return new PostgresClient(connString,connNum, startImmediately);
+    return new PostgresClient!TConnection(connString, connNum, startImmediately);
 }
 
-package alias LockedConnection = vibeConnPool.LockedConnection!Connection;
-
-class PostgresClient
+class PostgresClient(TConnection = Connection)
 {
-    private vibeConnPool.ConnectionPool!Connection pool;
+    package alias LockedConnection = vibeConnPool.LockedConnection!TConnection;
+
+    private vibeConnPool.ConnectionPool!TConnection pool;
     private const string connString;
 
-    this(string connString, uint connNum, bool startImmediately, Connection delegate() connFactory = null)
+    this(string connString, uint connNum, bool startImmediately, TConnection delegate() connFactory = null)
     {
         this.connString = connString;
 
-        pool = new vibeConnPool.ConnectionPool!Connection(
+        pool = new vibeConnPool.ConnectionPool!TConnection(
                 (connFactory is null ? &connectionFactory :  connFactory),
                 connNum
             );
@@ -46,10 +46,10 @@ class PostgresClient
         }
     }
 
-    private Connection connectionFactory()
+    private TConnection connectionFactory()
     {
         trace("creating new connection");
-        auto c = new Connection;
+        auto c = new TConnection;
         c.connString = connString;
         c.connectStart;
         trace("new connection is started");
@@ -62,7 +62,7 @@ class PostgresClient
         return pool.lockConnection();
     }
 
-    private void doQuery(void delegate(Connection) doesQueryAndCollectsResults, bool waitForEstablishConn)
+    private void doQuery(void delegate(TConnection) doesQueryAndCollectsResults, bool waitForEstablishConn)
     {
         LockedConnection conn;
 
@@ -127,7 +127,7 @@ class PostgresClient
         }
     }
 
-    private immutable(Result) runStatementBlockingManner(void delegate(Connection) sendsStatement, Duration timeout, bool waitForEstablishConn)
+    private immutable(Result) runStatementBlockingManner(void delegate(TConnection) sendsStatement, Duration timeout, bool waitForEstablishConn)
     {
         trace("runStatementBlockingManner");
         immutable(Result)[] res;
@@ -182,7 +182,7 @@ class PostgresClient
 
     immutable(Answer) execStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
     {
-        void dg(Connection conn)
+        void dg(TConnection conn)
         {
             conn.sendQuery(params);
         }
