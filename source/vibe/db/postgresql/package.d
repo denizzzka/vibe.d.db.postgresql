@@ -24,19 +24,19 @@ class PostgresClient
     private alias VibePool = vibeConnPool.ConnectionPool!Connection;
 
     private const string connString;
-    private const void delegate(dpq2Connection) afterConnectOrReset;
+    private const void delegate(dpq2Connection) afterStartConnectOrReset;
     private VibePool pool;
 
     this(
         string connString,
         uint connNum,
-        void delegate(dpq2Connection) @trusted afterConnectOrReset = null
+        void delegate(dpq2Connection) @trusted afterStartConnectOrReset = null
     )
     {
         connString.connStringCheck;
 
         this.connString = connString;
-        this.afterConnectOrReset = afterConnectOrReset;
+        this.afterStartConnectOrReset = afterStartConnectOrReset;
 
         pool = new VibePool({ return new Connection; }, connNum);
     }
@@ -47,14 +47,14 @@ class PostgresClient
         {
             super(ConnectionStart(), connString);
 
-            if(afterConnectOrReset) afterConnectOrReset(this);
+            if(afterStartConnectOrReset) afterStartConnectOrReset(this);
         }
 
         override void resetStart()
         {
             super.resetStart;
 
-            if(afterConnectOrReset) afterConnectOrReset(this);
+            if(afterStartConnectOrReset) afterStartConnectOrReset(this);
         }
     }
 
