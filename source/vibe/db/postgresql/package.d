@@ -24,21 +24,19 @@ class PostgresClient
     private alias VibePool = vibeConnPool.ConnectionPool!Connection;
 
     private const string connString;
-    private const void delegate(dpq2Connection) afterConnect;
-    private const void delegate(dpq2Connection) afterReset;
+    private const void delegate(dpq2Connection) afterConnectOrReset;
     private VibePool pool;
 
     this(
         string connString,
         uint connNum,
-        void delegate(dpq2Connection) @trusted afterConnect = null,
-        void delegate(dpq2Connection) @trusted afterReset = null
+        void delegate(dpq2Connection) @trusted afterConnectOrReset = null
     )
     {
         connString.connStringCheck;
+
         this.connString = connString;
-        this.afterConnect = afterConnect;
-        this.afterReset = afterReset;
+        this.afterConnectOrReset = afterConnectOrReset;
 
         pool = new VibePool({ return new Connection; }, connNum);
     }
@@ -49,14 +47,14 @@ class PostgresClient
         {
             super(ConnectionStart(), connString);
 
-            if(afterConnect) afterConnect(this);
+            if(afterConnectOrReset) afterConnectOrReset(this);
         }
 
         override void resetStart()
         {
             super.resetStart;
 
-            if(afterReset) afterReset(this);
+            if(afterConnectOrReset) afterConnectOrReset(this);
         }
     }
 
@@ -64,11 +62,11 @@ class PostgresClient
     {
         trace("get connection from a pool");
 
-        return new LockedConnection(pool.lockConnection);
+        return LockedConnection(pool.lockConnection);
     }
 }
 
-class LockedConnection
+struct LockedConnection
 {
     private alias VibeLockedConnection = vibeConnPool.LockedConnection!(PostgresClient.Connection);
 
@@ -241,13 +239,13 @@ version(IntegrationTest) void __integration_test(string connString)
     auto conn = client.lockConnection();
 
     {
-        auto res1 = conn.execStatement(
+        auto res = conn.execStatement(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
             ValueFormat.BINARY,
             dur!"seconds"(5)
         );
 
-        assert(res1.getAnswer[0][1].as!PGinteger == 567);
+        assert(res.getAnswer[0][1].as!PGinteger == 567);
     }
 
     {
