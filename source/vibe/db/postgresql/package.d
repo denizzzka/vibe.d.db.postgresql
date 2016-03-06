@@ -9,7 +9,7 @@ public import derelict.pq.pq;
 import dpq2: ValueFormat, Dpq2Exception, WaitType;
 import vibeConnPool = vibe.core.connectionpool;
 import vibe.core.concurrency;
-import std.experimental.logger;
+import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
 
@@ -60,7 +60,7 @@ class PostgresClient
 
     LockedConnection lockConnection()
     {
-        trace("get connection from a pool");
+        logTrace("get connection from a pool");
 
         return LockedConnection(pool.lockConnection);
     }
@@ -102,26 +102,26 @@ struct LockedConnection
                 break;
             }
 
-            trace("doesQuery() call");
+            logTrace("doesQuery() call");
             doesQueryAndCollectsResults();
             return;
         }
         catch(ConnectionException e)
         {
             // this block just starts reconnection and immediately loops back
-            warning("Connection failed: ", e.msg);
+            logWarn("Connection failed: ", e.msg);
 
             assert(conn, "conn isn't initialised (conn == null)");
 
             // try to restore connection because pool isn't do this job by itself
             try
             {
-                trace("try to restore not null connection");
+                logTrace("try to restore not null connection");
                 conn.resetStart();
             }
             catch(ConnectionException e)
             {
-                warning("Connection restore failed: ", e.msg);
+                logWarn("Connection restore failed: ", e.msg);
             }
 
             throw e;
@@ -130,7 +130,7 @@ struct LockedConnection
 
     private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement, Duration timeout)
     {
-        trace("runStatementBlockingManner");
+        logTrace("runStatementBlockingManner");
         immutable(Result)[] res;
 
         doQuery(()
@@ -140,16 +140,16 @@ struct LockedConnection
 
                 if(!timeoutNotOccurred) // query timeout occurred
                 {
-                    trace("Exceeded Posgres query time limit");
+                    logTrace("Exceeded Posgres query time limit");
                     conn.cancel(); // cancel sql query
                 }
 
-                trace("consumeInput()");
+                logTrace("consumeInput()");
                 conn.consumeInput();
 
                 while(true)
                 {
-                    trace("getResult()");
+                    logTrace("getResult()");
                     auto r = conn.getResult();
                     if(r is null) break;
                     res ~= r;

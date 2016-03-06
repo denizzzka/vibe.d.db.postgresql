@@ -7,7 +7,6 @@ PostgresClient client;
 
 void test()
 {
-    logInfo("asdasd");
     auto conn = client.lockConnection();
     immutable result = conn.execStatement(
         "SELECT 123 as first_num, 567 as second_num, 'abc'::text as third_text "~
