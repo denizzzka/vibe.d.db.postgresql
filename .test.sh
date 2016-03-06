@@ -2,7 +2,7 @@
 set -ev
 
 dub test
-dub run --config=integration_test -- --conninfo="${1}"
+dub run --config=integration_test -- --conninfo="${1}" --debug=true
 
 if [[ ${DC} -eq "dmd" ]]; then dub run dscanner -- -s; fi
 #if [[ ${DC} -eq "dmd" ]]; then dub run dscanner -- -S; fi #disabled due to assertion failure in dsymbol

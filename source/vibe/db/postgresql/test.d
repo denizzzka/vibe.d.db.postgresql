@@ -1,4 +1,6 @@
-module vibe.db.postgresql.test;
+module vibe.db.postgresql.test; // TODO: rename to run_tests or something
+
+import db = vibe.db.postgresql;
 
 version(IntegrationTest)
 {
@@ -23,7 +25,6 @@ version(IntegrationTest)
         if(!debugEnabled)
             sharedLog.logLevel = LogLevel.warning;
 
-        import db = vibe.db.postgresql;
         db.__integration_test(connString);
 
         return 0;

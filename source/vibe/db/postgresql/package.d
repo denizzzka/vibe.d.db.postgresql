@@ -13,7 +13,7 @@ import std.experimental.logger;
 import core.time: Duration;
 import std.exception: enforce;
 
-PostgresClient!TConnection connectPostgresDB(TConnection = dpq2.Connection)(string connString, uint connNum, bool startImmediately = false)
+PostgresClient!TConnection connectPostgresDB(TConnection = dpq2.Connection)(string connString, uint connNum)
 {
     TConnection connectionFactory()
     {
@@ -24,74 +24,70 @@ PostgresClient!TConnection connectPostgresDB(TConnection = dpq2.Connection)(stri
         return c;
     }
 
-    return new PostgresClient!TConnection(connString, connNum, startImmediately, &connectionFactory);
+    return new PostgresClient!TConnection(connString, connNum, &connectionFactory);
 }
 
 class PostgresClient(TConnection = Connection)
 {
-    package alias LockedConnection = vibeConnPool.LockedConnection!TConnection;
+    private alias VibePool = vibeConnPool.ConnectionPool!TConnection;
 
-    private vibeConnPool.ConnectionPool!TConnection pool;
+    private VibePool pool;
     private const string connString;
 
-    this(string connString, uint connNum, bool startImmediately, TConnection delegate() connFactory)
+    this(string connString, uint connNum, TConnection delegate() connFactory)
     {
         connString.connStringCheck;
         this.connString = connString;
 
-        pool = new vibeConnPool.ConnectionPool!TConnection(connFactory, connNum);
-
-        if(startImmediately)
-        {
-            auto conn = new LockedConnection[pool.maxConcurrency];
-
-            foreach(i; 0..pool.maxConcurrency)
-                conn[i] = pool.lockConnection();
-
-            foreach(i; 0..pool.maxConcurrency)
-                conn[i].destroy();
-        }
+        pool = new VibePool(connFactory, connNum);
     }
 
-    LockedConnection lockConnection()
+    LockedConnection!TConnection lockConnection()
     {
-        return pool.lockConnection();
+        trace("get connection from a pool");
+
+        return new LockedConnection!TConnection(pool.lockConnection);
+    }
+}
+
+class LockedConnection(TConnection)
+{
+    private alias VibeLockedConnection = vibeConnPool.LockedConnection!TConnection;
+
+    VibeLockedConnection conn;
+    alias conn this;
+
+    private this(VibeLockedConnection conn)
+    {
+        this.conn = conn;
     }
 
-    private void doQuery(void delegate(TConnection) doesQueryAndCollectsResults, bool waitForEstablishConn)
+    ~this()
     {
-        LockedConnection conn;
+        conn.destroy(); // reverts locked connection to a pool
+    }
 
+    private void doQuery(void delegate() doesQueryAndCollectsResults)
+    {
         // Try to get usable connection and send SQL command
         try
         {
-            trace("get connection from a pool");
-            conn = lockConnection();
-
-            while(true) // cycle is need only for polling with waitForEstablishConn
+            while(true)
             {
                 auto pollRes = conn.poll;
+
                 if(pollRes != PGRES_POLLING_OK)
                 {
-                    if(!waitForEstablishConn)
-                    {
-                        trace("connection isn't suitable for query, pollRes=", pollRes, ", conn status=", conn.status);
-                        conn.destroy(); // reverts locked connection
-                    }
-                    else
-                    {
-                        // waiting for socket changes for reading
-                        conn.waitEndOf(WaitType.READ); // FIXME: need timeout check
-                        continue;
-                    }
+                    // waiting for socket changes for reading
+                    conn.waitEndOf(WaitType.READ); // FIXME: need timeout check
+                    continue;
                 }
 
                 break;
             }
 
             trace("doesQuery() call");
-            doesQueryAndCollectsResults(conn);
-            conn.destroy(); // reverts locked connection
+            doesQueryAndCollectsResults();
             return;
         }
         catch(ConnectionException e)
@@ -112,20 +108,19 @@ class PostgresClient(TConnection = Connection)
                 warning("Connection restore failed: ", e.msg);
             }
 
-            conn.destroy(); // reverts locked connection
             throw e;
         }
     }
 
-    private immutable(Result) runStatementBlockingManner(void delegate(TConnection) sendsStatement, Duration timeout, bool waitForEstablishConn)
+    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement, Duration timeout)
     {
         trace("runStatementBlockingManner");
         immutable(Result)[] res;
 
-        doQuery((conn)
+        doQuery(()
             {
-                sendsStatement(conn);
-                auto timeoutNotOccurred = conn.waitEndOf(WaitType.READ, timeout);
+                sendsStatement();
+                bool timeoutNotOccurred = conn.waitEndOf(WaitType.READ, timeout);
 
                 if(!timeoutNotOccurred) // query timeout occurred
                 {
@@ -148,8 +143,8 @@ class PostgresClient(TConnection = Connection)
 
                 if(!timeoutNotOccurred && res.length != 1) // query timeout occured and result isn't received
                     throw new PostgresClientException("Exceeded Posgres query time limit", __FILE__, __LINE__);
-            },
-        waitForEstablishConn);
+            }
+        );
 
         enforce(res.length == 1, "Result isn't received?");
 
@@ -159,25 +154,19 @@ class PostgresClient(TConnection = Connection)
     immutable(Answer) execStatement(
         string sqlCommand,
         ValueFormat resultFormat = ValueFormat.TEXT,
-        Duration timeout = Duration.zero,
-        bool waitForEstablishConn = true
+        Duration timeout = Duration.zero
     )
     {
         QueryParams p;
         p.resultFormat = resultFormat;
         p.sqlCommand = sqlCommand;
 
-        return execStatement(p, timeout, waitForEstablishConn);
+        return execStatement(p, timeout);
     }
 
-    immutable(Answer) execStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
+    immutable(Answer) execStatement(QueryParams params, Duration timeout = Duration.zero)
     {
-        void dg(TConnection conn)
-        {
-            conn.sendQuery(params);
-        }
-
-        auto res = runStatementBlockingManner(&dg, timeout, waitForEstablishConn);
+        auto res = runStatementBlockingManner({ conn.sendQuery(params); }, timeout);
 
         return res.getAnswer;
     }
@@ -187,34 +176,23 @@ class PostgresClient(TConnection = Connection)
         string statementName,
         string sqlStatement,
         size_t nParams,
-        Duration timeout = Duration.zero,
-        bool waitForEstablishConn = true
+        Duration timeout = Duration.zero
     )
     {
         auto r = runStatementBlockingManner(
-                (conn){conn.sendPrepare(statementName, sqlStatement, nParams);},
-                timeout,
-                waitForEstablishConn
+                {conn.sendPrepare(statementName, sqlStatement, nParams);},
+                timeout
             );
 
         if(r.status != PGRES_COMMAND_OK)
             throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
     }
 
-    immutable(Answer) execPreparedStatement(QueryParams params, Duration timeout = Duration.zero, bool waitForEstablishConn = true)
+    immutable(Answer) execPreparedStatement(QueryParams params, Duration timeout = Duration.zero)
     {
-        auto res = runStatementBlockingManner((conn){conn.sendQueryPrepared(params);}, timeout, waitForEstablishConn);
+        auto res = runStatementBlockingManner({ conn.sendQueryPrepared(params); }, timeout);
 
         return res.getAnswer;
-    }
-
-    string escapeIdentifier(string s)
-    {
-        auto conn = pool.lockConnection();
-        string res = conn.escapeIdentifier(s);
-        conn.destroy(); // reverts locked connection
-
-        return res;
     }
 }
 
@@ -243,9 +221,10 @@ unittest
 version(IntegrationTest) void __integration_test(string connString)
 {
     auto client = connectPostgresDB(connString, 3);
+    auto conn = client.lockConnection();
 
     {
-        auto res1 = client.execStatement(
+        auto res1 = conn.execStatement(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
             ValueFormat.BINARY,
             dur!"seconds"(5)
@@ -255,12 +234,12 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
-        client.prepareStatement_unusableMethod("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
+        conn.prepareStatement_unusableMethod("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
 
         bool throwFlag = false;
 
         try
-            client.prepareStatement_unusableMethod("wrong_stmnt", "WRONG SQL STATEMENT", 0, dur!"seconds"(5));
+            conn.prepareStatement_unusableMethod("wrong_stmnt", "WRONG SQL STATEMENT", 0, dur!"seconds"(5));
         catch(PostgresClientException e)
             throwFlag = true;
 
@@ -271,12 +250,12 @@ version(IntegrationTest) void __integration_test(string connString)
         QueryParams p;
         p.preparedStatementName = "stmnt_name";
 
-        auto r = client.execPreparedStatement(p, dur!"seconds"(5));
+        auto r = conn.execPreparedStatement(p, dur!"seconds"(5));
 
         assert(r.getAnswer[0][0].as!PGinteger == 123);
     }
 
     {
-        assert(client.escapeIdentifier("abc") == "\"abc\"");
+        assert(conn.escapeIdentifier("abc") == "\"abc\"");
     }
 }
