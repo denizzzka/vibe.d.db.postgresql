@@ -20,19 +20,19 @@ PostgresClient connectPostgresDB(string connString, uint connNum)
 
 class PostgresClient
 {
-    private alias TConnection = dpq2.Connection;
+    private alias dpq2Connection = dpq2.Connection;
     private alias VibePool = vibeConnPool.ConnectionPool!Connection;
 
     private const string connString;
-    private const void delegate(TConnection) afterConnect;
-    private const void delegate(TConnection) afterReset;
+    private const void delegate(dpq2Connection) afterConnect;
+    private const void delegate(dpq2Connection) afterReset;
     private VibePool pool;
 
     this(
         string connString,
         uint connNum,
-        void delegate(TConnection) @trusted afterConnect = null,
-        void delegate(TConnection) @trusted afterReset = null
+        void delegate(dpq2Connection) @trusted afterConnect = null,
+        void delegate(dpq2Connection) @trusted afterReset = null
     )
     {
         connString.connStringCheck;
@@ -43,7 +43,7 @@ class PostgresClient
         pool = new VibePool({ return new Connection; }, connNum);
     }
 
-    class Connection : TConnection
+    class Connection : dpq2Connection
     {
         private this()
         {
