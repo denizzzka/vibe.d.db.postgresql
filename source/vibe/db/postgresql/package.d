@@ -13,33 +13,53 @@ import std.experimental.logger;
 import core.time: Duration;
 import std.exception: enforce;
 
-PostgresClient!TConnection connectPostgresDB(TConnection = dpq2.Connection)(string connString, uint connNum)
+PostgresClient connectPostgresDB(string connString, uint connNum)
 {
-    TConnection connectionFactory()
-    {
-        trace("creating new connection");
-        auto c = new TConnection(ConnectionStart(), connString);
-        trace("new connection is started");
-
-        return c;
-    }
-
-    return new PostgresClient!TConnection(connString, connNum, &connectionFactory);
+    return new PostgresClient(connString, connNum);
 }
 
-class PostgresClient(TConnection = Connection)
+class PostgresClient
 {
-    private alias VibePool = vibeConnPool.ConnectionPool!TConnection;
+    private alias TConnection = dpq2.Connection;
+    private alias VibePool = vibeConnPool.ConnectionPool!(dpq2.Connection);
 
     private VibePool pool;
     private const string connString;
+    private void delegate(TConnection) afterConnect;
+    private void delegate(TConnection) afterReset;
 
-    this(string connString, uint connNum, TConnection delegate() connFactory)
+    this(
+        string connString,
+        uint connNum,
+        void delegate(TConnection) @trusted afterConnect = null,
+        void delegate(TConnection) @trusted afterReset = null
+    )
     {
         connString.connStringCheck;
         this.connString = connString;
+        this.afterConnect = afterConnect;
+        this.afterReset = afterReset;
 
-        pool = new VibePool(connFactory, connNum);
+        pool = new VibePool({ return new Connection; }, connNum);
+    }
+
+    class Connection : dpq2.Connection
+    {
+        dpq2.Connection conn;
+
+        private this()
+        {
+            conn = super(ConnectionStart(), connString);
+
+            if(afterConnect) afterConnect(conn);
+        }
+
+        override void resetStart()
+        {
+            super.resetStart;
+
+            if(afterReset) afterReset(conn);
+        }
     }
 
     LockedConnection!TConnection lockConnection()

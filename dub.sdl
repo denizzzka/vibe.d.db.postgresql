@@ -16,3 +16,11 @@ configuration "integration_test" {
     buildType "unittest"
     versions "IntegrationTest"
 }
+
+subPackage {
+    name "example"
+    sourcePaths "example"
+    targetType "executable"
+    versions "IntegrationTest"
+    dependency "vibe-d-postgresql" version="*"
+}
