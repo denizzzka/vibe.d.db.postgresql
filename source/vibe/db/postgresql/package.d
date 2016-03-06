@@ -21,12 +21,12 @@ PostgresClient connectPostgresDB(string connString, uint connNum)
 class PostgresClient
 {
     private alias TConnection = dpq2.Connection;
-    private alias VibePool = vibeConnPool.ConnectionPool!(dpq2.Connection);
+    private alias VibePool = vibeConnPool.ConnectionPool!Connection;
 
-    private VibePool pool;
     private const string connString;
-    private void delegate(TConnection) afterConnect;
-    private void delegate(TConnection) afterReset;
+    private const void delegate(TConnection) afterConnect;
+    private const void delegate(TConnection) afterReset;
+    private VibePool pool;
 
     this(
         string connString,
@@ -43,36 +43,34 @@ class PostgresClient
         pool = new VibePool({ return new Connection; }, connNum);
     }
 
-    class Connection : dpq2.Connection
+    class Connection : TConnection
     {
-        dpq2.Connection conn;
-
         private this()
         {
-            conn = super(ConnectionStart(), connString);
+            super(ConnectionStart(), connString);
 
-            if(afterConnect) afterConnect(conn);
+            if(afterConnect) afterConnect(this);
         }
 
         override void resetStart()
         {
             super.resetStart;
 
-            if(afterReset) afterReset(conn);
+            if(afterReset) afterReset(this);
         }
     }
 
-    LockedConnection!TConnection lockConnection()
+    LockedConnection lockConnection()
     {
         trace("get connection from a pool");
 
-        return new LockedConnection!TConnection(pool.lockConnection);
+        return new LockedConnection(pool.lockConnection);
     }
 }
 
-class LockedConnection(TConnection)
+class LockedConnection
 {
-    private alias VibeLockedConnection = vibeConnPool.LockedConnection!TConnection;
+    private alias VibeLockedConnection = vibeConnPool.LockedConnection!(PostgresClient.Connection);
 
     VibeLockedConnection conn;
     alias conn this;
@@ -84,7 +82,7 @@ class LockedConnection(TConnection)
 
     ~this()
     {
-        conn.destroy(); // reverts locked connection to a pool
+        conn.destroy(); // immediately revert locked connection into a pool
     }
 
     private void doQuery(void delegate() doesQueryAndCollectsResults)

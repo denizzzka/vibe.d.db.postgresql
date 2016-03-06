@@ -22,5 +22,6 @@ subPackage {
     sourcePaths "example"
     targetType "executable"
     versions "IntegrationTest"
+    dependency "vibe-d" version="~>0.7.28"
     dependency "vibe-d-postgresql" version="*"
 }
