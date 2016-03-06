@@ -18,6 +18,7 @@ before_script:
 
 script:
   - ./.test.sh "dbname=vibe-test"
+  - dub run :example
 
 after_success:
   - if [ ${DC} = "dmd" ]; then bash <(curl -s https://codecov.io/bash); fi
