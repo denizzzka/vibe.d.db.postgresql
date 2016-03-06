@@ -56,33 +56,20 @@ class PostgresClient
 
             if(afterStartConnectOrReset) afterStartConnectOrReset(this);
         }
+
+        mixin ExtendConnection;
     }
 
-    LockedConnection lockConnection()
+    Connection lockConnection()
     {
         logTrace("get connection from a pool");
 
-        return LockedConnection(pool.lockConnection);
+        return pool.lockConnection();
     }
 }
 
-struct LockedConnection
+private mixin template ExtendConnection()
 {
-    private alias VibeLockedConnection = vibeConnPool.LockedConnection!(PostgresClient.Connection);
-
-    VibeLockedConnection conn;
-    alias conn this;
-
-    private this(VibeLockedConnection conn)
-    {
-        this.conn = conn;
-    }
-
-    ~this()
-    {
-        conn.destroy(); // immediately revert locked connection into a pool
-    }
-
     private void doQuery(void delegate() doesQueryAndCollectsResults)
     {
         // Try to get usable connection and send SQL command
@@ -90,12 +77,12 @@ struct LockedConnection
         {
             while(true)
             {
-                auto pollRes = conn.poll;
+                auto pollRes = poll();
 
                 if(pollRes != PGRES_POLLING_OK)
                 {
                     // waiting for socket changes for reading
-                    conn.waitEndOf(WaitType.READ); // FIXME: need timeout check
+                    waitEndOf(WaitType.READ); // FIXME: need timeout check
                     continue;
                 }
 
@@ -117,7 +104,7 @@ struct LockedConnection
             try
             {
                 logTrace("try to restore not null connection");
-                conn.resetStart();
+                resetStart();
             }
             catch(ConnectionException e)
             {
@@ -136,21 +123,21 @@ struct LockedConnection
         doQuery(()
             {
                 sendsStatement();
-                bool timeoutNotOccurred = conn.waitEndOf(WaitType.READ, timeout);
+                bool timeoutNotOccurred = waitEndOf(WaitType.READ, timeout);
 
                 if(!timeoutNotOccurred) // query timeout occurred
                 {
                     logTrace("Exceeded Posgres query time limit");
-                    conn.cancel(); // cancel sql query
+                    cancel(); // cancel sql query
                 }
 
                 logTrace("consumeInput()");
-                conn.consumeInput();
+                consumeInput();
 
                 while(true)
                 {
                     logTrace("getResult()");
-                    auto r = conn.getResult();
+                    auto r = getResult();
                     if(r is null) break;
                     res ~= r;
                 }
@@ -182,7 +169,7 @@ struct LockedConnection
 
     immutable(Answer) execStatement(QueryParams params, Duration timeout = Duration.zero)
     {
-        auto res = runStatementBlockingManner({ conn.sendQuery(params); }, timeout);
+        auto res = runStatementBlockingManner({ sendQuery(params); }, timeout);
 
         return res.getAnswer;
     }
@@ -195,7 +182,7 @@ struct LockedConnection
     )
     {
         auto r = runStatementBlockingManner(
-                {conn.sendPrepare(statementName, sqlStatement, nParams);},
+                {sendPrepare(statementName, sqlStatement, nParams);},
                 timeout
             );
 
@@ -205,7 +192,7 @@ struct LockedConnection
 
     immutable(Answer) execPreparedStatement(QueryParams params, Duration timeout = Duration.zero)
     {
-        auto res = runStatementBlockingManner({ conn.sendQueryPrepared(params); }, timeout);
+        auto res = runStatementBlockingManner({ sendQueryPrepared(params); }, timeout);
 
         return res.getAnswer;
     }
