@@ -171,8 +171,7 @@ class LockedConnection(TConnection)
         return res.getAnswer;
     }
 
-    /// currently unusable due to connections stored in the pool
-    void prepareStatement_unusableMethod(
+    void prepareStatement(
         string statementName,
         string sqlStatement,
         size_t nParams,
@@ -234,12 +233,12 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
-        conn.prepareStatement_unusableMethod("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
+        conn.prepareStatement("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
 
         bool throwFlag = false;
 
         try
-            conn.prepareStatement_unusableMethod("wrong_stmnt", "WRONG SQL STATEMENT", 0, dur!"seconds"(5));
+            conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT", 0, dur!"seconds"(5));
         catch(PostgresClientException e)
             throwFlag = true;
 
