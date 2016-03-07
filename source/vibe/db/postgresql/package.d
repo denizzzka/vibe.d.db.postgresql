@@ -190,7 +190,7 @@ private mixin template ExtendConnection()
             throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
     }
 
-    immutable(Answer) execPreparedStatement(QueryParams params, Duration timeout = Duration.zero)
+    immutable(Answer) execPreparedStatement(in QueryParams params, Duration timeout = Duration.zero)
     {
         auto res = runStatementBlockingManner({ sendQueryPrepared(params); }, timeout);
 
