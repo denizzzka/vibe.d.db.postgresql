@@ -60,7 +60,7 @@ class PostgresClient
         mixin ExtendConnection;
     }
 
-    Connection lockConnection()
+    vibeConnPool.LockedConnection!Connection lockConnection()
     {
         logTrace("get connection from a pool");
 
