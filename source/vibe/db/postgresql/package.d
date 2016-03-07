@@ -24,13 +24,13 @@ class PostgresClient
     private alias VibePool = vibeConnPool.ConnectionPool!Connection;
 
     private const string connString;
-    private const void delegate(dpq2Connection) afterStartConnectOrReset;
+    private const void delegate(Connection) afterStartConnectOrReset;
     private VibePool pool;
 
     this(
         string connString,
         uint connNum,
-        void delegate(dpq2Connection) @trusted afterStartConnectOrReset = null
+        void delegate(Connection) @trusted afterStartConnectOrReset = null
     )
     {
         connString.connStringCheck;
