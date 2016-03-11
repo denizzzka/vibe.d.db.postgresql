@@ -6,7 +6,7 @@ public import dpq2.result;
 public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
 public import dpq2.query: QueryParams;
 public import derelict.pq.pq;
-import dpq2: ValueFormat, Dpq2Exception, WaitType;
+import dpq2: ValueFormat, Dpq2Exception;
 import vibeConnPool = vibe.core.connectionpool;
 import vibe.core.log;
 import core.time: Duration;
@@ -81,7 +81,7 @@ private mixin template ExtendConnection()
         scope(exit) dSock.blocking = true;
 
         auto event = createFileDescriptorEvent(sock, FileDescriptorEvent.Trigger.read);
-        return event.wait(timeout, FileDescriptorEvent.Trigger.read);
+        return event.wait(timeout);
     }
 
     private void doQuery(void delegate() doesQueryAndCollectsResults)
@@ -137,7 +137,7 @@ private mixin template ExtendConnection()
         doQuery(()
             {
                 sendsStatement();
-                bool timeoutNotOccurred = waitEndOf(WaitType.READ, timeout);
+                bool timeoutNotOccurred = waitEndOfRead(timeout);
 
                 if(!timeoutNotOccurred) // query timeout occurred
                 {
