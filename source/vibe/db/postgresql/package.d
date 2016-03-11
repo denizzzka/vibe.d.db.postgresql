@@ -69,7 +69,7 @@ class PostgresClient
 
 private mixin template ExtendConnection()
 {
-    private bool waitEndOfRead(Duration timeout)
+    private void waitEndOfRead(Duration timeout)
     {
         import vibe.core.core;
 
@@ -81,7 +81,16 @@ private mixin template ExtendConnection()
         scope(exit) dSock.blocking = true;
 
         auto event = createFileDescriptorEvent(sock, FileDescriptorEvent.Trigger.read);
-        return event.wait(timeout);
+
+        if(timeout == Duration.zero)
+        {
+            event.wait();
+        }
+        else
+        {
+            if(!event.wait(timeout))
+                throw new PostgresClientTimeoutException(__FILE__, __LINE__);
+        }
     }
 
     private void doQuery(void delegate() doesQueryAndCollectsResults)
@@ -97,6 +106,7 @@ private mixin template ExtendConnection()
                 {
                     // waiting for socket changes for reading
                     waitEndOfRead(dur!"seconds"(5)); // FIXME: need timeout check
+
                     continue;
                 }
 
@@ -137,29 +147,32 @@ private mixin template ExtendConnection()
         doQuery(()
             {
                 sendsStatement();
-                bool timeoutNotOccurred = waitEndOfRead(timeout);
 
-                if(!timeoutNotOccurred) // query timeout occurred
+                try
+                {
+                    waitEndOfRead(timeout);
+                }
+                catch(PostgresClientTimeoutException e)
                 {
                     logTrace("Exceeded Posgres query time limit");
                     cancel(); // cancel sql query
+                    throw e;
                 }
-
-                logTrace("consumeInput()");
-                consumeInput();
-
-                while(true)
+                finally
                 {
-                    logTrace("getResult()");
-                    auto r = getResult();
-                    if(r is null) break;
-                    res ~= r;
+                    logTrace("consumeInput()");
+                    consumeInput();
+
+                    while(true)
+                    {
+                        logTrace("getResult()");
+                        auto r = getResult();
+                        if(r is null) break;
+                        res ~= r;
+                    }
+
+                    enforce(res.length <= 1, "simple query can return only one Result instance");
                 }
-
-                enforce(res.length <= 1, "simple query can return only one Result instance");
-
-                if(!timeoutNotOccurred && res.length != 1) // query timeout occured and result isn't received
-                    throw new PostgresClientException("Exceeded Posgres query time limit", __FILE__, __LINE__);
             }
         );
 
@@ -212,11 +225,19 @@ private mixin template ExtendConnection()
     }
 }
 
-class PostgresClientException : Dpq2Exception
+class PostgresClientException : Dpq2Exception // TODO: remove it (use dpq2 exception)
 {
     this(string msg, string file, size_t line)
     {
         super(msg, file, line);
+    }
+}
+
+class PostgresClientTimeoutException : Dpq2Exception
+{
+    this(string file, size_t line)
+    {
+        super("Exceeded Posgres query time limit", file, line);
     }
 }
 
