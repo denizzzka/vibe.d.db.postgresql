@@ -8,7 +8,6 @@ public import dpq2.query: QueryParams;
 public import derelict.pq.pq;
 import dpq2: ValueFormat, Dpq2Exception, WaitType;
 import vibeConnPool = vibe.core.connectionpool;
-import vibe.core.concurrency;
 import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
@@ -70,6 +69,21 @@ class PostgresClient
 
 private mixin template ExtendConnection()
 {
+    private bool waitEndOfRead(Duration timeout)
+    {
+        import vibe.core.core;
+
+        auto sock = this.posixSocket();
+        auto dSock = this.socket(); // std.socket.Socket object
+
+        // event.wait works fine only for nonblocking socket
+        dSock.blocking = false;
+        scope(exit) dSock.blocking = true;
+
+        auto event = createFileDescriptorEvent(sock, FileDescriptorEvent.Trigger.read);
+        return event.wait(timeout, FileDescriptorEvent.Trigger.read);
+    }
+
     private void doQuery(void delegate() doesQueryAndCollectsResults)
     {
         // Try to get usable connection and send SQL command
@@ -82,7 +96,7 @@ private mixin template ExtendConnection()
                 if(pollRes != PGRES_POLLING_OK)
                 {
                     // waiting for socket changes for reading
-                    waitEndOf(WaitType.READ); // FIXME: need timeout check
+                    waitEndOfRead(dur!"seconds"(5)); // FIXME: need timeout check
                     continue;
                 }
 
