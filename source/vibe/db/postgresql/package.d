@@ -69,9 +69,10 @@ class PostgresClient
 
 private mixin template ExtendConnection()
 {
-    Duration timeout = dur!"minutes"(2);
+    Duration socketTimeout = dur!"seconds"(10);
+    Duration statementTimeout = dur!"seconds"(30);
 
-    private void waitEndOfRead()
+    private void waitEndOfRead(in Duration timeout)
     {
         import vibe.core.core;
 
@@ -100,7 +101,7 @@ private mixin template ExtendConnection()
                 if(pollRes != PGRES_POLLING_OK)
                 {
                     // waiting for socket changes for reading
-                    waitEndOfRead();
+                    waitEndOfRead(socketTimeout);
 
                     continue;
                 }
@@ -153,7 +154,7 @@ private mixin template ExtendConnection()
 
                 try
                 {
-                    waitEndOfRead();
+                    waitEndOfRead(statementTimeout);
                 }
                 catch(PostgresClientTimeoutException e)
                 {
