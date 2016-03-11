@@ -120,6 +120,18 @@ private mixin template ExtendConnection()
         catch(ConnectionException e)
         {
             // this block just starts reconnection and immediately loops back
+            tryResetConnection(e);
+            throw e;
+        }
+        catch(PostgresClientTimeoutException e)
+        {
+            tryResetConnection(e);
+            throw e;
+        }
+    }
+
+    private void tryResetConnection(Exception e)
+    {
             logWarn("Connection failed: ", e.msg);
 
             assert(conn, "conn isn't initialised (conn == null)");
@@ -134,9 +146,6 @@ private mixin template ExtendConnection()
             {
                 logWarn("Connection restore failed: ", e.msg);
             }
-
-            throw e;
-        }
     }
 
     private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement, Duration timeout)
