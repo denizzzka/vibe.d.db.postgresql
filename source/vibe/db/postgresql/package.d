@@ -61,7 +61,7 @@ class PostgresClient
 
     vibeConnPool.LockedConnection!Connection lockConnection()
     {
-        logTrace("get connection from a pool");
+        logDebugV("get connection from a pool");
 
         return pool.lockConnection();
     }
@@ -113,9 +113,8 @@ private mixin template ExtendConnection()
                 break;
             }
 
-            logTrace("doesQuery() call");
+            logDebugV("doesQuery() call");
             doesQueryAndCollectsResults();
-            return;
         }
         catch(ConnectionException e)
         {
@@ -139,7 +138,7 @@ private mixin template ExtendConnection()
             // try to restore connection because pool isn't do this job by itself
             try
             {
-                logTrace("try to restore not null connection");
+                logDebugV("try to restore not null connection");
                 resetStart();
             }
             catch(ConnectionException e)
@@ -150,7 +149,7 @@ private mixin template ExtendConnection()
 
     private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement, Duration timeout)
     {
-        logTrace("runStatementBlockingManner");
+        logDebugV("runStatementBlockingManner");
         immutable(Result)[] res;
 
         doQuery(()
@@ -163,18 +162,18 @@ private mixin template ExtendConnection()
                 }
                 catch(PostgresClientTimeoutException e)
                 {
-                    logTrace("Exceeded Posgres query time limit");
+                    logDebugV("Exceeded Posgres query time limit");
                     cancel(); // cancel sql query
                     throw e;
                 }
                 finally
                 {
-                    logTrace("consumeInput()");
+                    logDebugV("consumeInput()");
                     consumeInput();
 
                     while(true)
                     {
-                        logTrace("getResult()");
+                        logDebugV("getResult()");
                         auto r = getResult();
                         if(r is null) break;
                         res ~= r;
