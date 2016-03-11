@@ -69,7 +69,9 @@ class PostgresClient
 
 private mixin template ExtendConnection()
 {
-    private void waitEndOfRead(Duration timeout)
+    Duration timeout = dur!"minutes"(2);
+
+    private void waitEndOfRead()
     {
         import vibe.core.core;
 
@@ -82,15 +84,8 @@ private mixin template ExtendConnection()
 
         auto event = createFileDescriptorEvent(sock, FileDescriptorEvent.Trigger.read);
 
-        if(timeout == Duration.zero)
-        {
-            event.wait();
-        }
-        else
-        {
-            if(!event.wait(timeout))
-                throw new PostgresClientTimeoutException(__FILE__, __LINE__);
-        }
+        if(!event.wait(timeout))
+            throw new PostgresClientTimeoutException(__FILE__, __LINE__);
     }
 
     private void doQuery(void delegate() doesQueryAndCollectsResults)
@@ -105,7 +100,7 @@ private mixin template ExtendConnection()
                 if(pollRes != PGRES_POLLING_OK)
                 {
                     // waiting for socket changes for reading
-                    waitEndOfRead(dur!"seconds"(5)); // FIXME: need timeout check
+                    waitEndOfRead();
 
                     continue;
                 }
@@ -147,7 +142,7 @@ private mixin template ExtendConnection()
             }
     }
 
-    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement, Duration timeout)
+    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement)
     {
         logDebugV("runStatementBlockingManner");
         immutable(Result)[] res;
@@ -158,7 +153,7 @@ private mixin template ExtendConnection()
 
                 try
                 {
-                    waitEndOfRead(timeout);
+                    waitEndOfRead();
                 }
                 catch(PostgresClientTimeoutException e)
                 {
@@ -191,20 +186,19 @@ private mixin template ExtendConnection()
 
     immutable(Answer) execStatement(
         string sqlCommand,
-        ValueFormat resultFormat = ValueFormat.TEXT,
-        Duration timeout = Duration.zero
+        ValueFormat resultFormat = ValueFormat.TEXT
     )
     {
         QueryParams p;
         p.resultFormat = resultFormat;
         p.sqlCommand = sqlCommand;
 
-        return execStatement(p, timeout);
+        return execStatement(p);
     }
 
-    immutable(Answer) execStatement(QueryParams params, Duration timeout = Duration.zero)
+    immutable(Answer) execStatement(QueryParams params)
     {
-        auto res = runStatementBlockingManner({ sendQuery(params); }, timeout);
+        auto res = runStatementBlockingManner({ sendQuery(params); });
 
         return res.getAnswer;
     }
@@ -212,22 +206,20 @@ private mixin template ExtendConnection()
     void prepareStatement(
         string statementName,
         string sqlStatement,
-        size_t nParams,
-        Duration timeout = Duration.zero
+        size_t nParams
     )
     {
         auto r = runStatementBlockingManner(
-                {sendPrepare(statementName, sqlStatement, nParams);},
-                timeout
+                {sendPrepare(statementName, sqlStatement, nParams);}
             );
 
         if(r.status != PGRES_COMMAND_OK)
             throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
     }
 
-    immutable(Answer) execPreparedStatement(in QueryParams params, Duration timeout = Duration.zero)
+    immutable(Answer) execPreparedStatement(in QueryParams params)
     {
-        auto res = runStatementBlockingManner({ sendQueryPrepared(params); }, timeout);
+        auto res = runStatementBlockingManner({ sendQueryPrepared(params); });
 
         return res.getAnswer;
     }
@@ -271,20 +263,19 @@ version(IntegrationTest) void __integration_test(string connString)
     {
         auto res = conn.execStatement(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
-            ValueFormat.BINARY,
-            dur!"seconds"(5)
+            ValueFormat.BINARY
         );
 
         assert(res.getAnswer[0][1].as!PGinteger == 567);
     }
 
     {
-        conn.prepareStatement("stmnt_name", "SELECT 123::integer", 0, dur!"seconds"(5));
+        conn.prepareStatement("stmnt_name", "SELECT 123::integer", 0);
 
         bool throwFlag = false;
 
         try
-            conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT", 0, dur!"seconds"(5));
+            conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT", 0);
         catch(PostgresClientException e)
             throwFlag = true;
 
@@ -295,7 +286,7 @@ version(IntegrationTest) void __integration_test(string connString)
         QueryParams p;
         p.preparedStatementName = "stmnt_name";
 
-        auto r = conn.execPreparedStatement(p, dur!"seconds"(5));
+        auto r = conn.execPreparedStatement(p);
 
         assert(r.getAnswer[0][0].as!PGinteger == 123);
     }
