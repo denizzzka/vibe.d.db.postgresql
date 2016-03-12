@@ -44,7 +44,8 @@ class PostgresClient
     {
         private this()
         {
-            super(ConnectionStart(), connString);
+            super(connString);
+            setClientEncoding("UTF8");
 
             if(afterStartConnectOrReset) afterStartConnectOrReset(this);
         }
