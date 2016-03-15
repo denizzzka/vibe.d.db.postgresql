@@ -198,9 +198,9 @@ private mixin template ExtendConnection()
         return execStatement(p);
     }
 
-    immutable(Answer) execStatement(QueryParams params)
+    immutable(Answer) execStatement(ref QueryParams params)
     {
-        auto res = runStatementBlockingManner({ sendQuery(params); });
+        auto res = runStatementBlockingManner({ sendQueryParams(params); });
 
         return res.getAnswer;
     }
@@ -219,7 +219,7 @@ private mixin template ExtendConnection()
             throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
     }
 
-    immutable(Answer) execPreparedStatement(in QueryParams params)
+    immutable(Answer) execPreparedStatement(ref QueryParams params)
     {
         auto res = runStatementBlockingManner({ sendQueryPrepared(params); });
 
