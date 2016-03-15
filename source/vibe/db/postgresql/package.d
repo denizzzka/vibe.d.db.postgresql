@@ -207,12 +207,11 @@ private mixin template ExtendConnection()
 
     void prepareStatement(
         string statementName,
-        string sqlStatement,
-        size_t nParams
+        string sqlStatement
     )
     {
         auto r = runStatementBlockingManner(
-                {sendPrepare(statementName, sqlStatement, nParams);}
+                {sendPrepare(statementName, sqlStatement);}
             );
 
         if(r.status != PGRES_COMMAND_OK)
@@ -272,12 +271,12 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
-        conn.prepareStatement("stmnt_name", "SELECT 123::integer", 0);
+        conn.prepareStatement("stmnt_name", "SELECT 123::integer");
 
         bool throwFlag = false;
 
         try
-            conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT", 0);
+            conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT");
         catch(PostgresClientException e)
             throwFlag = true;
 
