@@ -24,7 +24,7 @@ void test()
     assert(result[1]["third_text"].as!PGtext == "fgh");
 
     foreach (val; rangify(result[0]))
-        logInfo("Found entry: %s", val.toBson.toJson);
+        logInfo("Found entry: %s", val.as!Bson.toJson);
 }
 
 shared static this()
