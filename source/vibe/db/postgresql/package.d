@@ -78,14 +78,12 @@ private mixin template ExtendConnection()
     {
         import vibe.core.core;
 
-        auto sock = this.posixSocket();
-        auto dSock = this.socket(); // std.socket.Socket object
+        auto sock = this.socket();
 
-        // event.wait works fine only for nonblocking socket
-        dSock.blocking = false;
-        scope(exit) dSock.blocking = true;
+        sock.blocking = false;
+        scope(exit) sock.blocking = true;
 
-        auto event = createFileDescriptorEvent(sock, FileDescriptorEvent.Trigger.read);
+        auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.read);
 
         if(!event.wait(timeout))
             throw new PostgresClientTimeoutException(__FILE__, __LINE__);
