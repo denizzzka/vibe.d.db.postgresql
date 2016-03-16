@@ -4,8 +4,9 @@ module vibe.db.postgresql;
 
 public import dpq2.result;
 public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
-public import dpq2.query: QueryParams;
+public import dpq2.query;
 public import derelict.pq.pq;
+
 import dpq2: ValueFormat, Dpq2Exception;
 import vibeConnPool = vibe.core.connectionpool;
 import vibe.core.log;
