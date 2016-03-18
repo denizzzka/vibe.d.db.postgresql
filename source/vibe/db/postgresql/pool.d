@@ -9,7 +9,7 @@ shared class ConnectionPool(TConnection)
 {
     private TConnection delegate() connectionFactory;
     private const uint maxConcurrent;
-    private uint lockCount;
+    private uint lockedCount;
     private DList!TConnection __freeConnections;
 
     this(TConnection delegate() @safe connectionFactory, uint maxConcurrent = uint.max)
@@ -25,8 +25,10 @@ shared class ConnectionPool(TConnection)
 
     synchronized LockedConnection!TConnection lockConnection()
     {
-        if(lockCount < maxConcurrent)
+        if(lockedCount < maxConcurrent)
         {
+            lockedCount.atomicOp!"+="(1);
+
             TConnection conn;
 
             if(freeConnections.empty)
@@ -39,7 +41,6 @@ shared class ConnectionPool(TConnection)
                 freeConnections.removeFront;
             }
 
-            atomicOp!"+="(lockCount, 1);
             return LockedConnection!TConnection(this, conn);
         }
         else
@@ -48,10 +49,10 @@ shared class ConnectionPool(TConnection)
         }
     }
 
-    private synchronized void unlockConnection(LockedConnection!TConnection conn)
+    private synchronized void releaseConnection(TConnection conn)
     {
-        freeConnections.insertBack(conn.conn);
-        atomicOp!"-="(lockCount, 1);
+        freeConnections.insertBack(conn);
+        lockedCount.atomicOp!"-="(1);
     }
 }
 
@@ -69,8 +70,8 @@ struct LockedConnection(TConnection)
 
     ~this()
     {
-        pool.unlockConnection(this);
+        pool.releaseConnection(conn);
     }
 
-    this(this){}
+    @disable this(this){}
 }
