@@ -8,7 +8,7 @@ module vibe.db.postgresql.example;
 import vibe.d;
 import vibe.db.postgresql;
 
-PostgresClient client;
+shared PostgresClient client;
 
 void test()
 {

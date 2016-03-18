@@ -13,14 +13,13 @@ import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
 
-PostgresClient connectPostgresDB(string connString, uint connNum)
+shared (PostgresClient) connectPostgresDB(string connString, uint connNum)
 {
-    return new PostgresClient(connString, connNum);
+    return new shared PostgresClient(connString, connNum);
 }
 
-class PostgresClient
+shared class PostgresClient
 {
-    private alias dpq2Connection = dpq2.Connection;
     private alias VibePool = vibeConnPool.ConnectionPool!Connection;
 
     private const string connString;
@@ -38,35 +37,38 @@ class PostgresClient
         this.connString = connString;
         this.afterStartConnectOrReset = afterStartConnectOrReset;
 
-        pool = new VibePool({ return new Connection; }, connNum);
+        pool = cast(shared) new VibePool({ return new Connection(this); }, connNum);
     }
 
-    class Connection : dpq2Connection
-    {
-        private this()
-        {
-            super(connString);
-            setClientEncoding("UTF8");
-
-            if(afterStartConnectOrReset) afterStartConnectOrReset(this);
-        }
-
-        override void resetStart()
-        {
-            super.resetStart;
-
-            if(afterStartConnectOrReset) afterStartConnectOrReset(this);
-        }
-
-        mixin ExtendConnection;
-    }
-
-    vibeConnPool.LockedConnection!Connection lockConnection()
+    synchronized vibeConnPool.LockedConnection!Connection lockConnection()
     {
         logDebugV("get connection from a pool");
-
-        return pool.lockConnection();
+        return (cast() pool).lockConnection();
     }
+}
+
+class Connection : dpq2.Connection
+{
+    shared PostgresClient client;
+
+    private this(shared PostgresClient client)
+    {
+        super(client.connString);
+        setClientEncoding("UTF8");
+
+        if(client.afterStartConnectOrReset !is null)
+            client.afterStartConnectOrReset(this);
+    }
+
+    override void resetStart()
+    {
+        super.resetStart;
+
+        if(client.afterStartConnectOrReset !is null)
+            client.afterStartConnectOrReset(this);
+    }
+
+    mixin ExtendConnection;
 }
 
 private mixin template ExtendConnection()
