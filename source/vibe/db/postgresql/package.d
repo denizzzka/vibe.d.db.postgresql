@@ -49,12 +49,14 @@ shared class PostgresClient
 
 class Connection : dpq2.Connection
 {
-    shared PostgresClient client;
+    private shared PostgresClient client;
+    Duration socketTimeout = dur!"seconds"(10);
+    Duration statementTimeout = dur!"seconds"(30);
 
     private this(shared PostgresClient client)
     {
         super(client.connString);
-        setClientEncoding("UTF8");
+        this.setClientEncoding("UTF8");
 
         if(client.afterStartConnectOrReset !is null)
             client.afterStartConnectOrReset(this);
@@ -67,14 +69,6 @@ class Connection : dpq2.Connection
         if(client.afterStartConnectOrReset !is null)
             client.afterStartConnectOrReset(this);
     }
-
-    mixin ExtendConnection;
-}
-
-private mixin template ExtendConnection()
-{
-    Duration socketTimeout = dur!"seconds"(10);
-    Duration statementTimeout = dur!"seconds"(30);
 
     private void waitEndOfRead(in Duration timeout)
     {
