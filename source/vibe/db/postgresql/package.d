@@ -8,7 +8,7 @@ public import dpq2.args;
 public import derelict.pq.pq;
 
 import dpq2: ValueFormat, Dpq2Exception;
-import vibeConnPool = vibe.core.connectionpool;
+import vibe.db.postgresql.pool;
 import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
@@ -26,8 +26,8 @@ private struct ClientSettings
 
 class PostgresClient
 {
-    private alias VibePool = vibeConnPool.ConnectionPool!Connection;
-    private VibePool pool;
+    private alias VibePool = ConnectionPool!Connection;
+    private shared VibePool pool;
 
     private immutable ClientSettings settings;
 
@@ -63,18 +63,18 @@ class PostgresClient
         pool = cast(shared) new VibePool({ return new Connection(settings); }, connNum);
     }
 
-    vibeConnPool.LockedConnection!Connection lockConnection()
+    LockedConnection!Connection lockConnection()
     {
         logDebugV("get connection from a pool");
 
         return pool.lockConnection();
     }
 
-    synchronized vibeConnPool.LockedConnection!Connection lockConnection() shared
+    synchronized LockedConnection!Connection lockConnection() shared
     {
         logDebugV("get connection from a pool");
 
-        return (cast() pool).lockConnection();
+        return pool.lockConnection();
     }
 }
 
