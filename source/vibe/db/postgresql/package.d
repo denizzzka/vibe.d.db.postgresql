@@ -60,7 +60,7 @@ class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new shared Pool({ return new Connection(settings); }, connNum);
+        pool = new Pool({ return new Connection(settings); }, connNum);
     }
 
     LockedConnection!Connection lockConnection()
@@ -72,7 +72,7 @@ class PostgresClient
 
     synchronized LockedConnection!Connection lockConnection() shared
     {
-        logDebugV("get connection from a pool");
+        logDebugV("get connection from a shared pool");
 
         return pool.lockConnection();
     }
