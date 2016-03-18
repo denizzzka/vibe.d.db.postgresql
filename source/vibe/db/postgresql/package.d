@@ -26,8 +26,8 @@ private struct ClientSettings
 
 class PostgresClient
 {
-    private alias VibePool = ConnectionPool!Connection;
-    private shared VibePool pool;
+    private alias Pool = ConnectionPool!Connection;
+    private shared Pool pool;
 
     private immutable ClientSettings settings;
 
@@ -44,7 +44,7 @@ class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new VibePool({ return new Connection(settings); }, connNum);
+        pool = new Pool({ return new Connection(settings); }, connNum);
     }
 
     shared this(
@@ -60,7 +60,7 @@ class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = cast(shared) new VibePool({ return new Connection(settings); }, connNum);
+        pool = new shared Pool({ return new Connection(settings); }, connNum);
     }
 
     LockedConnection!Connection lockConnection()
