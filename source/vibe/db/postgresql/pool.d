@@ -18,9 +18,9 @@ shared class ConnectionPool(TConnection)
         this.maxConcurrent = maxConcurrent;
     }
 
-    private auto freeConnections()
+    private DList!TConnection* freeConnections()
     {
-        return cast() __freeConnections;
+        return cast(DList!TConnection*) &__freeConnections;
     }
 
     synchronized LockedConnection!TConnection lockConnection()
