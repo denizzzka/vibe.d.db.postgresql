@@ -108,8 +108,12 @@ class Connection : dpq2.Connection
     {
         import vibe.core.core;
 
-        auto sock = this.posixSocket();
-        auto event = createFileDescriptorEvent(sock, FileDescriptorEvent.Trigger.read);
+        auto sock = this.socket();
+
+        sock.blocking = false;
+        scope(exit) sock.blocking = true;
+
+        auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.read);
 
         if(!event.wait(timeout))
             throw new PostgresClientTimeoutException(__FILE__, __LINE__);
