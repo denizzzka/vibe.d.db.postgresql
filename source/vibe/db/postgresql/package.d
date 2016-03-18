@@ -13,18 +13,24 @@ import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
 
-shared (PostgresClient) connectPostgresDB(string connString, uint connNum)
+PostgresClient connectPostgresDB(string connString, uint connNum)
 {
-    return new shared PostgresClient(connString, connNum);
+    return new PostgresClient(connString, connNum);
 }
 
-shared class PostgresClient
+private struct ClientSettings
+{
+    string connString;
+    void delegate(Connection) afterStartConnectOrReset;
+}
+
+class PostgresClient
 {
     private alias VibePool = vibeConnPool.ConnectionPool!Connection;
-
-    private const string connString;
-    private const void delegate(Connection) afterStartConnectOrReset;
     private VibePool pool;
+
+    private immutable ClientSettings settings;
+    alias settings this;
 
     this(
         string connString,
@@ -34,40 +40,65 @@ shared class PostgresClient
     {
         connString.connStringCheck;
 
-        this.connString = connString;
-        this.afterStartConnectOrReset = afterStartConnectOrReset;
+        settings = ClientSettings(
+            connString,
+            afterStartConnectOrReset
+        );
 
-        pool = cast(shared) new VibePool({ return new Connection(this); }, connNum);
+        pool = new VibePool({ return new Connection(settings); }, connNum);
     }
 
-    synchronized vibeConnPool.LockedConnection!Connection lockConnection()
+    shared this(
+        string connString,
+        uint connNum,
+        void delegate(Connection) @trusted afterStartConnectOrReset = null
+    )
+    {
+        connString.connStringCheck;
+
+        settings = ClientSettings(
+            connString,
+            afterStartConnectOrReset
+        );
+
+        pool = cast(shared) new VibePool({ return new Connection(settings); }, connNum);
+    }
+
+    vibeConnPool.LockedConnection!Connection lockConnection()
     {
         logDebugV("get connection from a pool");
-        return (cast() pool).lockConnection();
+
+        synchronized
+        {
+            return (cast() pool).lockConnection();
+        }
     }
 }
 
 class Connection : dpq2.Connection
 {
-    private shared PostgresClient client;
     Duration socketTimeout = dur!"seconds"(10);
     Duration statementTimeout = dur!"seconds"(30);
 
-    private this(shared PostgresClient client)
-    {
-        super(client.connString);
-        this.setClientEncoding("UTF8");
+    private const ClientSettings* settings;
 
-        if(client.afterStartConnectOrReset !is null)
-            client.afterStartConnectOrReset(this);
+    private this(const ref ClientSettings settings)
+    {
+        this.settings = &settings;
+
+        super(settings.connString);
+        setClientEncoding("UTF8");
+
+        if(settings.afterStartConnectOrReset !is null)
+            settings.afterStartConnectOrReset(this);
     }
 
     override void resetStart()
     {
         super.resetStart;
 
-        if(client.afterStartConnectOrReset !is null)
-            client.afterStartConnectOrReset(this);
+        if(settings.afterStartConnectOrReset !is null)
+            settings.afterStartConnectOrReset(this);
     }
 
     private void waitEndOfRead(in Duration timeout)

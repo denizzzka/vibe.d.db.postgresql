@@ -3,7 +3,7 @@ module vibe.db.postgresql.example;
 import vibe.d;
 import vibe.db.postgresql;
 
-shared PostgresClient client;
+PostgresClient client;
 
 void test()
 {
