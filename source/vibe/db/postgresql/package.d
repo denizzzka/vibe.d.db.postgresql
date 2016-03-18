@@ -30,7 +30,6 @@ class PostgresClient
     private VibePool pool;
 
     private immutable ClientSettings settings;
-    alias settings this;
 
     this(
         string connString,
@@ -68,10 +67,14 @@ class PostgresClient
     {
         logDebugV("get connection from a pool");
 
-        synchronized
-        {
-            return (cast() pool).lockConnection();
-        }
+        return pool.lockConnection();
+    }
+
+    synchronized vibeConnPool.LockedConnection!Connection lockConnection() shared
+    {
+        logDebugV("get connection from a pool");
+
+        return (cast() pool).lockConnection();
     }
 }
 
