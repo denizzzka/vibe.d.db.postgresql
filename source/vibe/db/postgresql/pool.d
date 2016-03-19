@@ -1,7 +1,5 @@
 module vibe.db.postgresql.pool;
 
-@trusted:
-
 import std.container.dlist;
 import core.atomic: atomicOp;
 

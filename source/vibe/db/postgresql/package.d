@@ -1,7 +1,5 @@
 module vibe.db.postgresql;
 
-@trusted:
-
 public import dpq2.result;
 public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
 public import dpq2.args;
