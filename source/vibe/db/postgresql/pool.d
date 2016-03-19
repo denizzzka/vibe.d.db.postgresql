@@ -5,12 +5,16 @@ module vibe.db.postgresql.pool;
 import std.container.dlist;
 import core.atomic: atomicOp;
 
-shared class ConnectionPool(TConnection)
+synchronized class ConnectionPool(TConnection)
 {
-    private TConnection delegate() connectionFactory;
-    private const uint maxConcurrent;
-    private uint lockedCount;
-    private DList!TConnection __freeConnections;
+    private:
+
+    TConnection delegate() connectionFactory;
+    const uint maxConcurrent;
+    uint lockedCount;
+    DList!TConnection __freeConnections;
+
+    public:
 
     this(TConnection delegate() @safe connectionFactory, uint maxConcurrent = uint.max)
     {
@@ -23,7 +27,7 @@ shared class ConnectionPool(TConnection)
         return cast(DList!TConnection*) &__freeConnections;
     }
 
-    synchronized LockedConnection!TConnection lockConnection()
+    LockedConnection!TConnection lockConnection()
     {
         if(lockedCount < maxConcurrent)
         {
@@ -49,7 +53,7 @@ shared class ConnectionPool(TConnection)
         }
     }
 
-    private synchronized void releaseConnection(TConnection conn)
+    private void releaseConnection(TConnection conn)
     {
         freeConnections.insertBack(conn);
         lockedCount.atomicOp!"-="(1);
