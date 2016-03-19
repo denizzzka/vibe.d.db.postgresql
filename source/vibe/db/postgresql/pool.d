@@ -14,7 +14,7 @@ synchronized class ConnectionPool(TConnection)
 
     public:
 
-    this(TConnection delegate() @safe connectionFactory, uint maxConcurrent = uint.max)
+    this(TConnection delegate() connectionFactory, uint maxConcurrent = uint.max)
     {
         this.connectionFactory = cast(shared) connectionFactory;
         this.maxConcurrent = maxConcurrent;

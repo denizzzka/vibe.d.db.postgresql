@@ -24,9 +24,7 @@ private struct ClientSettings
 
 class PostgresClient
 {
-    private alias Pool = ConnectionPool!Connection;
-    private shared Pool pool;
-
+    private shared ConnectionPool!Connection pool;
     private immutable ClientSettings settings;
 
     this(
@@ -42,7 +40,7 @@ class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new Pool({ return new Connection(settings); }, connNum);
+        pool = new ConnectionPool!Connection({ return new Connection(settings); }, connNum);
     }
 
     shared this(
@@ -58,7 +56,7 @@ class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new Pool({ return new Connection(settings); }, connNum);
+        pool = new ConnectionPool!Connection({ return new Connection(settings); }, connNum);
     }
 
     LockedConnection!Connection lockConnection()
