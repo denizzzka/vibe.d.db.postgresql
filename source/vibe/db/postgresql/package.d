@@ -30,7 +30,7 @@ class PostgresClient
     this(
         string connString,
         uint connNum,
-        void delegate(Connection) @trusted afterStartConnectOrReset = null
+        void delegate(Connection) afterStartConnectOrReset = null
     )
     {
         connString.connStringCheck;
@@ -46,7 +46,7 @@ class PostgresClient
     shared this(
         string connString,
         uint connNum,
-        void delegate(Connection) @trusted afterStartConnectOrReset = null
+        void delegate(Connection) afterStartConnectOrReset = null
     )
     {
         connString.connStringCheck;
