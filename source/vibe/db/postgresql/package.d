@@ -153,7 +153,7 @@ class Connection : dpq2.Connection
 
     private void tryResetConnection(Exception e)
     {
-            logWarn("Connection failed: ", e.msg);
+            logWarn("Connection failed: "~e.msg);
 
             assert(conn, "conn isn't initialised (conn == null)");
 
