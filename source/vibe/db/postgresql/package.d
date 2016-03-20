@@ -104,7 +104,7 @@ class Connection : dpq2.Connection
             settings.afterStartConnectOrReset(this);
     }
 
-    private void waitEndOfRead(in Duration timeout)
+    private void waitEndOfRead(in Duration timeout) // TODO: rename to waitEndOf + add FileDescriptorEvent.Trigger argument
     {
         import vibe.core.core;
 
