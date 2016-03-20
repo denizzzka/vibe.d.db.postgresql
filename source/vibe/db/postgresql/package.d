@@ -49,6 +49,7 @@ class PostgresClient
         void delegate(Connection) afterStartConnectOrReset = null
     )
     {
+        enforce(PQisthreadsafe() == 1);
         connString.connStringCheck;
 
         settings = ClientSettings(
@@ -86,7 +87,10 @@ class Connection : dpq2.Connection
         this.settings = &settings;
 
         super(settings.connString);
-        setClientEncoding("UTF8");
+        setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
+
+        import std.conv: to;
+        logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
 
         if(settings.afterStartConnectOrReset !is null)
             settings.afterStartConnectOrReset(this);
@@ -109,7 +113,7 @@ class Connection : dpq2.Connection
         sock.blocking = false;
         scope(exit) sock.blocking = true;
 
-        auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.read);
+        auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.any);
 
         if(!event.wait(timeout))
             throw new PostgresClientTimeoutException(__FILE__, __LINE__);
@@ -283,7 +287,9 @@ unittest
 
 version(IntegrationTest) void __integration_test(string connString)
 {
-    auto client = connectPostgresDB(connString, 3);
+    setLogLevel = LogLevel.debugV;
+
+    auto client = new shared PostgresClient(connString, 3);
     auto conn = client.lockConnection();
 
     {
@@ -319,5 +325,21 @@ version(IntegrationTest) void __integration_test(string connString)
 
     {
         assert(conn.escapeIdentifier("abc") == "\"abc\"");
+    }
+
+    {
+        // Fibers test
+        import vibe.core.concurrency;
+
+        auto future = async({
+            auto conn = client.lockConnection;
+            immutable answer = conn.execStatement("SELECT 'New connection'");
+            logDebugV("return async task");
+            return 1;
+        });
+
+        immutable answer = conn.execStatement("SELECT 'Old connection'");
+
+        assert(future == 1);
     }
 }
