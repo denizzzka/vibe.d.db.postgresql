@@ -3,7 +3,7 @@ module vibe.db.postgresql.pool;
 import std.container.dlist;
 import core.atomic: atomicOp;
 
-synchronized class ConnectionPool(TConnection)
+shared class ConnectionPool(TConnection)
 {
     private:
 
