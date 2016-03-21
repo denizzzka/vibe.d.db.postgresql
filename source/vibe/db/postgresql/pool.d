@@ -56,13 +56,35 @@ shared class ConnectionPool(TConnection)
         maxConnSem = cast(shared) new Semaphore(maxConcurrent);
     }
 
+    /// Non-blocking. Useful for fibers
+    bool tryLockConnection(LockedConnection!TConnection* conn)
+    {
+        if((cast() maxConnSem).tryWait)
+        {
+            logDebugV("lock connection");
+            *conn = getConnection();
+            return true;
+        }
+        else
+        {
+            logDebugV("no free connections");
+            return false;
+        }
+    }
+
+    /// Blocking. Useful for threads
     LockedConnection!TConnection lockConnection()
     {
-        logDebugV("try to lock connection, start wait");
+        logDebugV("lock connection, start wait");
         (cast() maxConnSem).wait();
         logDebugV("end wait");
 
-        TConnection conn = storage.getConnection();
+        return getConnection();
+    }
+
+    private LockedConnection!TConnection getConnection()
+    {
+        TConnection conn = storage.getConnection;
 
         if(conn !is null)
         {
@@ -79,6 +101,8 @@ shared class ConnectionPool(TConnection)
 
     private void releaseConnection(TConnection conn)
     {
+        assert(conn);
+
         logDebugV("try to unlock connection");
         storage.revertConnection(conn);
         (cast() maxConnSem).notify();
@@ -106,7 +130,10 @@ struct LockedConnection(TConnection)
 
     ~this()
     {
-        pool.releaseConnection(conn);
+        if(pool) // TODO: remove this check
+        {
+            pool.releaseConnection(conn);
+        }
     }
 
     @disable this(this){}
