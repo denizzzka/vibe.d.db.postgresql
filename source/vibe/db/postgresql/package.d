@@ -12,21 +12,23 @@ import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
 
+alias Connection = LockedConnection!__Conn;
+
 private struct ClientSettings
 {
     string connString;
-    void delegate(Connection) afterStartConnectOrReset;
+    void delegate(__Conn) afterStartConnectOrReset;
 }
 
 shared class PostgresClient
 {
-    private ConnectionPool!Connection pool;
+    private ConnectionPool!__Conn pool;
     private immutable ClientSettings settings;
 
     this(
         string connString,
         uint connNum,
-        void delegate(Connection) afterStartConnectOrReset = null
+        void delegate(__Conn) afterStartConnectOrReset = null
     )
     {
         enforce(PQisthreadsafe() == 1);
@@ -37,10 +39,10 @@ shared class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new ConnectionPool!Connection({ return new Connection(settings); }, connNum);
+        pool = new ConnectionPool!__Conn({ return new __Conn(settings); }, connNum);
     }
 
-    LockedConnection!Connection lockConnection()
+    Connection lockConnection()
     {
         logDebugV("get connection from a shared pool");
 
@@ -48,7 +50,7 @@ shared class PostgresClient
     }
 }
 
-class Connection : dpq2.Connection
+class __Conn : dpq2.Connection
 {
     Duration socketTimeout = dur!"seconds"(10);
     Duration statementTimeout = dur!"seconds"(30);
