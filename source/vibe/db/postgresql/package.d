@@ -324,10 +324,6 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
-        assert(conn.escapeIdentifier("abc") == "\"abc\"");
-    }
-
-    {
         // Fibers test
         import vibe.core.concurrency;
 
@@ -348,5 +344,9 @@ version(IntegrationTest) void __integration_test(string connString)
         assert(future0 == 1);
         assert(future1 == 1);
         assert(answer.length == 1);
+    }
+
+    {
+        assert(conn.escapeIdentifier("abc") == "\"abc\"");
     }
 }
