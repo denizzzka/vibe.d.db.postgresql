@@ -1,44 +1,77 @@
 module vibe.db.postgresql.pool;
 
-import std.container.dlist;
 import core.sync.semaphore;
+import vibe.core.log;
+import std.conv: to;
+import core.atomic;
+
+private synchronized class ConnectionsStorage(TConnection)
+{
+    private:
+
+    import std.container.dlist;
+
+    DList!TConnection freeConnections;
+    size_t count = 0;
+
+    TConnection getConnection()
+    {
+        atomicOp!"+="(count, 1);
+        logDebugV("get conn, counter="~count.to!string);
+
+        if((cast() freeConnections).empty)
+        {
+            return null;
+        }
+        else
+        {
+            TConnection conn = (cast() freeConnections).front;
+            (cast() freeConnections).removeFront;
+            return conn;
+        }
+    }
+
+    void revertConnection(TConnection conn)
+    {
+        (cast() freeConnections).insertBack(conn);
+        atomicOp!"-="(count, 1);
+        logDebugV("revert conn, counter="~count.to!string);
+    }
+}
 
 shared class ConnectionPool(TConnection)
 {
     private:
 
+    ConnectionsStorage!TConnection storage;
     TConnection delegate() connectionFactory;
-    __gshared Semaphore maxConnSem;
-    uint lockedCount;
-    DList!TConnection __freeConnections;
-
-    DList!TConnection* freeConnections()
-    {
-        return cast(DList!TConnection*) &__freeConnections;
-    }
+    Semaphore maxConnSem;
 
     public:
 
     this(TConnection delegate() connectionFactory, uint maxConcurrent = uint.max)
     {
         this.connectionFactory = cast(shared) connectionFactory;
-        maxConnSem = new Semaphore(maxConcurrent);
+        storage = new shared ConnectionsStorage!TConnection;
+        maxConnSem = cast(shared) new Semaphore(maxConcurrent);
     }
 
     LockedConnection!TConnection lockConnection()
     {
-        maxConnSem.wait();
+        logDebugV("try to lock connection, start wait");
+        (cast() maxConnSem).wait();
+        logDebugV("end wait");
 
-        TConnection conn;
+        TConnection conn = storage.getConnection();
 
-        if(freeConnections.empty)
+        if(conn !is null)
         {
-            conn = connectionFactory();
+            logDebugV("used connection return");
         }
         else
         {
-            conn = freeConnections.front;
-            freeConnections.removeFront;
+            logDebugV("new connection return");
+            conn = connectionFactory();
         }
 
         return LockedConnection!TConnection(this, conn);
@@ -46,8 +79,10 @@ shared class ConnectionPool(TConnection)
 
     private void releaseConnection(TConnection conn)
     {
-        freeConnections.insertBack(conn);
-        maxConnSem.notify();
+        logDebugV("try to unlock connection");
+        storage.revertConnection(conn);
+        (cast() maxConnSem).notify();
+        logDebugV("unlock done");
     }
 }
 
