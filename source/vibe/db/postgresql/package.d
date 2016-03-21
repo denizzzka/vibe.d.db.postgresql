@@ -11,39 +11,18 @@ import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
 
-PostgresClient connectPostgresDB(string connString, uint connNum)
-{
-    return new PostgresClient(connString, connNum);
-}
-
 private struct ClientSettings
 {
     string connString;
     void delegate(Connection) afterStartConnectOrReset;
 }
 
-class PostgresClient
+synchronized class PostgresClient
 {
-    private shared ConnectionPool!Connection pool;
+    private ConnectionPool!Connection pool;
     private immutable ClientSettings settings;
 
     this(
-        string connString,
-        uint connNum,
-        void delegate(Connection) afterStartConnectOrReset = null
-    )
-    {
-        connString.connStringCheck;
-
-        settings = ClientSettings(
-            connString,
-            afterStartConnectOrReset
-        );
-
-        pool = new ConnectionPool!Connection({ return new Connection(settings); }, connNum);
-    }
-
-    shared this(
         string connString,
         uint connNum,
         void delegate(Connection) afterStartConnectOrReset = null
@@ -61,13 +40,6 @@ class PostgresClient
     }
 
     LockedConnection!Connection lockConnection()
-    {
-        logDebugV("get connection from a pool");
-
-        return pool.lockConnection();
-    }
-
-    synchronized LockedConnection!Connection lockConnection() shared
     {
         logDebugV("get connection from a shared pool");
 
@@ -277,7 +249,7 @@ unittest
 
     try
     {
-        auto client = connectPostgresDB("wrong connect string", 2);
+        auto client = new shared PostgresClient("wrong connect string", 2);
     }
     catch(ConnectionException e)
         raised = true;
