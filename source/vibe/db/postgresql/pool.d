@@ -1,60 +1,53 @@
 module vibe.db.postgresql.pool;
 
 import std.container.dlist;
-import core.atomic: atomicOp;
+import core.sync.semaphore;
 
 shared class ConnectionPool(TConnection)
 {
     private:
 
     TConnection delegate() connectionFactory;
-    const uint maxConcurrent;
+    __gshared Semaphore maxConnSem;
     uint lockedCount;
     DList!TConnection __freeConnections;
+
+    DList!TConnection* freeConnections()
+    {
+        return cast(DList!TConnection*) &__freeConnections;
+    }
 
     public:
 
     this(TConnection delegate() connectionFactory, uint maxConcurrent = uint.max)
     {
         this.connectionFactory = cast(shared) connectionFactory;
-        this.maxConcurrent = maxConcurrent;
-    }
-
-    private DList!TConnection* freeConnections()
-    {
-        return cast(DList!TConnection*) &__freeConnections;
+        maxConnSem = new Semaphore(maxConcurrent);
     }
 
     LockedConnection!TConnection lockConnection()
     {
-        if(lockedCount < maxConcurrent)
+        maxConnSem.wait();
+
+        TConnection conn;
+
+        if(freeConnections.empty)
         {
-            lockedCount.atomicOp!"+="(1);
-
-            TConnection conn;
-
-            if(freeConnections.empty)
-            {
-                conn = connectionFactory();
-            }
-            else
-            {
-                conn = freeConnections.front;
-                freeConnections.removeFront;
-            }
-
-            return LockedConnection!TConnection(this, conn);
+            conn = connectionFactory();
         }
         else
         {
-            assert(false); // FIXME
+            conn = freeConnections.front;
+            freeConnections.removeFront;
         }
+
+        return LockedConnection!TConnection(this, conn);
     }
 
     private void releaseConnection(TConnection conn)
     {
         freeConnections.insertBack(conn);
-        lockedCount.atomicOp!"-="(1);
+        maxConnSem.notify();
     }
 }
 

@@ -39,7 +39,7 @@ shared class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new ConnectionPool!__Conn({ return new __Conn(settings); }, connNum);
+        pool = new shared ConnectionPool!__Conn({ return new __Conn(settings); }, connNum);
     }
 
     Connection lockConnection()
