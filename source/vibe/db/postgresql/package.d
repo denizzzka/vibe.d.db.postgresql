@@ -331,15 +331,22 @@ version(IntegrationTest) void __integration_test(string connString)
         // Fibers test
         import vibe.core.concurrency;
 
-        auto future = async({
+        auto future0 = async({
             auto conn = client.lockConnection;
-            immutable answer = conn.execStatement("SELECT 'New connection'");
-            logDebugV("return async task");
+            immutable answer = conn.execStatement("SELECT 'New connection 0'");
+            return 1;
+        });
+
+        auto future1 = async({
+            auto conn = client.lockConnection;
+            immutable answer = conn.execStatement("SELECT 'New connection 1'");
             return 1;
         });
 
         immutable answer = conn.execStatement("SELECT 'Old connection'");
 
-        assert(future == 1);
+        assert(future0 == 1);
+        assert(future1 == 1);
+        assert(answer.length == 1);
     }
 }
