@@ -61,13 +61,19 @@ shared class ConnectionPool(TConnection)
 struct LockedConnection(TConnection)
 {
     private shared ConnectionPool!TConnection pool;
-    TConnection conn;
-    alias conn this;
+    private TConnection _conn;
+
+    @property ref TConnection conn()
+    {
+        return _conn;
+    }
+
+    package alias conn this;
 
     private this(shared ConnectionPool!TConnection pool, TConnection conn)
     {
         this.pool = pool;
-        this.conn = conn;
+        this._conn = conn;
     }
 
     ~this()
