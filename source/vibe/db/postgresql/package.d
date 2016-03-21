@@ -227,7 +227,7 @@ class Connection : dpq2.Connection
         return execStatement(p);
     }
 
-    immutable(Answer) execStatement(ref QueryParams params)
+    immutable(Answer) execStatement(in ref QueryParams params)
     {
         auto res = runStatementBlockingManner({ sendQueryParams(params); });
 
@@ -247,7 +247,7 @@ class Connection : dpq2.Connection
             throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
     }
 
-    immutable(Answer) execPreparedStatement(ref QueryParams params)
+    immutable(Answer) execPreparedStatement(in ref QueryParams params)
     {
         auto res = runStatementBlockingManner({ sendQueryPrepared(params); });
 
