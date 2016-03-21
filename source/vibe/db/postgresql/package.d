@@ -1,5 +1,6 @@
 module vibe.db.postgresql;
 
+public import vibe.db.postgresql.pool: LockedConnection;
 public import dpq2.result;
 public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
 public import dpq2.args;
@@ -17,7 +18,7 @@ private struct ClientSettings
     void delegate(Connection) afterStartConnectOrReset;
 }
 
-synchronized class PostgresClient
+shared class PostgresClient
 {
     private ConnectionPool!Connection pool;
     private immutable ClientSettings settings;
