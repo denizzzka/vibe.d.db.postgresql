@@ -8,7 +8,7 @@ module vibe.db.postgresql.example;
 import vibe.d;
 import vibe.db.postgresql;
 
-PostgresClient client;
+shared PostgresClient client;
 
 void test()
 {
@@ -30,7 +30,7 @@ void test()
 shared static this()
 {
     // params: conninfo string, number of simultaneous connections
-    client = connectPostgresDB("dbname=postgres user=postgres", 4);
+    client = new shared PostgresClient("dbname=postgres user=postgres", 4);
 
     test();
 }
