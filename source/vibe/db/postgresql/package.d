@@ -12,8 +12,6 @@ import vibe.core.log;
 import core.time: Duration;
 import std.exception: enforce;
 
-alias Connection = LockedConnection!__Conn;
-
 private struct ClientSettings
 {
     string connString;
