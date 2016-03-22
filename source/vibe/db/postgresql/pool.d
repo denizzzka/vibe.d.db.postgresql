@@ -12,13 +12,9 @@ private synchronized class ConnectionsStorage(TConnection)
     import std.container.dlist;
 
     DList!TConnection freeConnections;
-    size_t count = 0;
 
     TConnection getConnection()
     {
-        atomicOp!"+="(count, 1);
-        logDebugV("get conn, counter="~count.to!string);
-
         if((cast() freeConnections).empty)
         {
             return null;
@@ -34,8 +30,6 @@ private synchronized class ConnectionsStorage(TConnection)
     void revertConnection(TConnection conn)
     {
         (cast() freeConnections).insertBack(conn);
-        atomicOp!"-="(count, 1);
-        logDebugV("revert conn, counter="~count.to!string);
     }
 }
 
@@ -61,6 +55,7 @@ shared class ConnectionPool(TConnection)
     {
         if((cast() maxConnSem).tryWait)
         {
+            scope(failure) (cast() maxConnSem).notify();
             logDebugV("lock connection");
             *conn = getConnection();
             return true;
@@ -75,9 +70,8 @@ shared class ConnectionPool(TConnection)
     /// Blocking. Useful for threads
     LockedConnection!TConnection lockConnection()
     {
-        logDebugV("lock connection, start wait");
         (cast() maxConnSem).wait();
-        logDebugV("end wait");
+        scope(failure) (cast() maxConnSem).notify();
 
         return getConnection();
     }
