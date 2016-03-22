@@ -44,7 +44,7 @@ shared class PostgresClient
 
     Connection lockConnection()
     {
-        import vibe.core.core: yield, sleep;
+        import vibe.core.core: yield;
 
         logDebugV("get connection from a shared pool");
 
@@ -52,8 +52,7 @@ shared class PostgresClient
 
         while(!pool.tryLockConnection(&conn))
         {
-            sleep(dur!"msecs"(100));
-            // yield(); // TODO: Need to replace yield() by events handling in the conn pool for compatibility with threads and fibers both
+            yield(); // TODO: Need to replace yield() by events handling in the conn pool for compatibility with threads and fibers both
             continue;
         }
 
