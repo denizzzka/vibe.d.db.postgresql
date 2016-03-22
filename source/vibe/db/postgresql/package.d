@@ -2,7 +2,7 @@ module vibe.db.postgresql;
 
 public import vibe.db.postgresql.pool: LockedConnection;
 public import dpq2.result;
-public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
+public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart, CancellationException;
 public import dpq2.args;
 public import derelict.pq.pq;
 
@@ -71,7 +71,7 @@ class __Conn : dpq2.Connection
     {
         this.settings = &settings;
 
-        super(settings.connString);
+        super(settings.connString); // TODO: switch to non-blocking connection start ctor
         setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
 
         import std.conv: to;
@@ -108,37 +108,24 @@ class __Conn : dpq2.Connection
     private void doQuery(void delegate() doesQueryAndCollectsResults)
     {
         // Try to get usable connection and send SQL command
-        try
+        while(true)
         {
-            while(true)
+            if(status() == CONNECTION_BAD)
+                throw new ConnectionException(this, __FILE__, __LINE__);
+
+            if(poll() != PGRES_POLLING_OK)
             {
-                auto pollRes = poll();
-
-                if(pollRes != PGRES_POLLING_OK)
-                {
-                    // waiting for socket changes for reading
-                    waitEndOfRead(socketTimeout);
-
-                    continue;
-                }
-
+                waitEndOfRead(socketTimeout);
+                continue;
+            }
+            else
+            {
                 break;
             }
+        }
 
-            logDebugV("doesQuery() call");
-            doesQueryAndCollectsResults();
-        }
-        catch(ConnectionException e)
-        {
-            // this block just starts reconnection and immediately loops back
-            tryResetConnection(e);
-            throw e;
-        }
-        catch(PostgresClientTimeoutException e)
-        {
-            tryResetConnection(e);
-            throw e;
-        }
+        logDebugV("doesQuery() call");
+        doesQueryAndCollectsResults();
     }
 
     private void tryResetConnection(Exception e)
@@ -175,7 +162,12 @@ class __Conn : dpq2.Connection
                 catch(PostgresClientTimeoutException e)
                 {
                     logDebugV("Exceeded Posgres query time limit");
-                    cancel(); // cancel sql query
+
+                    try
+                        cancel(); // cancel sql query
+                    catch(CancellationException ce) // means successful cancellation
+                        e.msg = ce.msg;
+
                     throw e;
                 }
                 finally
