@@ -42,7 +42,7 @@ shared class PostgresClient
         pool = new shared ConnectionPool!__Conn({ return new __Conn(settings); }, connNum);
     }
 
-    Connection lockConnection()
+    LockedConnection!__Conn lockConnection()
     {
         import vibe.core.core: yield;
 
