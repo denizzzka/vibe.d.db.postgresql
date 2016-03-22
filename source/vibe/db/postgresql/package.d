@@ -100,6 +100,7 @@ class __Conn : dpq2.Connection
         scope(exit) sock.blocking = true;
 
         auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.any);
+        scope(exit) destroy(event); // Prevents 100% CPU usage
 
         if(!event.wait(timeout))
             throw new PostgresClientTimeoutException(__FILE__, __LINE__);
