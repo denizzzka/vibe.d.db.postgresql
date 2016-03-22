@@ -166,7 +166,7 @@ class __Conn : dpq2.Connection
                     try
                         cancel(); // cancel sql query
                     catch(CancellationException ce) // means successful cancellation
-                        e.msg = ce.msg;
+                        e.msg ~= ", "~ce.msg;
 
                     throw e;
                 }
@@ -182,13 +182,26 @@ class __Conn : dpq2.Connection
                         if(r is null) break;
                         res ~= r;
                     }
-
-                    enforce(res.length <= 1, "simple query can return only one Result instance");
                 }
             }
         );
 
-        enforce(res.length == 1, "Result isn't received?");
+        /*
+         I am trying to check connection status with PostgreSQL server
+         with PQstatus and it always always return CONNECTION_OK even
+         when the cable to the server is unplugged.
+                                    – user1972556 (stackoverflow.com)
+
+         ...the idea of testing connections is fairly silly, since the
+         connection might die between when you test it and when you run
+         your "real" query. Don't test connections, just use them, and
+         if they fail be prepared to retry everything since you opened
+         the transaction. – Craig Ringer Jan 14 '13 at 2:59
+         */
+        if(status == CONNECTION_BAD)
+            throw new ConnectionException(this, __FILE__, __LINE__);
+
+        enforce(res.length == 1, "Simple query can return only one Result instance, not "~res.length.to!string);
 
         return res[0];
     }
