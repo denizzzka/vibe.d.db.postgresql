@@ -55,7 +55,6 @@ shared class ConnectionPool(TConnection)
     {
         if((cast() maxConnSem).tryWait)
         {
-            scope(failure) (cast() maxConnSem).notify();
             logDebugV("lock connection");
             *conn = getConnection();
             return true;
@@ -71,7 +70,6 @@ shared class ConnectionPool(TConnection)
     LockedConnection!TConnection lockConnection()
     {
         (cast() maxConnSem).wait();
-        scope(failure) (cast() maxConnSem).notify();
 
         return getConnection();
     }
@@ -87,6 +85,7 @@ shared class ConnectionPool(TConnection)
         else
         {
             logDebugV("new connection return");
+            scope(failure) (cast() maxConnSem).notify();
             conn = connectionFactory();
         }
 
