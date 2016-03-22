@@ -5,31 +5,47 @@ import vibe.core.log;
 import std.conv: to;
 import core.atomic;
 
-private synchronized class ConnectionsStorage(TConnection)
+private synchronized class AtomicList(T)
 {
     private:
 
     import std.container.dlist;
+    import std.range;
 
-    DList!TConnection freeConnections;
+    DList!T _storage;
+    alias Link = DList!T.Range;
 
-    TConnection getConnection()
+    @property ref auto storage(){ return cast() _storage; }
+
+    this()
     {
-        if((cast() freeConnections).empty)
-        {
-            return null;
-        }
-        else
-        {
-            TConnection conn = (cast() freeConnections).front;
-            (cast() freeConnections).removeFront;
-            return conn;
-        }
+        _storage = cast(shared) new DList!T;
     }
 
-    void revertConnection(TConnection conn)
+    Take!(DList!T.Range) store(T val)
     {
-        (cast() freeConnections).insertBack(conn);
+        storage.insertFront(val);
+
+        return storage.opSlice.take(1);
+    }
+
+    void remove(Link r)
+    {
+        storage.remove(r);
+    }
+
+    Link getAndRemove(out bool success)
+    {
+        success = !storage.empty;
+
+        Link ret;
+
+        if(success)
+        {
+            ret = storage.opSlice.dropBackOne;
+        }
+
+        return ret;
     }
 }
 
@@ -37,73 +53,94 @@ shared class ConnectionPool(TConnection)
 {
     private:
 
-    ConnectionsStorage!TConnection storage;
-    TConnection delegate() connectionFactory;
-    Semaphore maxConnSem;
+    AtomicList!TConnection _connections;
+    alias ConnLink = AtomicList!TConnection.Link;
+    //AtomicList!ConnLink _freeConnections;
 
-    public:
+    //~ Semaphore _maxConnSem;
+    //~ TConnection delegate() connectionFactory;
 
-    this(TConnection delegate() connectionFactory, uint maxConcurrent = uint.max)
-    {
-        this.connectionFactory = cast(shared) connectionFactory;
-        storage = new shared ConnectionsStorage!TConnection;
-        maxConnSem = cast(shared) new Semaphore(maxConcurrent);
-    }
+    //~ @property ref auto connections(){ return cast() _connections; }
+    //~ @property ref auto freeConnections(){ return cast() _freeConnections; }
+    //~ @property ref auto maxConnSem(){ return cast() _maxConnSem; }
 
-    /// Non-blocking. Useful for fibers
-    bool tryLockConnection(LockedConnection!TConnection* conn)
-    {
-        if((cast() maxConnSem).tryWait)
-        {
-            logDebugV("lock connection");
-            *conn = getConnection();
-            return true;
-        }
-        else
-        {
-            logDebugV("no free connections");
-            return false;
-        }
-    }
+    //~ public:
 
-    /// Blocking. Useful for threads
-    LockedConnection!TConnection lockConnection()
-    {
-        (cast() maxConnSem).wait();
+    //~ this(TConnection delegate() connectionFactory, uint maxConcurrent = uint.max)
+    //~ {
+        //~ this.connectionFactory = cast(shared) connectionFactory;
+        //~ _connections = new shared AtomicList!TConnection;
+        //~ _freeConnections = new shared AtomicList!ConnLink;
+        //~ _maxConnSem = cast(shared) new Semaphore(maxConcurrent);
+    //~ }
 
-        return getConnection();
-    }
+    //~ /// Non-blocking. Useful for fibers
+    //~ bool tryLockConnection(LockedConnection!TConnection* conn)
+    //~ {
+        //~ if(maxConnSem.tryWait)
+        //~ {
+            //~ logDebugV("lock connection");
+            //~ *conn = getConnection();
+            //~ return true;
+        //~ }
+        //~ else
+        //~ {
+            //~ logDebugV("no free connections");
+            //~ return false;
+        //~ }
+    //~ }
 
-    private LockedConnection!TConnection getConnection()
-    {
-        scope(failure) (cast() maxConnSem).notify();
+    //~ /// Blocking. Useful for threads
+    //~ LockedConnection!TConnection lockConnection()
+    //~ {
+        //~ maxConnSem.wait();
 
-        TConnection conn = storage.getConnection;
+        //~ return getConnection();
+    //~ }
 
-        if(conn !is null)
-        {
-            logDebugV("used connection return");
-        }
-        else
-        {
-            logDebugV("new connection return");
-            conn = connectionFactory();
-        }
+    //~ private LockedConnection!TConnection getConnection()
+    //~ {
+        //~ scope(failure)
+        //~ {
+            //~ maxConnSem.notify();
+            //~ logDebugV("get connection aborted");
+        //~ }
 
-        return LockedConnection!TConnection(this, conn);
-    }
+        //~ bool getResult;
+        //~ AtomicList!ConnLink conn = freeConnections.getAndRemove(getResult);
 
-    /// If connection is null (means what connection was failed etc) it
-    /// don't reverted to the connections list
-    private void releaseConnection(TConnection conn)
-    {
-        if(conn !is null) storage.revertConnection(conn);
+        //~ if(getResult)
+        //~ {
+            //~ logDebugV("used connection return");
+        //~ }
+        //~ else
+        //~ {
+            //~ logDebugV("new connection return");
+            //~ conn = connections.store(connectionFactory());
+        //~ }
 
-        (cast() maxConnSem).notify();
-    }
+        //~ return new LockedConnection!TConnection(this, conn);
+    //~ }
+
+    //~ /// If connection is null (means what connection was failed etc) it
+    //~ /// don't reverted to the connections list
+    //~ private void releaseConnection(TConnection conn)
+    //~ {
+        //~ logDebugV("release connection");
+        //~ if(conn !is null)
+        //~ {
+            //~ freeConnections.store(conn);
+        //~ }
+        //~ else // failed state connection
+        //~ {
+            //~ connections.remove(conn);
+        //~ }
+
+        //~ maxConnSem.notify();
+    //~ }
 }
 
-struct LockedConnection(TConnection)
+class LockedConnection(TConnection)
 {
     private shared ConnectionPool!TConnection pool;
     private TConnection _conn;
@@ -131,11 +168,13 @@ struct LockedConnection(TConnection)
 
     ~this()
     {
+        logDebugV("locked conn destructor");
+
         if(pool) // TODO: remove this check
         {
             pool.releaseConnection(conn);
         }
     }
 
-    @disable this(this){}
+    //@disable this(this){}
 }
