@@ -76,6 +76,8 @@ shared class ConnectionPool(TConnection)
 
     private LockedConnection!TConnection getConnection()
     {
+        scope(failure) (cast() maxConnSem).notify();
+
         TConnection conn = storage.getConnection;
 
         if(conn !is null)
@@ -85,7 +87,6 @@ shared class ConnectionPool(TConnection)
         else
         {
             logDebugV("new connection return");
-            scope(failure) (cast() maxConnSem).notify();
             conn = connectionFactory();
         }
 
