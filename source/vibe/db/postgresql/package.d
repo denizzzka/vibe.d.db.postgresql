@@ -128,24 +128,6 @@ class __Conn : dpq2.Connection
         doesQueryAndCollectsResults();
     }
 
-    private void tryResetConnection(Exception e)
-    {
-            logWarn("Connection failed: "~e.msg);
-
-            assert(conn, "conn isn't initialised (conn == null)");
-
-            // try to restore connection because pool isn't do this job by itself
-            try
-            {
-                logDebugV("try to restore not null connection");
-                resetStart();
-            }
-            catch(ConnectionException e)
-            {
-                logWarn("Connection restore failed: ", e.msg);
-            }
-    }
-
     private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement)
     {
         logDebugV("runStatementBlockingManner");

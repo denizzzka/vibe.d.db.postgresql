@@ -99,14 +99,13 @@ shared class ConnectionPool(TConnection)
         return LockedConnection!TConnection(this, conn);
     }
 
+    /// If connection is null (means what connection was failed etc) it
+    /// don't reverted to the connections list
     private void releaseConnection(TConnection conn)
     {
-        assert(conn);
+        if(conn !is null) storage.revertConnection(conn);
 
-        logDebugV("try to unlock connection");
-        storage.revertConnection(conn);
         (cast() maxConnSem).notify();
-        logDebugV("unlock done");
     }
 }
 
@@ -121,6 +120,14 @@ struct LockedConnection(TConnection)
     }
 
     package alias conn this;
+
+    void dropConnection()
+    {
+        assert(_conn);
+
+        destroy(_conn);
+        _conn = null;
+    }
 
     private this(shared ConnectionPool!TConnection pool, TConnection conn)
     {
