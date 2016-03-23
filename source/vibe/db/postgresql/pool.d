@@ -13,20 +13,46 @@ private synchronized class AtomicList(T)
     import std.range;
 
     shared DList!T _storage;
-    alias Link = typeof(_storage).Range;
 
-    @property ref auto storage(){ return cast() _storage; }
+    @property DList!T* storage(){ return cast(DList!T*) &_storage; }
+
+    static struct Link
+    {
+        private shared typeof(_storage).Range _range;
+
+        @property private auto range(){ return cast(typeof(_storage).Range*) &_range; }
+        @property private ref auto elem(){ return range.front; }
+
+        private this(typeof(_storage).Range r)
+        {
+            _range = cast(shared) r;
+
+            debug
+            {
+                // size check
+                size_t counter;
+
+                foreach(e; *range)
+                {
+                    counter++;
+                }
+
+                assert(counter > 0);
+            }
+        }
+    }
 
     Link store(T val)
     {
         storage.insertFront(val);
+        Link ret = Link(storage.opSlice);
 
-        return storage.opSlice;
+        return ret;
     }
 
     void remove(Link r)
     {
-        storage.remove(r);
+        storage.remove(*r.range);
     }
 
     Link getAndRemove(out bool success)
@@ -37,7 +63,7 @@ private synchronized class AtomicList(T)
 
         if(success)
         {
-            ret = storage.opSlice.dropBackOne;
+            ret = Link(storage.opSlice.dropBackOne);
         }
 
         return ret;
@@ -107,12 +133,14 @@ shared class ConnectionPool(TConnection)
         if(success)
         {
             logDebugV("used connection return");
-            link = freeConnLink.front;
+            link = freeConnLink.elem;
         }
         else
         {
             logDebugV("new connection return");
-            link = connections.store(connectionFactory());
+            TConnection conn = connectionFactory();
+            assert(conn);
+            link = connections.store(conn);
         }
 
         return new LockedConnection!TConnection(this, link);
@@ -123,7 +151,7 @@ shared class ConnectionPool(TConnection)
     private void releaseConnection(ConnLink link)
     {
         logDebugV("release connection");
-        if(link.front !is null)
+        if(link.elem !is null)
         {
             freeConnections.store(link);
         }
@@ -143,7 +171,7 @@ class LockedConnection(TConnection)
 
     @property ref TConnection conn()
     {
-        return (cast() link).front;
+        return link.elem;
     }
 
     package alias conn this;
