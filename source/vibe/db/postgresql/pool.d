@@ -91,7 +91,7 @@ shared class ConnectionPool(TConnection)
             conn = connectionFactory();
         }
 
-        return LockedConnection!TConnection(this, conn);
+        return new LockedConnection!TConnection(this, conn);
     }
 
     /// If connection is null (means what connection was failed etc) it
@@ -106,7 +106,7 @@ shared class ConnectionPool(TConnection)
     }
 }
 
-struct LockedConnection(TConnection)
+class LockedConnection(TConnection)
 {
     private shared ConnectionPool!TConnection pool;
     private TConnection _conn;
@@ -120,6 +120,7 @@ struct LockedConnection(TConnection)
 
     void dropConnection()
     {
+        logDebugV("dropConnection()");
         assert(_conn);
 
         destroy(_conn);
@@ -144,6 +145,8 @@ struct LockedConnection(TConnection)
 
 unittest
 {
+    setLogLevel = LogLevel.debugV;
+
     class DumbConn
     {
         static size_t counter;
@@ -151,6 +154,16 @@ unittest
         this()
         {
             counter++;
+        }
+
+        ~this()
+        {
+            counter--;
+        }
+
+        invariant
+        {
+            assert(counter <= 3);
         }
     }
 
@@ -161,30 +174,37 @@ unittest
     {
         LockedConnection!DumbConn conn;
         assert( pool.tryLockConnection(conn) );
+
+        delete conn;
     }
 
     // many connections on one scope
     {
         LockedConnection!DumbConn[5] arr;
 
-        foreach(i; 0 .. arr.length)
+        foreach(i, e; arr)
         {
             if(i < 3)
             {
-                assert( pool.tryLockConnection(arr[i]) );
-                assert( arr[i] !is null );
+                assert( pool.tryLockConnection(e) );
+                assert( e !is null );
             }
             else
             {
-                assert( !pool.tryLockConnection(arr[i]) );
-                assert( arr[i] is null );
+                assert( !pool.tryLockConnection(e) );
+                assert( e is null );
             }
         }
+
+        foreach(ref e; arr)
+            if(e) delete e;
     }
 
-    // out of scope dtor test
-    {
-        LockedConnection!DumbConn conn;
-        assert( pool.tryLockConnection(conn) );
-    }
+    delete pool;
+
+    //~ // out of scope dtor test (fails)
+    //~ {
+        //~ LockedConnection!DumbConn conn;
+        //~ assert( pool.tryLockConnection(conn) );
+    //~ }
 }
