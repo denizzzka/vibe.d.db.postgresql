@@ -46,9 +46,9 @@ shared class PostgresClient
 
         logDebugV("get connection from a shared pool");
 
-        LockedConnection!__Conn conn;
+        LockedConnection!__Conn conn = pool.tryLockConnection();
 
-        while(!pool.tryLockConnection(&conn))
+        while(conn is null)
         {
             yield(); // TODO: Need to replace yield() by events handling in the conn pool for compatibility with threads and fibers both
             continue;
