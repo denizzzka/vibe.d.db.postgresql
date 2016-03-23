@@ -12,12 +12,12 @@ private synchronized class AtomicList(T)
     import std.container.dlist;
     import std.range;
 
-    DList!T _storage;
-    alias Link = DList!T.Range;
+    shared DList!T _storage;
+    alias Link = typeof(_storage).Range;
 
     @property ref auto storage(){ return cast() _storage; }
 
-    DList!T.Range store(T val)
+    Link store(T val)
     {
         storage.insertFront(val);
 
@@ -83,13 +83,14 @@ shared class ConnectionPool(TConnection)
         }
     }
 
-    //~ /// Blocking. Useful for threads
-    //~ LockedConnection!TConnection lockConnection()
-    //~ {
-        //~ maxConnSem.wait();
+    /// Blocking. Useful for threads
+    @disable
+    LockedConnection!TConnection lockConnection()
+    {
+        maxConnSem.wait();
 
-        //~ return getConnection();
-    //~ }
+        return getConnection();
+    }
 
     private LockedConnection!TConnection getConnection()
     {
@@ -100,19 +101,21 @@ shared class ConnectionPool(TConnection)
         }
 
         bool success;
-        ConnLink conn = freeConnections.getAndRemove(success).front;
+        auto freeConnLink = freeConnections.getAndRemove(success);
+        ConnLink link;
 
         if(success)
         {
             logDebugV("used connection return");
+            link = freeConnLink.front;
         }
         else
         {
             logDebugV("new connection return");
-            conn = connections.store(connectionFactory());
+            link = connections.store(connectionFactory());
         }
 
-        return new LockedConnection!TConnection(conn);
+        return new LockedConnection!TConnection(this, link);
     }
 
     /// If connection is null (means what connection was failed etc) it
@@ -153,8 +156,9 @@ class LockedConnection(TConnection)
         conn = null;
     }
 
-    private this(ConnectionPool!TConnection.ConnLink link)
+    private this(shared ConnectionPool!TConnection pool, ConnectionPool!TConnection.ConnLink link)
     {
+        this.pool = pool;
         this.link = link;
     }
 
