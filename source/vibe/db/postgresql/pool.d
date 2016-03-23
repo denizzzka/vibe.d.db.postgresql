@@ -40,7 +40,6 @@ shared class ConnectionPool(TConnection)
     ConnectionsStorage!TConnection storage;
     TConnection delegate() connectionFactory;
     Semaphore maxConnSem;
-    uint[TConnection] connNum;
 
     public:
 
@@ -52,12 +51,12 @@ shared class ConnectionPool(TConnection)
     }
 
     /// Non-blocking. Useful for fibers
-    bool tryLockConnection(LockedConnection!TConnection* conn)
+    bool tryLockConnection(out LockedConnection!TConnection conn)
     {
         if((cast() maxConnSem).tryWait)
         {
             logDebugV("lock connection");
-            *conn = getConnection();
+            conn = getConnection();
             return true;
         }
         else
@@ -92,8 +91,6 @@ shared class ConnectionPool(TConnection)
             conn = connectionFactory();
         }
 
-        connCounter(counterOp.INIT, conn);
-
         return LockedConnection!TConnection(this, conn);
     }
 
@@ -103,57 +100,10 @@ shared class ConnectionPool(TConnection)
     {
         logDebugV("releaseConnection()");
 
-        if(!connCounter(counterOp.DECREMENT, conn))
-        {
-            if(conn !is null) storage.revertConnection(conn);
+        if(conn !is null) storage.revertConnection(conn);
 
-            (cast() maxConnSem).notify();
-        }
+        (cast() maxConnSem).notify();
     }
-
-    /// returns true if connections are remained
-    private bool connCounter(counterOp op, TConnection conn)
-    {
-        import core.atomic: atomicOp;
-
-        synchronized
-        {
-            with(counterOp)
-            final switch(op)
-            {
-                case INIT:
-                    logDebugV("init counter");
-                    assert((conn in connNum) is null);
-                    connNum[conn] = 1;
-                    return true;
-
-                case INCREMENT:
-                    logDebugV("increment counter");
-                    connNum[conn].atomicOp!"+="(1);
-                    return true;
-
-                case DECREMENT:
-                    logDebugV("decrement counter");
-                    connNum[conn].atomicOp!"-="(1);
-                    if(connNum[conn] == 0)
-                    {
-                        connNum.remove(conn);
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-            }
-        }
-    }
-}
-
-private enum counterOp
-{
-    INCREMENT,
-    DECREMENT,
-    INIT
 }
 
 struct LockedConnection(TConnection)
@@ -190,9 +140,51 @@ struct LockedConnection(TConnection)
             pool.releaseConnection(conn);
         }
     }
+}
 
-    this(this)
+unittest
+{
+    class DumbConn
     {
-        pool.connCounter(counterOp.INCREMENT, _conn);
+        static size_t counter;
+
+        this()
+        {
+            counter++;
+        }
+    }
+
+    auto pool = new shared ConnectionPool!DumbConn({ return new DumbConn; }, 3);
+
+    // test of ctor and dtor
+    foreach(i; 0 .. 10)
+    {
+        LockedConnection!DumbConn conn;
+        assert( pool.tryLockConnection(conn) );
+    }
+
+    // many connections on one scope
+    {
+        LockedConnection!DumbConn[5] arr;
+
+        foreach(i; 0 .. arr.length)
+        {
+            if(i < 3)
+            {
+                assert( pool.tryLockConnection(arr[i]) );
+                assert( arr[i] !is null );
+            }
+            else
+            {
+                assert( !pool.tryLockConnection(arr[i]) );
+                assert( arr[i] is null );
+            }
+        }
+    }
+
+    // out of scope dtor test
+    {
+        LockedConnection!DumbConn conn;
+        assert( pool.tryLockConnection(conn) );
     }
 }
