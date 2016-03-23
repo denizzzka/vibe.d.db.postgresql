@@ -40,6 +40,7 @@ shared class ConnectionPool(TConnection)
     ConnectionsStorage!TConnection storage;
     TConnection delegate() connectionFactory;
     Semaphore maxConnSem;
+    uint[TConnection] connNum;
 
     public:
 
@@ -67,6 +68,7 @@ shared class ConnectionPool(TConnection)
     }
 
     /// Blocking. Useful for threads
+    @disable // unused code
     LockedConnection!TConnection lockConnection()
     {
         (cast() maxConnSem).wait();
@@ -90,6 +92,8 @@ shared class ConnectionPool(TConnection)
             conn = connectionFactory();
         }
 
+        connCounter(counterOp.INIT, conn);
+
         return LockedConnection!TConnection(this, conn);
     }
 
@@ -97,10 +101,59 @@ shared class ConnectionPool(TConnection)
     /// don't reverted to the connections list
     private void releaseConnection(TConnection conn)
     {
-        if(conn !is null) storage.revertConnection(conn);
+        logDebugV("releaseConnection()");
 
-        (cast() maxConnSem).notify();
+        if(!connCounter(counterOp.DECREMENT, conn))
+        {
+            if(conn !is null) storage.revertConnection(conn);
+
+            (cast() maxConnSem).notify();
+        }
     }
+
+    /// returns true if connections are remained
+    private bool connCounter(counterOp op, TConnection conn)
+    {
+        import core.atomic: atomicOp;
+
+        synchronized
+        {
+            with(counterOp)
+            final switch(op)
+            {
+                case INIT:
+                    logDebugV("init counter");
+                    assert((conn in connNum) is null);
+                    connNum[conn] = 1;
+                    return true;
+
+                case INCREMENT:
+                    logDebugV("increment counter");
+                    connNum[conn].atomicOp!"+="(1);
+                    return true;
+
+                case DECREMENT:
+                    logDebugV("decrement counter");
+                    connNum[conn].atomicOp!"-="(1);
+                    if(connNum[conn] == 0)
+                    {
+                        connNum.remove(conn);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+            }
+        }
+    }
+}
+
+private enum counterOp
+{
+    INCREMENT,
+    DECREMENT,
+    INIT
 }
 
 struct LockedConnection(TConnection)
@@ -131,11 +184,15 @@ struct LockedConnection(TConnection)
 
     ~this()
     {
+        logDebugV("LockedConn destructor");
         if(pool) // TODO: remove this check
         {
             pool.releaseConnection(conn);
         }
     }
 
-    @disable this(this){}
+    this(this)
+    {
+        pool.connCounter(counterOp.INCREMENT, _conn);
+    }
 }
