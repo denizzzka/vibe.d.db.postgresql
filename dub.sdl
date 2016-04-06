@@ -6,7 +6,7 @@ copyright "Copyright © 2016"
 targetType "sourceLibrary"
 
 dependency "dpq2" version="~master"
-dependency "vibe-d:core" version="~>0.7.27"
+dependency "vibe-d:core" version="~>0.7.29-alpha.3"
 
 configuration "release_app" {
     buildType "release"
@@ -23,6 +23,6 @@ subPackage {
     sourcePaths "example"
     targetType "executable"
     versions "VibeDefaultMain"
-    dependency "vibe-d" version="~>0.7.28"
+    dependency "vibe-d" version="*"
     dependency "vibe-d-postgresql" version="*"
 }
