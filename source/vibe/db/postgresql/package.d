@@ -9,8 +9,9 @@ public import derelict.pq.pq;
 import dpq2: ValueFormat, Dpq2Exception;
 import vibe.db.postgresql.pool;
 import vibe.core.log;
-import core.time: Duration;
+import core.time: Duration, dur;
 import std.exception: enforce;
+import std.conv: to;
 
 private struct ClientSettings
 {
