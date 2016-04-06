@@ -182,7 +182,7 @@ unittest
     {
         LockedConnection!DumbConn[5] arr;
 
-        foreach(i, e; arr)
+        foreach(i, ref e; arr)
         {
             if(i < 3)
             {
@@ -197,14 +197,6 @@ unittest
         }
 
         foreach(ref e; arr)
-            if(e) delete e;
+            delete e;
     }
-
-    delete pool;
-
-    //~ // out of scope dtor test (fails)
-    //~ {
-        //~ LockedConnection!DumbConn conn;
-        //~ assert( pool.tryLockConnection(conn) );
-    //~ }
 }
