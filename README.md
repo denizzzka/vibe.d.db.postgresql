@@ -19,6 +19,7 @@ void test()
         "SELECT 890, 233, 'fgh'::text as third_text",
         ValueFormat.BINARY
     );
+    delete conn;
 
     assert(result[0]["second_num"].as!PGinteger == 567);
     assert(result[1]["third_text"].as!PGtext == "fgh");
