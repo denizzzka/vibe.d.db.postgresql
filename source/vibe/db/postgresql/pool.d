@@ -136,10 +136,7 @@ class LockedConnection(TConnection)
     ~this()
     {
         logDebugV("LockedConn destructor");
-        if(pool) // TODO: remove this check
-        {
-            pool.releaseConnection(conn);
-        }
+        pool.releaseConnection(conn);
     }
 }
 
