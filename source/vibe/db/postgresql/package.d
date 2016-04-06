@@ -302,12 +302,14 @@ version(IntegrationTest) void __integration_test(string connString)
         auto future0 = async({
             auto conn = client.lockConnection;
             immutable answer = conn.execStatement("SELECT 'New connection 0'");
+            delete conn;
             return 1;
         });
 
         auto future1 = async({
             auto conn = client.lockConnection;
             immutable answer = conn.execStatement("SELECT 'New connection 1'");
+            delete conn;
             return 1;
         });
 
@@ -321,4 +323,6 @@ version(IntegrationTest) void __integration_test(string connString)
     {
         assert(conn.escapeIdentifier("abc") == "\"abc\"");
     }
+
+    delete conn;
 }
