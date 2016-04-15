@@ -225,6 +225,13 @@ class __Conn : dpq2.Connection
 
         return res.getAnswer;
     }
+
+    immutable(Answer) describePreparedStatement(string preparedStatementName)
+    {
+        auto res = runStatementBlockingManner({ sendDescribePrepared(preparedStatementName); });
+
+        return res.getAnswer;
+    }
 }
 
 class PostgresClientException : Dpq2Exception // TODO: remove it (use dpq2 exception)
@@ -284,6 +291,13 @@ version(IntegrationTest) void __integration_test(string connString)
             throwFlag = true;
 
         assert(throwFlag);
+    }
+
+    {
+        auto a = conn.describePreparedStatement("stmnt_name");
+
+        assert(a.nParams == 0);
+        assert(a.OID(0) == OidType.Int4);
     }
 
     {
