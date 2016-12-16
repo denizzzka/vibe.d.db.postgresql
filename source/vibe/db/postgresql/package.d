@@ -1,7 +1,8 @@
 module vibe.db.postgresql;
 
 public import vibe.db.postgresql.pool: LockedConnection;
-public import dpq2: ValueFormat, Dpq2Exception;
+public import dpq2: ValueFormat;
+public import dpq2.exception: Dpq2Exception;
 public import dpq2.result;
 public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart, CancellationException;
 public import dpq2.args;
