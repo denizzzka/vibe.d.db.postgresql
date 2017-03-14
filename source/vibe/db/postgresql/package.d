@@ -295,6 +295,8 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
+        import dpq2.oids: OidType;
+
         auto a = conn.describePreparedStatement("stmnt_name");
 
         assert(a.nParams == 0);
