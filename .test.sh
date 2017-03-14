@@ -1,6 +1,7 @@
 #!/bin/bash
 set -ev
 
+dub upgrade # because "Non-optional dependency libasync of vibe-d:core not found in dependency tree!?."
 dub test
 dub run --config=integration_test -- --conninfo="${1}" --debug=true
 dub build :example
