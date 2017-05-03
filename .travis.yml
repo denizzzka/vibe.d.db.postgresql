@@ -10,7 +10,7 @@ d:
 addons:
   apt:
     packages:
-      - libevent-pthreads-2.0-5
+      - libevent-dev
 
   postgresql: 9.6
 
