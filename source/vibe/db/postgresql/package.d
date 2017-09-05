@@ -1,6 +1,5 @@
 module vibe.db.postgresql;
 
-public import vibe.db.postgresql.pool: LockedConnection;
 public import dpq2: ValueFormat;
 public import dpq2.exception: Dpq2Exception;
 public import dpq2.result;
@@ -8,11 +7,14 @@ public import dpq2.connection: ConnectionException, connStringCheck, ConnectionS
 public import dpq2.args;
 public import derelict.pq.pq;
 
-import vibe.db.postgresql.pool;
+static import vibe.core.connectionpool;
 import vibe.core.log;
 import core.time: Duration, dur;
 import std.exception: enforce;
 import std.conv: to;
+
+private alias ConnectionPool = vibe.core.connectionpool.ConnectionPool;
+private alias VibeLockedConnection = vibe.core.connectionpool.LockedConnection;
 
 private struct ClientSettings
 {
@@ -20,7 +22,7 @@ private struct ClientSettings
     void delegate(__Conn) afterStartConnectOrReset;
 }
 
-shared class PostgresClient
+class PostgresClient
 {
     private ConnectionPool!__Conn pool;
     private immutable ClientSettings settings;
@@ -39,25 +41,37 @@ shared class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new shared ConnectionPool!__Conn({ return new __Conn(settings); }, connNum);
+        pool = new ConnectionPool!__Conn({ return new __Conn(settings); }, connNum);
     }
 
     LockedConnection!__Conn lockConnection()
     {
-        import vibe.core.core: yield;
-
-        logDebugV("get connection from a shared pool");
-
-        LockedConnection!__Conn conn;
-
-        while(!pool.tryLockConnection(conn))
-        {
-            yield(); // TODO: Need to replace yield() by events handling in the conn pool for compatibility with threads and fibers both
-            continue;
-        }
-
-        return conn;
+        logDebugV("get connection from the pool");
+        return new LockedConnection!__Conn(pool.lockConnection());
     }
+}
+
+// TODO: vibe-core connectionpool already returns raii struct from lockConnection,
+// it's destructor returns connection to the pool. This class is only needed for
+// backward compatibility (to implement dropConnection method)
+class LockedConnection(TConnection)
+{
+    private VibeLockedConnection!TConnection m_con;     // struct
+    this(VibeLockedConnection!TConnection con)
+    {
+        m_con = con;
+    }
+    ~this()
+    {
+        logDebugV("LockedConnection destructor");
+    }
+    // for backward compatibility
+    void dropConnection()
+    {
+        logDebugV("dropConnection()");
+        destroy(m_con);
+    }
+    alias m_con this;
 }
 
 class __Conn : dpq2.Connection
@@ -257,7 +271,7 @@ unittest
 
     try
     {
-        auto client = new shared PostgresClient("wrong connect string", 2);
+        auto client = new PostgresClient("wrong connect string", 2);
     }
     catch(ConnectionException e)
         raised = true;
@@ -269,7 +283,7 @@ version(IntegrationTest) void __integration_test(string connString)
 {
     setLogLevel = LogLevel.debugV;
 
-    auto client = new shared PostgresClient(connString, 3);
+    auto client = new PostgresClient(connString, 3);
     auto conn = client.lockConnection();
 
     {
