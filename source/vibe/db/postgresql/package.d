@@ -56,7 +56,7 @@ class PostgresClient
 // backward compatibility (to implement dropConnection method)
 class LockedConnection(TConnection)
 {
-    private VibeLockedConnection!TConnection m_con;     // struct
+    VibeLockedConnection!TConnection m_con;     // struct
     this(VibeLockedConnection!TConnection con)
     {
         m_con = con;
