@@ -47,6 +47,7 @@ class PostgresClient
     LockedConnection!__Conn lockConnection()
     {
         logDebugV("get connection from the pool");
+
         return new LockedConnection!__Conn(pool.lockConnection());
     }
 }
@@ -57,20 +58,24 @@ class PostgresClient
 class LockedConnection(TConnection)
 {
     VibeLockedConnection!TConnection m_con;     // struct
+
     this(VibeLockedConnection!TConnection con)
     {
         m_con = con;
     }
+
     ~this()
     {
         logDebugV("LockedConnection destructor");
     }
+
     // for backward compatibility
     void dropConnection()
     {
         logDebugV("dropConnection()");
         destroy(m_con);
     }
+
     alias m_con this;
 }
 
