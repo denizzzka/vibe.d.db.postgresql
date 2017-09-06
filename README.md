@@ -8,7 +8,7 @@ module vibe.db.postgresql.example;
 import vibe.d;
 import vibe.db.postgresql;
 
-shared PostgresClient client;
+PostgresClient client;
 
 void test()
 {
@@ -28,10 +28,11 @@ void test()
         logInfo("Found entry: %s", val.as!Bson.toJson);
 }
 
-shared static this()
+static this()
 {
-    // params: conninfo string, number of simultaneous connections
-    client = new shared PostgresClient("dbname=postgres user=postgres", 4);
+    // params: conninfo string, maximum number of connections in
+    // the connection pool
+    client = new PostgresClient("dbname=postgres user=postgres", 4);
 
     test();
 }
