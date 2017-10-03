@@ -385,7 +385,7 @@ version(IntegrationTest) void __integration_test(string connString)
 
         const beforeDescrNum = getDescrNum();
 
-        auto leakPool = new shared PostgresClient(connString, connNum);
+        auto leakPool = new PostgresClient(connString, connNum);
 
         foreach(i; 0 .. connNum)
         {
