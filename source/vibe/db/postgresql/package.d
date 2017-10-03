@@ -367,7 +367,7 @@ version(IntegrationTest) void __integration_test(string connString)
 
     version(linux)
     {
-        const connNum = 40_000;
+        const connNum = 5;
 
         long getDescrNum()
         {
@@ -387,7 +387,7 @@ version(IntegrationTest) void __integration_test(string connString)
 
         auto leakPool = new PostgresClient(connString, connNum);
 
-        foreach(i; 0 .. connNum)
+        foreach(i; 0 .. 100_000)
         {
             auto c = leakPool.lockConnection;
 
