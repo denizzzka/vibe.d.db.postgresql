@@ -398,6 +398,6 @@ version(IntegrationTest) void __integration_test(string connString)
 
         import std.math: abs;
 
-        assert(abs(getDescrNum() - beforeDescrNum) <= 100);
+        assert(abs(getDescrNum() - beforeDescrNum) <= 1000);
     }
 }
