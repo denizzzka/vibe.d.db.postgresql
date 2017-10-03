@@ -52,9 +52,10 @@ class PostgresClient
     }
 }
 
-// TODO: vibe-core connectionpool already returns raii struct from lockConnection,
+// TODO: remove this class
+// vibe-core connectionpool already returns raii struct from lockConnection,
 // it's destructor returns connection to the pool. This class is only needed for
-// backward compatibility (to implement dropConnection method)
+// backward compatibility.
 class LockedConnection(TConnection)
 {
     VibeLockedConnection!TConnection m_con;     // struct
@@ -68,13 +69,6 @@ class LockedConnection(TConnection)
     {
         logDebugV("LockedConnection destructor");
         destroy(m_con);
-    }
-
-    /// Ability to destroy connection. Then it may be re-established.
-    void dropConnection()
-    {
-        logDebugV("dropConnection()");
-        destroy(m_con.__conn);
     }
 
     alias m_con this;
