@@ -67,13 +67,14 @@ class LockedConnection(TConnection)
     ~this()
     {
         logDebugV("LockedConnection destructor");
+        destroy(m_con);
     }
 
-    // for backward compatibility
+    /// Ability to destroy connection. Then it may be re-established.
     void dropConnection()
     {
         logDebugV("dropConnection()");
-        destroy(m_con);
+        destroy(m_con.__conn);
     }
 
     alias m_con this;
