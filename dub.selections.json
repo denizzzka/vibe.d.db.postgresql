@@ -1,13 +1,17 @@
 {
 	"fileVersion": 1,
 	"versions": {
+		"botan": "1.12.9",
+		"botan-math": "1.0.3",
 		"derelict-pq": "3.0.0-beta.2",
 		"derelict-util": "3.0.0-beta.1",
+		"diet-ng": "1.4.3",
 		"dpq2": "0.6.23",
 		"eventcore": "0.8.12",
 		"libasync": "0.8.3",
 		"libevent": "2.0.2+2.0.16",
 		"memutils": "0.4.9",
+		"openssl": "1.1.5+1.0.1g",
 		"taggedalgebraic": "0.10.7",
 		"vibe-core": "1.2.0",
 		"vibe-d": "0.8.1"

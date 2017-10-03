@@ -399,5 +399,7 @@ version(IntegrationTest) void __integration_test(string connString)
         import std.math: abs;
 
         assert(abs(getDescrNum() - beforeDescrNum) <= 1000);
+
+        delete leakPool;
     }
 }
