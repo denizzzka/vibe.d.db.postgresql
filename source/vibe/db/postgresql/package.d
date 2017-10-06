@@ -356,45 +356,4 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     delete conn;
-
-    // Connections leak check
-    setLogLevel = LogLevel.diagnostic;
-
-    version(linux)
-    {
-        const connNum = 5;
-
-        long getDescrNum()
-        {
-            import std.file: readText;
-            import std.conv: to;
-            import std.format;
-
-            string s = readText("/proc/sys/fs/file-nr");
-
-            long ret;
-            assert(s.formattedRead!"%d\t"(ret) == 1);
-
-            return ret;
-        }
-
-        const beforeDescrNum = getDescrNum();
-
-        auto leakPool = new PostgresClient(connString, connNum);
-
-        foreach(i; 0 .. 100_000)
-        {
-            auto c = leakPool.lockConnection;
-
-            c.execStatement("select 123");
-
-            delete c;
-        }
-
-        import std.math: abs;
-
-        assert(abs(getDescrNum() - beforeDescrNum) <= 1000);
-
-        delete leakPool;
-    }
 }
