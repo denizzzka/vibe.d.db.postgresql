@@ -12,18 +12,17 @@ PostgresClient client;
 
 void test()
 {
+    auto conn = client.lockConnection();
+    scope(exit) delete conn;
+
     try
     {
-        auto conn = client.lockConnection();
-
         immutable result = conn.execStatement(
             "SELECT 123 as first_num, 567 as second_num, 'abc'::text as third_text "~
             "UNION ALL "~
             "SELECT 890, 233, 'fgh'::text as third_text",
             ValueFormat.BINARY
         );
-
-        delete conn;
 
         assert(result[0]["second_num"].as!PGinteger == 567);
         assert(result[1]["third_text"].as!PGtext == "fgh");
@@ -36,6 +35,7 @@ void test()
     }
     catch(ConnectionException e)
     {
+        conn.resetStart();
         logWarn(e.msg);
     }
     catch(Exception e)
