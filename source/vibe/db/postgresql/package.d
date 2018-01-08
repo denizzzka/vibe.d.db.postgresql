@@ -110,7 +110,11 @@ class __Conn : dpq2.Connection
         auto sock = this.socket();
 
         sock.blocking = false;
-        scope(exit) sock.blocking = true;
+        scope(exit)
+        {
+            sock.blocking = true;
+            destroy(sock);
+        }
 
         auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.any);
         scope(exit) destroy(event); // Prevents 100% CPU usage
