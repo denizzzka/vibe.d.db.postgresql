@@ -1,2 +1,4 @@
 .dub/
 vibe-d-postgresql
+dub.selections.json
+*-test-*

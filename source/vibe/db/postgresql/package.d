@@ -208,7 +208,7 @@ class __Conn : dpq2.Connection
 
     immutable(Answer) execStatement(
         string sqlCommand,
-        ValueFormat resultFormat = ValueFormat.TEXT
+        ValueFormat resultFormat = ValueFormat.BINARY
     )
     {
         QueryParams p;
@@ -227,11 +227,12 @@ class __Conn : dpq2.Connection
 
     void prepareStatement(
         string statementName,
-        string sqlStatement
+        string sqlStatement,
+        Oid[] oids = null
     )
     {
         auto r = runStatementBlockingManner(
-                {sendPrepare(statementName, sqlStatement);}
+                {sendPrepare(statementName, sqlStatement, oids);}
             );
 
         if(r.status != PGRES_COMMAND_OK)
