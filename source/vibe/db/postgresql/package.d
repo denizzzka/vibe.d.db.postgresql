@@ -10,6 +10,7 @@ public import derelict.pq.pq;
 static import vibe.core.connectionpool;
 import vibe.core.log;
 import core.time: Duration, dur;
+import core.memory: GC;
 import std.exception: enforce;
 import std.conv: to;
 
@@ -106,18 +107,19 @@ class __Conn : dpq2.Connection
     private void waitEndOfRead(in Duration timeout) // TODO: rename to waitEndOf + add FileDescriptorEvent.Trigger argument
     {
         import vibe.core.core;
+        import std.typecons: Unique;
 
-        auto sock = this.socket();
-
-        sock.blocking = false;
-        scope(exit)
+        version(Have_vibe_core)
         {
-            sock.blocking = true;
-            destroy(sock);
+            // vibe-core right now support only read trigger event
+            scope event = createFileDescriptorEvent(posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
         }
-
-        auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.any);
-        scope(exit) destroy(event); // Prevents 100% CPU usage
+        else
+        {
+            import std.socket: Socket;
+            Unique!Socket sock = this.socket();
+            Unique!FileDescriptorEvent event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.any);
+        }
 
         if(!event.wait(timeout))
             throw new PostgresClientTimeoutException(__FILE__, __LINE__);
