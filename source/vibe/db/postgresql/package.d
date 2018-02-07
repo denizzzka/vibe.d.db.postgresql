@@ -109,6 +109,7 @@ class __Conn : dpq2.Connection
 
         auto sock = this.socket();
 
+        // Connection socket should be non-blocking while waiting
         sock.blocking = false;
         scope(exit)
         {
@@ -116,7 +117,23 @@ class __Conn : dpq2.Connection
             destroy(sock);
         }
 
-        auto event = createFileDescriptorEvent(sock.handle, FileDescriptorEvent.Trigger.any);
+        version(Have_vibe_core)
+        {
+            // vibe-core right now supports only read trigger event
+            enum trigger = FileDescriptorEvent.Trigger.read;
+
+            // vibe-core does reference counting and may close socket
+            // after it are used.
+            // Thus we need to a copy of socket for it.
+            auto posix_socket = cast(int) sock.posixSocketDuplicate;
+        }
+        else
+        {
+            enum trigger = FileDescriptorEvent.Trigger.any;
+            auto posix_socket = sock.handle;
+        }
+
+        auto event = createFileDescriptorEvent(posix_socket, trigger);
         scope(exit) destroy(event); // Prevents 100% CPU usage
 
         if(!event.wait(timeout))
