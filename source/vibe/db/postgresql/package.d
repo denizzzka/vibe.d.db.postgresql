@@ -124,7 +124,7 @@ class __Conn : dpq2.Connection
             // vibe-core does reference counting and may close socket
             // after it are used.
             // Thus we need to a copy of socket for it.
-            auto posix_socket = cast(int) sock.posixSocketDuplicate;
+            auto posix_socket = cast(int) posixSocketDuplicate;
         }
         else
         {
