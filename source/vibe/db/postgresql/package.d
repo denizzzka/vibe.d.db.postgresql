@@ -107,9 +107,8 @@ class __Conn : dpq2.Connection
     {
         import vibe.core.core;
 
-        auto sock = this.socket();
-
         // Connection socket should be non-blocking while waiting
+        auto sock = this.socket();
         sock.blocking = false;
         scope(exit)
         {
