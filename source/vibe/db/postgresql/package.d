@@ -41,7 +41,7 @@ class PostgresClient
             afterStartConnectOrReset
         );
 
-        pool = new ConnectionPool!__Conn({ return new __Conn(settings); }, connNum);
+        pool = new ConnectionPool!__Conn(() @safe { return new __Conn(settings); }, connNum);
     }
 
     LockedConnection!__Conn lockConnection()
@@ -81,7 +81,7 @@ class __Conn : dpq2.Connection
 
     private const ClientSettings* settings;
 
-    private this(const ref ClientSettings settings)
+    private this(const ref ClientSettings settings) @trusted
     {
         this.settings = &settings;
 
