@@ -18,6 +18,14 @@ configuration "integration_test" {
     versions "IntegrationTest"
 }
 
+configuration "integration_test_vibe_core" {
+    targetType "executable"
+    buildType "unittest"
+    versions "IntegrationTest"
+    dependency "vibe-core" version="~>1.3.0"
+    subConfiguration "vibe-d:core" "vibe-core"
+}
+
 subPackage {
     name "example"
     sourcePaths "example"
