@@ -121,7 +121,7 @@ class __Conn : dpq2.Connection
             // vibe-core right now supports only read trigger event
             enum trigger = FileDescriptorEvent.Trigger.read;
 
-            // vibe-core does reference counting and may close socket
+            // vibe-core does reference counting and closes socket
             // after it are used.
             // Thus we need to a copy of socket for it.
             auto posix_socket = cast(int) posixSocketDuplicate;
