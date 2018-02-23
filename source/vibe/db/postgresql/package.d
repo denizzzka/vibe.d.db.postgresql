@@ -132,7 +132,7 @@ class __Conn : dpq2.Connection
 
             consumeInput();
         }
-        while (this.isBusy); // wait untill PQgetresult won't block anymore
+        while (this.isBusy); // wait until PQgetresult won't block anymore
     }
 
     private void doQuery(void delegate() doesQueryAndCollectsResults)
