@@ -105,15 +105,42 @@ class __Conn : dpq2.Connection
 
     private void waitEndOfRead(in Duration timeout) // TODO: rename to waitEndOf + add FileDescriptorEvent.Trigger argument
     {
+        // copy from the Phobos Socket implementation
+        bool isBlocking(int sock)
+        {
+            version(Windows)
+            {
+                //https://stackoverflow.com/a/5500906/5581403
+                return true; //we don't know and can't check
+            }
+            else version(Posix)
+            {
+                import core.sys.posix.fcntl;
+                return !(fcntl(sock, F_GETFL, 0) & O_NONBLOCK);
+            }
+        }
+
+        import std.socket : Socket;
         import vibe.core.core;
 
-        // Connection socket should be non-blocking while waiting
-        auto sock = this.socket();
-        sock.blocking = false;
+        Socket sock;
         scope(exit)
         {
-            sock.blocking = true;
-            destroy(sock);
+            if (sock !is null)
+            {
+                sock.blocking = true;
+                destroy(sock);
+                logDebugV("Socket set to blocking");
+            }
+        }
+
+        // check if connection socket is blocking
+        if (isBlocking(this.posixSocket))
+        {
+            // Connection socket should be non-blocking while waiting
+            sock = this.socket();
+            sock.blocking = false;
+            logDebugV("Socket set to non-blocking");
         }
 
         version(Have_vibe_core)
@@ -122,21 +149,27 @@ class __Conn : dpq2.Connection
             enum trigger = FileDescriptorEvent.Trigger.read;
 
             // vibe-core does reference counting and closes socket
-            // after it are used.
+            // after it is used.
             // Thus we need to a copy of socket for it.
             auto posix_socket = cast(int) posixSocketDuplicate;
         }
         else
         {
             enum trigger = FileDescriptorEvent.Trigger.any;
-            auto posix_socket = sock.handle;
+            auto posix_socket = sock is null ? this.posixSocket : sock.handle;
         }
 
         auto event = createFileDescriptorEvent(posix_socket, trigger);
         scope(exit) destroy(event); // Prevents 100% CPU usage
 
-        if(!event.wait(timeout))
-            throw new PostgresClientTimeoutException(__FILE__, __LINE__);
+        do
+        {
+            if(!event.wait(timeout))
+                throw new PostgresClientTimeoutException(__FILE__, __LINE__);
+
+            consumeInput();
+        }
+        while (this.isBusy); // wait untill PQgetresult won't block anymore
     }
 
     private void doQuery(void delegate() doesQueryAndCollectsResults)
