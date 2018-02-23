@@ -116,7 +116,8 @@ class __Conn : dpq2.Connection
         version(Have_vibe_core)
         {
             // vibe-core right now supports only read trigger event
-            auto event = createFileDescriptorEvent(this.posixSocket, FileDescriptorEvent.Trigger.read);
+            // it also closes the socket on scope exit, thus a socket duplication here
+            auto event = createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
         }
         else
         {
