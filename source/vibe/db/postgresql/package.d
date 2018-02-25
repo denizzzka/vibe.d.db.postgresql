@@ -107,36 +107,32 @@ class __Conn : dpq2.Connection
     {
         import vibe.core.core;
 
-        // Connection socket should be non-blocking while waiting
-        auto sock = this.socket();
-        sock.blocking = false;
-        scope(exit)
+        version(Posix)
         {
-            sock.blocking = true;
-            destroy(sock);
+            import core.sys.posix.fcntl;
+            assert((fcntl(this.posixSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
         }
 
         version(Have_vibe_core)
         {
             // vibe-core right now supports only read trigger event
-            enum trigger = FileDescriptorEvent.Trigger.read;
-
-            // vibe-core does reference counting and closes socket
-            // after it are used.
-            // Thus we need to a copy of socket for it.
-            auto posix_socket = cast(int) posixSocketDuplicate;
+            // it also closes the socket on scope exit, thus a socket duplication here
+            auto event = createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
         }
         else
         {
-            enum trigger = FileDescriptorEvent.Trigger.any;
-            auto posix_socket = sock.handle;
+            auto event = createFileDescriptorEvent(this.posixSocket, FileDescriptorEvent.Trigger.any);
+            scope(exit) destroy(event); // Prevents 100% CPU usage
         }
 
-        auto event = createFileDescriptorEvent(posix_socket, trigger);
-        scope(exit) destroy(event); // Prevents 100% CPU usage
+        do
+        {
+            if(!event.wait(timeout))
+                throw new PostgresClientTimeoutException(__FILE__, __LINE__);
 
-        if(!event.wait(timeout))
-            throw new PostgresClientTimeoutException(__FILE__, __LINE__);
+            consumeInput();
+        }
+        while (this.isBusy); // wait until PQgetresult won't block anymore
     }
 
     private void doQuery(void delegate() doesQueryAndCollectsResults)
