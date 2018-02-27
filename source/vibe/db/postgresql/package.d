@@ -8,89 +8,96 @@ public import dpq2.connection: ConnectionException, connStringCheck, ConnectionS
 public import dpq2.args;
 public import derelict.pq.pq;
 
-static import vibe.core.connectionpool;
+import vibe.core.connectionpool: ConnectionPool, VibeLockedConnection = LockedConnection;
 import vibe.core.log;
 import core.time: Duration, dur;
 import std.exception: enforce;
 import std.conv: to;
 
-private alias ConnectionPool = vibe.core.connectionpool.ConnectionPool;
-private alias VibeLockedConnection = vibe.core.connectionpool.LockedConnection;
-
-private struct ClientSettings
+///
+struct ClientSettings
 {
-    string connString;
-    void delegate(__Conn) afterStartConnectOrReset;
+    string connString; ///
+    void delegate(Connection) afterStartConnectOrReset; ///
 }
 
 /// A Postgres client with connection pooling.
 class PostgresClient
 {
-    private ConnectionPool!__Conn pool;
-    private immutable ClientSettings settings;
+    private ConnectionPool!Connection pool;
 
     ///
     this(
         string connString,
         uint connNum,
-        void delegate(__Conn) afterStartConnectOrReset = null
+        void delegate(Connection) afterStartConnectOrReset = null
     )
     {
-        enforce(PQisthreadsafe() == 1);
-        connString.connStringCheck;
-
-        settings = ClientSettings(
+        immutable cs = ClientSettings(
             connString,
             afterStartConnectOrReset
         );
 
-        pool = new ConnectionPool!__Conn(() @safe { return new __Conn(settings); }, connNum);
+        this(&createConnection, cs, connNum);
+    }
+
+    ///
+    this
+    (
+        Connection delegate(in ClientSettings) @safe connFactory,
+        immutable ClientSettings cs,
+        uint connNum,
+    )
+    {
+        cs.connString.connStringCheck;
+
+        pool = new ConnectionPool!Connection(() @safe { return connFactory(cs); }, connNum);
+    }
+
+    ///
+    this(Connection delegate() const pure @safe connFactory, uint connNum)
+    {
+        enforce(PQisthreadsafe() == 1);
+
+        pool = new ConnectionPool!Connection(
+                () @safe { return connFactory(); },
+                connNum
+            );
     }
 
     /// Get connection from the pool.
-    LockedConnection!__Conn lockConnection()
+    LockedConnection lockConnection()
     {
         logDebugV("get connection from the pool");
 
-        return new LockedConnection!__Conn(pool.lockConnection());
+        return pool.lockConnection();
     }
-}
 
-// TODO: remove this class
-// vibe-core connectionpool already returns raii struct from lockConnection,
-// it's destructor returns connection to the pool. This class is only needed for
-// backward compatibility.
-///
-class LockedConnection(TConnection)
-{
     ///
-    VibeLockedConnection!TConnection m_con;     // struct
-
-    this(VibeLockedConnection!TConnection con)
+    Connection createConnection(in ClientSettings cs) @safe
     {
-        m_con = con;
+        return new Connection(cs);
     }
-
-    ~this()
-    {
-        logDebugV("LockedConnection destructor");
-        destroy(m_con);
-    }
-
-    alias m_con this;
 }
+
+alias Connection = Dpq2Connection;
+deprecated("use Connection instead") alias __Conn = Connection;
+
+///
+alias LockedConnection = VibeLockedConnection!Connection;
 
 /**
  * dpq2.Connection adopted for using with Vibe.d
  */
-class __Conn : dpq2.Connection
+class Dpq2Connection : dpq2.Connection
 {
     Duration socketTimeout = dur!"seconds"(10); ///
     Duration statementTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings* settings;
 
-    private this(const ref ClientSettings settings) @trusted
+    ///
+    this(const ref ClientSettings settings) @trusted
     {
         this.settings = &settings;
 
@@ -358,14 +365,14 @@ version(IntegrationTest) void __integration_test(string connString)
         auto future0 = async({
             auto conn = client.lockConnection;
             immutable answer = conn.execStatement("SELECT 'New connection 0'");
-            delete conn;
+            destroy(conn);
             return 1;
         });
 
         auto future1 = async({
             auto conn = client.lockConnection;
             immutable answer = conn.execStatement("SELECT 'New connection 1'");
-            delete conn;
+            destroy(conn);
             return 1;
         });
 
@@ -380,5 +387,5 @@ version(IntegrationTest) void __integration_test(string connString)
         assert(conn.escapeIdentifier("abc") == "\"abc\"");
     }
 
-    delete conn;
+    destroy(conn);
 }
