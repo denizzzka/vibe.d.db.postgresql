@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Class PostgresClient</title>
+		<title>Class Dpq2Connection</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -67,12 +67,13 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Class PostgresClient</h1><p>A Postgres client with connection pooling.
+			<h1>Class Dpq2Connection</h1><p>dpq2.Connection adopted for using with Vibe.d
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">class</span> <span class="typ">PostgresClient</span>
+			<span class="kwd">class</span> <span class="typ">Dpq2Connection</span>
+			<br>&nbsp;&nbsp;: <span class="pln">dpq2<wbr/></span><span class="pun">.</span><span class="pln">connection<wbr/></span><span class="pun">.</span><span class="typ">Connection</span>
 			<span class="pun">;</span>
 					</div>
 				</code>
@@ -86,11 +87,31 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
-							<a href="../../../vibe/db/postgresql/PostgresClient.this.html" class="public">
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.this.html" class="public">
 								<code>this</code>
 							</a>
 						</td>
 						<td></td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Fields</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.socketTimeout.html" class="public"><code>socketTimeout</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">time<wbr/></span><span class="pun">.</span><span class="typ">Duration</span></code></td><td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.statementTimeout.html" class="public"><code>statementTimeout</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">time<wbr/></span><span class="pun">.</span><span class="typ">Duration</span></code></td><td></td>
 					</tr>
 				</table>
 			</section>
@@ -102,20 +123,43 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
-							<a href="../../../vibe/db/postgresql/PostgresClient.createConnection.html" class="public">
-								<code>createConnection</code>
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.describePreparedStatement.html" class="public">
+								<code>describePreparedStatement</code>
 							</a>
 						</td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>
-							<a href="../../../vibe/db/postgresql/PostgresClient.lockConnection.html" class="public">
-								<code>lockConnection</code>
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.execPreparedStatement.html" class="public">
+								<code>execPreparedStatement</code>
 							</a>
 						</td>
-						<td>Get connection from the pool.
-</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.execStatement.html" class="public">
+								<code>execStatement</code>
+							</a>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.prepareStatement.html" class="public">
+								<code>prepareStatement</code>
+							</a>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../vibe/db/postgresql/Dpq2Connection.resetStart.html" class="public">
+								<code>resetStart</code>
+							</a>
+						</td>
+						<td></td>
 					</tr>
 				</table>
 			</section>

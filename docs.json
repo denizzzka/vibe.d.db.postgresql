@@ -4,16 +4,44 @@
 		"name": "vibe.db.postgresql",
 		"members": [
 			{
+				"name": "ClientSettings",
+				"line": 18,
+				"comment": "\n",
+				"members": [
+					{
+						"offset": 0,
+						"name": "connString",
+						"line": 20,
+						"comment": "\n",
+						"deco": "Aya",
+						"char": 12,
+						"kind": "variable"
+					},
+					{
+						"offset": 16,
+						"name": "afterStartConnectOrReset",
+						"line": 21,
+						"comment": "\n",
+						"deco": "DFC4vibe2db10postgresql14Dpq2ConnectionZv",
+						"originalType": "void delegate(Connection)",
+						"char": 31,
+						"kind": "variable"
+					}
+				],
+				"char": 1,
+				"kind": "struct"
+			},
+			{
 				"name": "PostgresClient",
-				"line": 27,
+				"line": 25,
 				"comment": "A Postgres client with connection pooling.\n",
 				"members": [
 					{
 						"endchar": 5,
 						"name": "this",
-						"line": 33,
+						"line": 30,
 						"comment": "\n",
-						"deco": "FAyakDFC4vibe2db10postgresql6__ConnZvZCQBfQBdQBd14PostgresClient",
+						"deco": "FAyakDFC4vibe2db10postgresql14Dpq2ConnectionZvZCQBoQBmQBm14PostgresClient",
 						"parameters": [
 							{
 								"name": "connString",
@@ -25,24 +53,87 @@
 							},
 							{
 								"name": "afterStartConnectOrReset",
-								"deco": "DFC4vibe2db10postgresql6__ConnZv",
-								"default": "cast(void delegate(__Conn))null"
+								"deco": "DFC4vibe2db10postgresql14Dpq2ConnectionZv",
+								"default": "cast(void delegate(Dpq2Connection))null"
 							}
 						],
-						"endline": 48,
-						"originalType": "(string connString, uint connNum, void delegate(__Conn) afterStartConnectOrReset = null)",
+						"endline": 42,
+						"originalType": "(string connString, uint connNum, void delegate(Connection) afterStartConnectOrReset = null)",
+						"char": 5,
+						"kind": "constructor"
+					},
+					{
+						"endchar": 5,
+						"name": "this",
+						"line": 45,
+						"comment": "\n",
+						"deco": "FDFNfxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2ConnectionySQCnQClQClQCckZCQDcQDaQDa14PostgresClient",
+						"parameters": [
+							{
+								"name": "connFactory",
+								"deco": "DFNfxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2Connection"
+							},
+							{
+								"name": "cs",
+								"deco": "yS4vibe2db10postgresql14ClientSettings"
+							},
+							{
+								"name": "connNum",
+								"deco": "k"
+							}
+						],
+						"endline": 55,
+						"originalType": "(Connection delegate(in ClientSettings) @safe connFactory, immutable ClientSettings cs, uint connNum)",
+						"char": 5,
+						"kind": "constructor"
+					},
+					{
+						"endchar": 5,
+						"name": "this",
+						"line": 58,
+						"comment": "\n",
+						"deco": "FDxFNaNfZC4vibe2db10postgresql14Dpq2ConnectionkZCQBnQBlQBl14PostgresClient",
+						"parameters": [
+							{
+								"name": "connFactory",
+								"deco": "DxFNaNfZC4vibe2db10postgresql14Dpq2Connection"
+							},
+							{
+								"name": "connNum",
+								"deco": "k"
+							}
+						],
+						"endline": 66,
+						"originalType": "(Connection delegate() const pure @safe connFactory, uint connNum)",
 						"char": 5,
 						"kind": "constructor"
 					},
 					{
 						"endchar": 5,
 						"name": "lockConnection",
-						"line": 51,
+						"line": 69,
 						"comment": "Get connection from the pool.\n",
-						"deco": "FZC4vibe2db10postgresql__T16LockedConnectionTCQBrQBpQBp6__ConnZQBl",
-						"endline": 56,
-						"originalType": "LockedConnection!__Conn()",
-						"char": 29,
+						"deco": "FZS4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCd",
+						"endline": 74,
+						"originalType": "LockedConnection()",
+						"char": 22,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
+						"name": "createConnection",
+						"line": 77,
+						"comment": "\n",
+						"deco": "FNfxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2Connection",
+						"parameters": [
+							{
+								"name": "cs",
+								"deco": "xS4vibe2db10postgresql14ClientSettings"
+							}
+						],
+						"endline": 80,
+						"originalType": "@safe Connection(in ClientSettings cs)",
+						"char": 16,
 						"kind": "function"
 					}
 				],
@@ -50,40 +141,187 @@
 				"kind": "class"
 			},
 			{
+				"name": "LockedConnection",
+				"line": 87,
+				"comment": "\n",
+				"deco": "S4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCd",
+				"char": 1,
+				"kind": "alias"
+			},
+			{
 				"members": [
 					{
-						"name": "LockedConnection",
-						"line": 64,
-						"members": [
+						"offset": 24,
+						"name": "socketTimeout",
+						"line": 94,
+						"comment": "\n",
+						"deco": "S4core4time8Duration",
+						"init": "Duration(100000000L)",
+						"char": 14,
+						"kind": "variable"
+					},
+					{
+						"offset": 32,
+						"name": "statementTimeout",
+						"line": 95,
+						"comment": "\n",
+						"deco": "S4core4time8Duration",
+						"init": "Duration(300000000L)",
+						"char": 14,
+						"kind": "variable"
+					},
+					{
+						"endchar": 5,
+						"name": "this",
+						"line": 100,
+						"comment": "\n",
+						"deco": "FNeKxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2Connection",
+						"parameters": [
 							{
-								"name": "m_con",
-								"line": 67,
-								"comment": "\n",
-								"type": "VibeLockedConnection!TConnection",
-								"char": 38,
-								"kind": "variable"
+								"name": "settings",
+								"storageClass": [
+									"ref"
+								],
+								"deco": "xS4vibe2db10postgresql14ClientSettings"
 							}
 						],
-						"char": 1,
-						"kind": "class"
-					}
-				],
-				"name": "LockedConnection",
-				"line": 64,
-				"comment": "\n",
-				"parameters": [
+						"endline": 112,
+						"originalType": "@trusted (ref const ClientSettings settings)",
+						"char": 5,
+						"kind": "constructor"
+					},
 					{
-						"name": "TConnection",
-						"kind": "type"
+						"endchar": 5,
+						"name": "resetStart",
+						"line": 115,
+						"comment": "\n",
+						"deco": "FZv",
+						"endline": 121,
+						"char": 19,
+						"kind": "function",
+						"overrides": [
+							"dpq2.connection.Connection.resetStart"
+						],
+						"storageClass": [
+							"override"
+						]
+					},
+					{
+						"endchar": 5,
+						"name": "execStatement",
+						"line": 239,
+						"comment": "\n",
+						"deco": "FAyaE4dpq25value11ValueFormatZyCQBb6result6Answer",
+						"parameters": [
+							{
+								"name": "sqlCommand",
+								"deco": "Aya"
+							},
+							{
+								"name": "resultFormat",
+								"deco": "E4dpq25value11ValueFormat",
+								"default": "cast(ValueFormat)1"
+							}
+						],
+						"endline": 249,
+						"originalType": "immutable(Answer)(string sqlCommand, ValueFormat resultFormat = ValueFormat.BINARY)",
+						"char": 23,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
+						"name": "execStatement",
+						"line": 252,
+						"comment": "\n",
+						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
+						"parameters": [
+							{
+								"name": "params",
+								"storageClass": [
+									"ref"
+								],
+								"deco": "xS4dpq24args11QueryParams"
+							}
+						],
+						"endline": 257,
+						"originalType": "immutable(Answer)(ref QueryParams params)",
+						"char": 23,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
+						"name": "prepareStatement",
+						"line": 260,
+						"comment": "\n",
+						"deco": "FAyaQdAkZv",
+						"parameters": [
+							{
+								"name": "statementName",
+								"deco": "Aya"
+							},
+							{
+								"name": "sqlStatement",
+								"deco": "Aya"
+							},
+							{
+								"name": "oids",
+								"deco": "Ak",
+								"default": "null"
+							}
+						],
+						"endline": 272,
+						"originalType": "void(string statementName, string sqlStatement, Oid[] oids = null)",
+						"char": 10,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
+						"name": "execPreparedStatement",
+						"line": 275,
+						"comment": "\n",
+						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
+						"parameters": [
+							{
+								"name": "params",
+								"storageClass": [
+									"ref"
+								],
+								"deco": "xS4dpq24args11QueryParams"
+							}
+						],
+						"endline": 280,
+						"originalType": "immutable(Answer)(ref QueryParams params)",
+						"char": 23,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
+						"name": "describePreparedStatement",
+						"line": 283,
+						"comment": "\n",
+						"deco": "FAyaZyC4dpq26result6Answer",
+						"parameters": [
+							{
+								"name": "preparedStatementName",
+								"deco": "Aya"
+							}
+						],
+						"endline": 288,
+						"char": 23,
+						"kind": "function"
 					}
 				],
+				"name": "Dpq2Connection",
+				"line": 92,
+				"comment": " dpq2.Connection adopted for using with Vibe.d\n",
+				"base": "dpq2.connection.Connection",
 				"char": 1,
-				"kind": "template"
+				"kind": "class"
 			},
 			{
 				"members": [],
 				"name": "PostgresClientTimeoutException",
-				"line": 285,
+				"line": 292,
 				"comment": "\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,

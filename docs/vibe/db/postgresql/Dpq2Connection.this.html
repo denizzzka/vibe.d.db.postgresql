@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function PostgresClient.lockConnection</title>
+		<title>Function Dpq2Connection.this</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -67,13 +67,16 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function PostgresClient.lockConnection</h1><p>Get connection from the pool.
-</p>
+			<h1>Function Dpq2Connection.this</h1><p></p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="pln">vibe<wbr/></span><span class="pun">.</span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">connectionpool<wbr/></span><span class="pun">.</span><span class="typ">LockedConnection</span>!(vibe.db.postgresql.Dpq2Connection) <span class="pln">lockConnection
-			<span class="pun">()</span><span class="pun">;</span>
+			<span class="pln">this</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">ref </span><span class="kwd">const</span><span class="pun">(</span><a href="../../../vibe/db/postgresql/ClientSettings.html"><span class="typ">ClientSettings</span></a><span class="pun">)</span> <span class="pln">settings</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">@trusted</span><span class="pun">;</span>
 					</div>
 				</code>
 			</div>

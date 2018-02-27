@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function PostgresClient.lockConnection</title>
+		<title>Variable Dpq2Connection.statementTimeout</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -67,13 +67,24 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function PostgresClient.lockConnection</h1><p>Get connection from the pool.
-</p>
+			<h1>Variable Dpq2Connection.statementTimeout</h1><p></p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="pln">vibe<wbr/></span><span class="pun">.</span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">connectionpool<wbr/></span><span class="pun">.</span><span class="typ">LockedConnection</span>!(vibe.db.postgresql.Dpq2Connection) <span class="pln">lockConnection
-			<span class="pun">()</span><span class="pun">;</span>
+			<span class="kwd">class</span> <a href="../../../vibe/db/postgresql/Dpq2Connection.html"><span class="typ">Dpq2Connection</span></a>
+			<br/>
+			<span class="pun">
+				{
+				<br/>
+			</span>
+			&nbsp;&nbsp;<span class="com">// ...</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">time<wbr/></span><span class="pun">.</span><span class="typ">Duration</span> <span class="pln">statementTimeout</span>
+			 <span class="pun">=</span> <span class="typ">Duration</span><span class="pun">(</span><span class="lit">300000000L</span><span class="pun">)</span><span class="pun">;</span>
+			<br/>
+			&nbsp;&nbsp;<span class="com">// ...</span>
+			<br/>
+			<span class="pun">}</span>
 					</div>
 				</code>
 			</div>

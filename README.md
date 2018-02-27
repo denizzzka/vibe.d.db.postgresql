@@ -1,4 +1,9 @@
 PostgreSQL support for Vibe.d
+
+[API documentation](https://denizzzka.github.io/vibe.d.db.postgresql/docs)
+
+_Please help us to make the documentation!_
+
 ====
 
 Example:
@@ -13,7 +18,7 @@ PostgresClient client;
 void test()
 {
     auto conn = client.lockConnection();
-    scope(exit) delete conn;
+    scope(exit) destroy(conn);
 
     try
     {
