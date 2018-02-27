@@ -24,7 +24,6 @@ struct ClientSettings
 class PostgresClient
 {
     private ConnectionPool!__Conn pool;
-    private immutable ClientSettings settings;
 
     ///
     this(
@@ -33,26 +32,36 @@ class PostgresClient
         void delegate(__Conn) afterStartConnectOrReset = null
     )
     {
-        enforce(PQisthreadsafe() == 1);
-        connString.connStringCheck;
-
         auto cs = ClientSettings(
             connString,
             afterStartConnectOrReset
         );
 
-        this(&createConnection, cs, connNum, afterStartConnectOrReset);
+        this((ClientSettings){ return new __Conn(cs);  }, cs, connNum);
     }
 
     ///
-    this(__Conn delegate(in ClientSettings) @safe connFactory, in ClientSettings cs, uint connNum, void delegate(__Conn) afterStartConnectOrReset = null)
+    this
+    (
+        __Conn delegate(in ClientSettings) @safe connFactory,
+        in ClientSettings cs,
+        uint connNum,
+    )
+    {
+        cs.connString.connStringCheck;
+
+        pool = new ConnectionPool!__Conn(() @safe { return connFactory(cs); }, connNum);
+    }
+
+    ///
+    this(__Conn delegate() const pure @safe connFactory, uint connNum)
     {
         enforce(PQisthreadsafe() == 1);
 
-        settings = cs;
-        settings.connString.connStringCheck;
-
-        pool = new ConnectionPool!__Conn(() @safe { return connFactory(settings); }, connNum);
+        pool = new ConnectionPool!__Conn(
+                () @safe { return connFactory(); },
+                connNum
+            );
     }
 
     /// Get connection from the pool.
