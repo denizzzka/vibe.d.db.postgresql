@@ -1,3 +1,4 @@
+/// PostgreSQL database client implementation.
 module vibe.db.postgresql;
 
 public import dpq2: ValueFormat;
@@ -22,11 +23,13 @@ private struct ClientSettings
     void delegate(__Conn) afterStartConnectOrReset;
 }
 
+/// A Postgres client with connection pooling.
 class PostgresClient
 {
     private ConnectionPool!__Conn pool;
     private immutable ClientSettings settings;
 
+    ///
     this(
         string connString,
         uint connNum,
@@ -44,6 +47,7 @@ class PostgresClient
         pool = new ConnectionPool!__Conn(() @safe { return new __Conn(settings); }, connNum);
     }
 
+    /// Get connection from the pool.
     LockedConnection!__Conn lockConnection()
     {
         logDebugV("get connection from the pool");
@@ -56,8 +60,10 @@ class PostgresClient
 // vibe-core connectionpool already returns raii struct from lockConnection,
 // it's destructor returns connection to the pool. This class is only needed for
 // backward compatibility.
+///
 class LockedConnection(TConnection)
 {
+    ///
     VibeLockedConnection!TConnection m_con;     // struct
 
     this(VibeLockedConnection!TConnection con)
@@ -74,10 +80,13 @@ class LockedConnection(TConnection)
     alias m_con this;
 }
 
+/**
+ * dpq2.Connection adopted for using with Vibe.d
+ */
 class __Conn : dpq2.Connection
 {
-    Duration socketTimeout = dur!"seconds"(10);
-    Duration statementTimeout = dur!"seconds"(30);
+    Duration socketTimeout = dur!"seconds"(10); ///
+    Duration statementTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings* settings;
 
@@ -95,6 +104,7 @@ class __Conn : dpq2.Connection
             settings.afterStartConnectOrReset(this);
     }
 
+    ///
     override void resetStart()
     {
         super.resetStart;
@@ -218,6 +228,7 @@ class __Conn : dpq2.Connection
         return res[0];
     }
 
+    ///
     immutable(Answer) execStatement(
         string sqlCommand,
         ValueFormat resultFormat = ValueFormat.BINARY
@@ -230,6 +241,7 @@ class __Conn : dpq2.Connection
         return execStatement(p);
     }
 
+    ///
     immutable(Answer) execStatement(in ref QueryParams params)
     {
         auto res = runStatementBlockingManner({ sendQueryParams(params); });
@@ -237,6 +249,7 @@ class __Conn : dpq2.Connection
         return res.getAnswer;
     }
 
+    ///
     void prepareStatement(
         string statementName,
         string sqlStatement,
@@ -251,6 +264,7 @@ class __Conn : dpq2.Connection
             throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
     }
 
+    ///
     immutable(Answer) execPreparedStatement(in ref QueryParams params)
     {
         auto res = runStatementBlockingManner({ sendQueryPrepared(params); });
@@ -258,6 +272,7 @@ class __Conn : dpq2.Connection
         return res.getAnswer;
     }
 
+    ///
     immutable(Answer) describePreparedStatement(string preparedStatementName)
     {
         auto res = runStatementBlockingManner({ sendDescribePrepared(preparedStatementName); });
@@ -266,6 +281,7 @@ class __Conn : dpq2.Connection
     }
 }
 
+///
 class PostgresClientException : Dpq2Exception // TODO: remove it (use dpq2 exception)
 {
     this(string msg, string file, size_t line)
@@ -274,6 +290,7 @@ class PostgresClientException : Dpq2Exception // TODO: remove it (use dpq2 excep
     }
 }
 
+///
 class PostgresClientTimeoutException : Dpq2Exception
 {
     this(string file, size_t line)
