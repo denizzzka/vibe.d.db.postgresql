@@ -16,14 +16,31 @@ addons:
 
 services: postgresql
 
-before_install:
-  - dub fetch dscanner
+env:
+  - CONN_STRING="dbname=vibe-test"
 
 before_script:
   - psql -c 'create database "vibe-test"' -U postgres
 
 script:
-  - ./.test.sh "dbname=vibe-test"
+  - dub test
+  - dub run --config=integration_test -- --conninfo="${CONN_STRING}" --debug=true
+  - dub run --config=integration_test_vibe_core -- --conninfo="${CONN_STRING}" --debug=true
+  - dub build :example
 
-after_success:
-  - if [ ${DC} = "dmd" ]; then bash <(curl -s https://codecov.io/bash); fi
+matrix:
+  include:
+    - d: dmd
+
+      script:
+        - dub build --build=ddox
+
+      cache: { directories: [$HOME/.dub] }
+
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        keep-history: true
+        github_token: $GITHUB_TOKEN
+        on:
+          branch: master
