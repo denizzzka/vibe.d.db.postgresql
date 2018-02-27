@@ -1,0 +1,388 @@
+[
+	{
+		"file": "source/vibe/db/postgresql/package.d",
+		"name": "vibe.db.postgresql",
+		"members": [
+			{
+				"name": "PostgresClient",
+				"line": 27,
+				"comment": "A Postgres client with connection pooling.\n",
+				"members": [
+					{
+						"endchar": 5,
+						"name": "this",
+						"line": 33,
+						"comment": "\n",
+						"deco": "FAyakDFC4vibe2db10postgresql6__ConnZvZCQBfQBdQBd14PostgresClient",
+						"parameters": [
+							{
+								"name": "connString",
+								"deco": "Aya"
+							},
+							{
+								"name": "connNum",
+								"deco": "k"
+							},
+							{
+								"name": "afterStartConnectOrReset",
+								"deco": "DFC4vibe2db10postgresql6__ConnZv",
+								"default": "cast(void delegate(__Conn))null"
+							}
+						],
+						"endline": 48,
+						"originalType": "(string connString, uint connNum, void delegate(__Conn) afterStartConnectOrReset = null)",
+						"char": 5,
+						"kind": "constructor"
+					},
+					{
+						"endchar": 5,
+						"name": "lockConnection",
+						"line": 51,
+						"comment": "Get connection from the pool.\n",
+						"deco": "FZC4vibe2db10postgresql__T16LockedConnectionTCQBrQBpQBp6__ConnZQBl",
+						"endline": 56,
+						"originalType": "LockedConnection!__Conn()",
+						"char": 29,
+						"kind": "function"
+					}
+				],
+				"char": 1,
+				"kind": "class"
+			},
+			{
+				"members": [
+					{
+						"name": "LockedConnection",
+						"line": 64,
+						"members": [
+							{
+								"name": "m_con",
+								"line": 67,
+								"comment": "\n",
+								"type": "VibeLockedConnection!TConnection",
+								"char": 38,
+								"kind": "variable"
+							}
+						],
+						"char": 1,
+						"kind": "class"
+					}
+				],
+				"name": "LockedConnection",
+				"line": 64,
+				"comment": "\n",
+				"parameters": [
+					{
+						"name": "TConnection",
+						"kind": "type"
+					}
+				],
+				"char": 1,
+				"kind": "template"
+			},
+			{
+				"members": [],
+				"name": "PostgresClientException",
+				"line": 285,
+				"comment": "\n",
+				"base": "dpq2.exception.Dpq2Exception",
+				"char": 1,
+				"kind": "class"
+			},
+			{
+				"members": [],
+				"name": "PostgresClientTimeoutException",
+				"line": 294,
+				"comment": "\n",
+				"base": "dpq2.exception.Dpq2Exception",
+				"char": 1,
+				"kind": "class"
+			}
+		],
+		"comment": "PostgreSQL database client implementation.\n",
+		"kind": "module"
+	},
+	{
+		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.9/dpq2/src/dpq2/conv/numeric.d",
+		"name": "dpq2.conv.numeric",
+		"members": [],
+		"comment": "   PostgreSQL numeric format\n\n   Copyright: © 2014 DSoftOut\n   Authors: NCrashed <ncrashed@gmail.com>\n",
+		"kind": "module"
+	},
+	{
+		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.9/dpq2/src/dpq2/conv/time.d",
+		"name": "dpq2.conv.time",
+		"members": [
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "binaryValueAs",
+						"line": 30,
+						"type": "@trusted SysTime(in Value v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "Value",
+								"storageClass": [
+									"in"
+								]
+							}
+						],
+						"endline": 42,
+						"char": 9,
+						"kind": "function"
+					}
+				],
+				"name": "binaryValueAs",
+				"line": 30,
+				"comment": "    Returns value timestamp with time zone as SysTime\n    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.\n    It means that PG value will have 10 times lower precision.\n    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.\n\n    Because of these differences, it can happen that database value will not fit to the SysTime range of values.\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "is(T == SysTime)",
+				"char": 9,
+				"kind": "template"
+			},
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "binaryValueAs",
+						"line": 47,
+						"type": "@trusted Date(in Value v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "Value",
+								"storageClass": [
+									"in"
+								]
+							}
+						],
+						"endline": 62,
+						"char": 6,
+						"kind": "function"
+					}
+				],
+				"name": "binaryValueAs",
+				"line": 47,
+				"comment": "Returns value data as native Date\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "is(T == Date)",
+				"char": 6,
+				"kind": "template"
+			},
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "binaryValueAs",
+						"line": 65,
+						"type": "@trusted TimeOfDay(in Value v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "Value",
+								"storageClass": [
+									"in"
+								]
+							}
+						],
+						"endline": 76,
+						"char": 11,
+						"kind": "function"
+					}
+				],
+				"name": "binaryValueAs",
+				"line": 65,
+				"comment": "Returns value time without time zone as native TimeOfDay\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "is(T == TimeOfDay)",
+				"char": 11,
+				"kind": "template"
+			},
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "binaryValueAs",
+						"line": 79,
+						"type": "@trusted TimeStamp(in Value v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "Value",
+								"storageClass": [
+									"in"
+								]
+							}
+						],
+						"endline": 92,
+						"char": 11,
+						"kind": "function"
+					}
+				],
+				"name": "binaryValueAs",
+				"line": 79,
+				"comment": "Returns value timestamp without time zone as TimeStamp\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "is(T == TimeStamp)",
+				"char": 11,
+				"kind": "template"
+			},
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "binaryValueAs",
+						"line": 95,
+						"type": "@trusted TimeStampUTC(in Value v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "Value",
+								"storageClass": [
+									"in"
+								]
+							}
+						],
+						"endline": 108,
+						"char": 14,
+						"kind": "function"
+					}
+				],
+				"name": "binaryValueAs",
+				"line": 95,
+				"comment": "Returns value timestamp with time zone as TimeStampUTC\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "is(T == TimeStampUTC)",
+				"char": 14,
+				"kind": "template"
+			},
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "binaryValueAs",
+						"line": 111,
+						"type": "@trusted DateTime(in Value v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "Value",
+								"storageClass": [
+									"in"
+								]
+							}
+						],
+						"endline": 115,
+						"char": 10,
+						"kind": "function"
+					}
+				],
+				"name": "binaryValueAs",
+				"line": 111,
+				"comment": "Returns value timestamp without time zone as DateTime (it drops the fracSecs from the database value)\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "is(T == DateTime)",
+				"char": 10,
+				"kind": "template"
+			},
+			{
+				"name": "TimeStamp",
+				"line": 153,
+				"comment": "Unknown TZ timestamp\n",
+				"deco": "S4dpq24conv4time__T10TTimeStampVbi0ZQr",
+				"char": 1,
+				"kind": "alias"
+			},
+			{
+				"name": "TimeStampUTC",
+				"line": 154,
+				"comment": "Assumed that this is UTC timestamp\n",
+				"deco": "S4dpq24conv4time__T10TTimeStampVbi1ZQr",
+				"char": 1,
+				"kind": "alias"
+			}
+		],
+		"comment": "   PostgreSQL time types binary format.\n\n   Copyright: © 2014 DSoftOut\n   Authors: NCrashed <ncrashed@gmail.com>\n",
+		"kind": "module"
+	},
+	{
+		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.9/dpq2/src/dpq2/oids.d",
+		"name": "dpq2.oids",
+		"members": [
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "oidConvTo",
+						"line": 20,
+						"type": "OidType(OidType type)",
+						"parameters": [
+							{
+								"name": "type",
+								"type": "OidType"
+							}
+						],
+						"endline": 47,
+						"char": 9,
+						"kind": "function"
+					}
+				],
+				"name": "oidConvTo",
+				"line": 20,
+				"comment": "Convert between array Oid and element Oid or vice versa\n",
+				"parameters": [
+					{
+						"name": "s",
+						"deco": "Aya",
+						"kind": "value"
+					}
+				],
+				"char": 9,
+				"kind": "template"
+			},
+			{
+				"members": [],
+				"name": "OidType",
+				"line": 177,
+				"comment": "Enum of Oid types defined in PG\n",
+				"baseDeco": "k",
+				"char": 8,
+				"kind": "enum"
+			}
+		],
+		"comment": "   PostgreSQL major types oids.\n\n   Copyright: © 2014 DSoftOut\n   Authors: NCrashed <ncrashed@gmail.com>\n",
+		"kind": "module"
+	}
+]

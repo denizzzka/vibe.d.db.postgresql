@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>http://127.0.0.1/index.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/numeric.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/binaryValueAs.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/binaryValueAs.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/binaryValueAs.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/binaryValueAs.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/binaryValueAs.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/binaryValueAs.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/TimeStamp.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/time/TimeStampUTC.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/oids.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/oids/oidConvTo.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/oids/OidType.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/LockedConnection.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/LockedConnection.m_con.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.lockConnection.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.this.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClientException.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClientTimeoutException.html</loc></url>
+</urlset>
