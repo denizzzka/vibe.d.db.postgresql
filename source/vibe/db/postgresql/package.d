@@ -14,10 +14,11 @@ import core.time: Duration, dur;
 import std.exception: enforce;
 import std.conv: to;
 
+///
 struct ClientSettings
 {
-    string connString;
-    void delegate(__Conn) afterStartConnectOrReset;
+    string connString; ///
+    void delegate(__Conn) afterStartConnectOrReset; ///
 }
 
 /// A Postgres client with connection pooling.
@@ -72,6 +73,7 @@ class PostgresClient
         return pool.lockConnection();
     }
 
+    ///
     __Conn createConnection(in ClientSettings cs) @safe
     {
         return new __Conn(cs);
