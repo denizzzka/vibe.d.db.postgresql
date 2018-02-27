@@ -8,7 +8,7 @@ public import dpq2.connection: ConnectionException, connStringCheck, ConnectionS
 public import dpq2.args;
 public import derelict.pq.pq;
 
-import vibe.core.connectionpool;
+import vibe.core.connectionpool: ConnectionPool, VibeLockedConnection = LockedConnection;
 import vibe.core.log;
 import core.time: Duration, dur;
 import std.exception: enforce;
@@ -18,19 +18,19 @@ import std.conv: to;
 struct ClientSettings
 {
     string connString; ///
-    void delegate(__Conn) afterStartConnectOrReset; ///
+    void delegate(Dpq2Connection) afterStartConnectOrReset; ///
 }
 
 /// A Postgres client with connection pooling.
 class PostgresClient
 {
-    private ConnectionPool!__Conn pool;
+    private ConnectionPool!Dpq2Connection pool;
 
     ///
     this(
         string connString,
         uint connNum,
-        void delegate(__Conn) afterStartConnectOrReset = null
+        void delegate(Dpq2Connection) afterStartConnectOrReset = null
     )
     {
         immutable cs = ClientSettings(
@@ -44,29 +44,29 @@ class PostgresClient
     ///
     this
     (
-        __Conn delegate(in ClientSettings) @safe connFactory,
+        Dpq2Connection delegate(in ClientSettings) @safe connFactory,
         immutable ClientSettings cs,
         uint connNum,
     )
     {
         cs.connString.connStringCheck;
 
-        pool = new ConnectionPool!__Conn(() @safe { return connFactory(cs); }, connNum);
+        pool = new ConnectionPool!Dpq2Connection(() @safe { return connFactory(cs); }, connNum);
     }
 
     ///
-    this(__Conn delegate() const pure @safe connFactory, uint connNum)
+    this(Dpq2Connection delegate() const pure @safe connFactory, uint connNum)
     {
         enforce(PQisthreadsafe() == 1);
 
-        pool = new ConnectionPool!__Conn(
+        pool = new ConnectionPool!Dpq2Connection(
                 () @safe { return connFactory(); },
                 connNum
             );
     }
 
     /// Get connection from the pool.
-    LockedConnection!__Conn lockConnection()
+    LockedConnection lockConnection()
     {
         logDebugV("get connection from the pool");
 
@@ -74,16 +74,18 @@ class PostgresClient
     }
 
     ///
-    __Conn createConnection(in ClientSettings cs) @safe
+    Dpq2Connection createConnection(in ClientSettings cs) @safe
     {
-        return new __Conn(cs);
+        return new Dpq2Connection(cs);
     }
 }
+
+alias LockedConnection = VibeLockedConnection!Dpq2Connection;
 
 /**
  * dpq2.Connection adopted for using with Vibe.d
  */
-class __Conn : dpq2.Connection
+class Dpq2Connection : dpq2.Connection
 {
     Duration socketTimeout = dur!"seconds"(10); ///
     Duration statementTimeout = dur!"seconds"(30); ///
