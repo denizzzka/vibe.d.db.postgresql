@@ -14,6 +14,5 @@ var symbols = [
 {name: 'vibe.db.postgresql.PostgresClient', kind: "classdeclaration", path: './vibe/db/postgresql/PostgresClient.html', attributes: []},
 {name: 'vibe.db.postgresql.PostgresClient.lockConnection', kind: "functiondeclaration", path: './vibe/db/postgresql/PostgresClient.lockConnection.html', attributes: []},
 {name: 'vibe.db.postgresql.PostgresClient.this', kind: "functiondeclaration", path: './vibe/db/postgresql/PostgresClient.this.html', attributes: []},
-{name: 'vibe.db.postgresql.PostgresClientException', kind: "classdeclaration", path: './vibe/db/postgresql/PostgresClientException.html', attributes: []},
 {name: 'vibe.db.postgresql.PostgresClientTimeoutException', kind: "classdeclaration", path: './vibe/db/postgresql/PostgresClientTimeoutException.html', attributes: []},
 ];

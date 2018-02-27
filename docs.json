@@ -82,17 +82,8 @@
 			},
 			{
 				"members": [],
-				"name": "PostgresClientException",
-				"line": 285,
-				"comment": "\n",
-				"base": "dpq2.exception.Dpq2Exception",
-				"char": 1,
-				"kind": "class"
-			},
-			{
-				"members": [],
 				"name": "PostgresClientTimeoutException",
-				"line": 294,
+				"line": 285,
 				"comment": "\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,

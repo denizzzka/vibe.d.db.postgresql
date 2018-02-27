@@ -261,7 +261,7 @@ class __Conn : dpq2.Connection
             );
 
         if(r.status != PGRES_COMMAND_OK)
-            throw new PostgresClientException(r.resultErrorMessage, __FILE__, __LINE__);
+            throw new AnswerCreationException(r, __FILE__, __LINE__);
     }
 
     ///
@@ -278,15 +278,6 @@ class __Conn : dpq2.Connection
         auto res = runStatementBlockingManner({ sendDescribePrepared(preparedStatementName); });
 
         return res.getAnswer;
-    }
-}
-
-///
-class PostgresClientException : Dpq2Exception // TODO: remove it (use dpq2 exception)
-{
-    this(string msg, string file, size_t line)
-    {
-        super(msg, file, line);
     }
 }
 
@@ -336,7 +327,7 @@ version(IntegrationTest) void __integration_test(string connString)
 
         try
             conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT");
-        catch(PostgresClientException e)
+        catch(AnswerCreationException)
             throwFlag = true;
 
         assert(throwFlag);
