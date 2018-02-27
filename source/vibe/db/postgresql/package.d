@@ -80,8 +80,8 @@ class PostgresClient
     }
 }
 
-///
 alias Connection = Dpq2Connection;
+deprecated("use Connection instead") alias __Conn = Connection;
 
 ///
 alias LockedConnection = VibeLockedConnection!Connection;
