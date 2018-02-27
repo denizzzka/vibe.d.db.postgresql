@@ -96,7 +96,8 @@ class Dpq2Connection : dpq2.Connection
 
     private const ClientSettings* settings;
 
-    private this(const ref ClientSettings settings) @trusted
+    ///
+    this(const ref ClientSettings settings) @trusted
     {
         this.settings = &settings;
 
