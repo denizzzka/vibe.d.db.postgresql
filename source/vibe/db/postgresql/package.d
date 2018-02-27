@@ -101,7 +101,7 @@ class Dpq2Connection : dpq2.Connection
     {
         this.settings = &settings;
 
-        super(settings.connString); // TODO: switch to non-blocking connection start ctor
+        super(settings.connString);
         setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
 
         import std.conv: to;
