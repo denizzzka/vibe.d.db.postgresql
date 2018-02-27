@@ -14,7 +14,7 @@ import core.time: Duration, dur;
 import std.exception: enforce;
 import std.conv: to;
 
-private struct ClientSettings
+struct ClientSettings
 {
     string connString;
     void delegate(__Conn) afterStartConnectOrReset;
@@ -36,12 +36,23 @@ class PostgresClient
         enforce(PQisthreadsafe() == 1);
         connString.connStringCheck;
 
-        settings = ClientSettings(
+        auto cs = ClientSettings(
             connString,
             afterStartConnectOrReset
         );
 
-        pool = new ConnectionPool!__Conn(() @safe { return new __Conn(settings); }, connNum);
+        this(&createConnection, cs, connNum, afterStartConnectOrReset);
+    }
+
+    ///
+    this(__Conn delegate(in ClientSettings) @safe connFactory, in ClientSettings cs, uint connNum, void delegate(__Conn) afterStartConnectOrReset = null)
+    {
+        enforce(PQisthreadsafe() == 1);
+
+        settings = cs;
+        settings.connString.connStringCheck;
+
+        pool = new ConnectionPool!__Conn(() @safe { return connFactory(settings); }, connNum);
     }
 
     /// Get connection from the pool.
@@ -50,6 +61,11 @@ class PostgresClient
         logDebugV("get connection from the pool");
 
         return pool.lockConnection();
+    }
+
+    __Conn createConnection(in ClientSettings cs) @safe
+    {
+        return new __Conn(cs);
     }
 }
 
