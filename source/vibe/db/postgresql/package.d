@@ -268,7 +268,7 @@ class Dpq2Connection : dpq2.Connection
             );
 
         if(r.status != PGRES_COMMAND_OK)
-            throw new AnswerCreationException(r, __FILE__, __LINE__);
+            throw new ResponseException(r, __FILE__, __LINE__);
     }
 
     ///
@@ -334,7 +334,7 @@ version(IntegrationTest) void __integration_test(string connString)
 
         try
             conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT");
-        catch(AnswerCreationException)
+        catch(ResponseException)
             throwFlag = true;
 
         assert(throwFlag);

@@ -21,7 +21,8 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">dpq2
+					<div class="package ">
+						<a href="../../dpq2.html">dpq2</a>
 					</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
@@ -30,7 +31,17 @@ $('#symbolSearchPane').show();</script>
 			<ul class="tree-view">
 				<li>
 					<div class="module ">
-						<a href="../../dpq2/conv/numeric.html">numeric</a>
+						<a href="../../dpq2/conv/from_bson.html">from_bson</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/conv/from_d_types.html">from_d_types</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/conv/jsonb.html">jsonb</a>
 					</div>
 				</li>
 				<li>
@@ -38,11 +49,51 @@ $('#symbolSearchPane').show();</script>
 						<a href="../../dpq2/conv/time.html">time</a>
 					</div>
 				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/conv/to_bson.html">to_bson</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/conv/to_d_types.html">to_d_types</a>
+					</div>
+				</li>
 			</ul>
 				</li>
 				<li>
 					<div class="module ">
+						<a href="../../dpq2/args.html">args</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/connection.html">connection</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/exception.html">exception</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
 						<a href="../../dpq2/oids.html">oids</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/query.html">query</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/result.html">result</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../dpq2/value.html">value</a>
 					</div>
 				</li>
 			</ul>
@@ -85,9 +136,6 @@ $('#symbolSearchPane').show();</script>
 							</code>
 						</td>
 						<td>Returns value timestamp with time zone as SysTime
-    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.
-    It means that PG value will have 10 times lower precision.
-    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.
 </td>
 					</tr>
 					<tr>
@@ -138,6 +186,24 @@ $('#symbolSearchPane').show();</script>
 				</table>
 			</section>
 			<section>
+				<h2>Structs</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="TTimeStamp" class="public" href="../../dpq2/conv/time/TTimeStamp.html">TTimeStamp</a>
+							</code>
+						</td>
+						<td>Structure to represent PostgreSQL Timestamp with/without time zone
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
 				<h2>Aliases</h2>
 				<table>
 					<col class="caption"/>
@@ -151,7 +217,7 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><span class="pln">dpq2<wbr/></span><span class="pun">.</span><span class="pln">conv<wbr/></span><span class="pun">.</span><span class="pln">time<wbr/></span><span class="pun">.</span><span class="typ">TTimeStamp</span>!(false)</code>
+							<code class="prettyprint lang-d"><a href="../../dpq2/conv/time/TTimeStamp.html"><span class="typ">TTimeStamp</span></a>!(false)</code>
 						</td>
 						<td>Unknown TZ timestamp
 </td>
@@ -163,7 +229,7 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><span class="pln">dpq2<wbr/></span><span class="pun">.</span><span class="pln">conv<wbr/></span><span class="pun">.</span><span class="pln">time<wbr/></span><span class="pun">.</span><span class="typ">TTimeStamp</span>!(true)</code>
+							<code class="prettyprint lang-d"><a href="../../dpq2/conv/time/TTimeStamp.html"><span class="typ">TTimeStamp</span></a>!(true)</code>
 						</td>
 						<td>Assumed that this is UTC timestamp
 </td>
