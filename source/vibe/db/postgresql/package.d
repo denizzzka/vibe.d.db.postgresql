@@ -32,7 +32,7 @@ class PostgresClient
         void delegate(__Conn) afterStartConnectOrReset = null
     )
     {
-        auto cs = ClientSettings(
+        immutable cs = ClientSettings(
             connString,
             afterStartConnectOrReset
         );
@@ -44,7 +44,7 @@ class PostgresClient
     this
     (
         __Conn delegate(in ClientSettings) @safe connFactory,
-        in ClientSettings cs,
+        immutable ClientSettings cs,
         uint connNum,
     )
     {
