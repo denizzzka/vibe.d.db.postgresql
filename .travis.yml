@@ -4,8 +4,10 @@ language: d
 
 d:
   - dmd
+  #- dmd-beta https://github.com/vibe-d/vibe.d/issues/2075
   #- gdc is disabled, waiting for std.experimental.logger
   - ldc
+  - ldc-beta
 
 addons:
   apt:
