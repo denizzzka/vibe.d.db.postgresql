@@ -2,7 +2,7 @@ PostgreSQL support for Vibe.d
 
 [API documentation](https://denizzzka.github.io/vibe.d.db.postgresql/docs)
 
-_Please help us to make the documentation!_
+_Please help us to make documentation better!_
 
 ====
 
