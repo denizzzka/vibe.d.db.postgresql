@@ -80,6 +80,7 @@ class PostgresClient
     }
 }
 
+///
 alias LockedConnection = VibeLockedConnection!Dpq2Connection;
 
 /**
