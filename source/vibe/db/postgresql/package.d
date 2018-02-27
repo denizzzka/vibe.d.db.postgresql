@@ -37,7 +37,7 @@ class PostgresClient
             afterStartConnectOrReset
         );
 
-        this((ClientSettings){ return new __Conn(cs);  }, cs, connNum);
+        this(&createConnection, cs, connNum);
     }
 
     ///
