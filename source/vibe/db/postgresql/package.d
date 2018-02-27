@@ -18,19 +18,19 @@ import std.conv: to;
 struct ClientSettings
 {
     string connString; ///
-    void delegate(Dpq2Connection) afterStartConnectOrReset; ///
+    void delegate(Connection) afterStartConnectOrReset; ///
 }
 
 /// A Postgres client with connection pooling.
 class PostgresClient
 {
-    private ConnectionPool!Dpq2Connection pool;
+    private ConnectionPool!Connection pool;
 
     ///
     this(
         string connString,
         uint connNum,
-        void delegate(Dpq2Connection) afterStartConnectOrReset = null
+        void delegate(Connection) afterStartConnectOrReset = null
     )
     {
         immutable cs = ClientSettings(
@@ -44,22 +44,22 @@ class PostgresClient
     ///
     this
     (
-        Dpq2Connection delegate(in ClientSettings) @safe connFactory,
+        Connection delegate(in ClientSettings) @safe connFactory,
         immutable ClientSettings cs,
         uint connNum,
     )
     {
         cs.connString.connStringCheck;
 
-        pool = new ConnectionPool!Dpq2Connection(() @safe { return connFactory(cs); }, connNum);
+        pool = new ConnectionPool!Connection(() @safe { return connFactory(cs); }, connNum);
     }
 
     ///
-    this(Dpq2Connection delegate() const pure @safe connFactory, uint connNum)
+    this(Connection delegate() const pure @safe connFactory, uint connNum)
     {
         enforce(PQisthreadsafe() == 1);
 
-        pool = new ConnectionPool!Dpq2Connection(
+        pool = new ConnectionPool!Connection(
                 () @safe { return connFactory(); },
                 connNum
             );
@@ -74,14 +74,17 @@ class PostgresClient
     }
 
     ///
-    Dpq2Connection createConnection(in ClientSettings cs) @safe
+    Connection createConnection(in ClientSettings cs) @safe
     {
-        return new Dpq2Connection(cs);
+        return new Connection(cs);
     }
 }
 
 ///
-alias LockedConnection = VibeLockedConnection!Dpq2Connection;
+alias Connection = Dpq2Connection;
+
+///
+alias LockedConnection = VibeLockedConnection!Connection;
 
 /**
  * dpq2.Connection adopted for using with Vibe.d
