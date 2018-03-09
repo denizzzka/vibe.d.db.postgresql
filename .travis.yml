@@ -35,7 +35,7 @@ matrix:
     - d: dmd
 
       script:
-        - dub build --build=ddox || true
+        - dub build --build=ddox
 
       cache: { directories: [$HOME/.dub] }
 
