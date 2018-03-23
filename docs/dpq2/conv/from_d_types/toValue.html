@@ -41,6 +41,11 @@ $('#symbolSearchPane').show();</script>
 				</li>
 				<li>
 					<div class="module ">
+						<a href="../../../dpq2/conv/geometric.html">geometric</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
 						<a href="../../../dpq2/conv/jsonb.html">jsonb</a>
 					</div>
 				</li>
@@ -171,6 +176,16 @@ $('#symbolSearchPane').show();</script>
 							Function <code>toValue</code>
 						</a>
 					</li>
+					<li>
+						<a href="#10">
+							Function <code>toValue</code>
+						</a>
+					</li>
+					<li>
+						<a href="#11">
+							Function <code>toValue</code>
+						</a>
+					</li>
 				</ul>
 			</nav><h2 id="0">Function toValue</h2><p>Converts Nullable!T to Value
 </p>
@@ -218,12 +233,13 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">@trusted</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">== </span><span class="typ">string</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">: </span><span class="typ">string</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
 			
-			<h2 id="3">Function toValue</h2><p></p>
+			<h2 id="3">Function toValue</h2><p>Constructs Value from array of bytes
+</p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
@@ -234,7 +250,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">== </span><span class="typ">ubyte</span><span class="pun">[])</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">: </span><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">ubyte</span><span class="pun">)[])</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
@@ -340,6 +356,40 @@ $('#symbolSearchPane').show();</script>
 			<span class="pun">)</span>
 			<br/>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Unqual</span><span class="pun">!</span><span class="pln">T </span><span class="pun">== </span><span class="typ">SysTime</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			
+			<h2 id="10">Function toValue</h2><p>Constructs Value from UUID
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<a href="../../../dpq2/value/Value.html"><span class="typ">Value</span></a> <span class="pln">toValue</span>(T)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">T</span> <span class="pln">v</span>
+			<br/>
+			<span class="pun">)</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Unqual</span><span class="pun">!</span><span class="pln">T </span><span class="pun">== </span><span class="pln">UUID</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			
+			<h2 id="11">Function toValue</h2><p>Constructs Value from Json
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<a href="../../../dpq2/value/Value.html"><span class="typ">Value</span></a> <span class="pln">toValue</span>(T)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">T</span> <span class="pln">v</span>
+			<br/>
+			<span class="pun">)</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Unqual</span><span class="pun">!</span><span class="pln">T </span><span class="pun">== </span><span class="typ">Json</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

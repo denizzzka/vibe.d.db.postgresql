@@ -4,7 +4,7 @@ language: d
 
 d:
   - dmd
-  #- dmd-beta https://github.com/vibe-d/vibe.d/issues/2075
+  - dmd-beta
   #- gdc is disabled, waiting for std.experimental.logger
   - ldc
   - ldc-beta
@@ -32,7 +32,7 @@ script:
 
 matrix:
   include:
-    - d: dmd
+    - d: dmd-2.078.3
 
       script:
         - dub build --build=ddox

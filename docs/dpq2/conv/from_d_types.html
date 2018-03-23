@@ -41,6 +41,11 @@ $('#symbolSearchPane').show();</script>
 				</li>
 				<li>
 					<div class="module ">
+						<a href="../../dpq2/conv/geometric.html">geometric</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
 						<a href="../../dpq2/conv/jsonb.html">jsonb</a>
 					</div>
 				</li>
@@ -158,7 +163,8 @@ $('#symbolSearchPane').show();</script>
 								<a id="toValue" class="public" href="../../dpq2/conv/from_d_types/toValue.html">toValue</a><span class="decoration">(v)</span>
 							</code>
 						</td>
-						<td></td>
+						<td>Constructs Value from array of bytes
+</td>
 					</tr>
 					<tr>
 						<td>
@@ -215,6 +221,24 @@ $('#symbolSearchPane').show();</script>
     Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.
     It means that PG value will have 10 times lower precision.
     And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="toValue" class="public" href="../../dpq2/conv/from_d_types/toValue.html">toValue</a><span class="decoration">(v)</span>
+							</code>
+						</td>
+						<td>Constructs Value from UUID
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="toValue" class="public" href="../../dpq2/conv/from_d_types/toValue.html">toValue</a><span class="decoration">(v)</span>
+							</code>
+						</td>
+						<td>Constructs Value from Json
 </td>
 					</tr>
 				</table>
