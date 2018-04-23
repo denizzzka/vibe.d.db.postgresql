@@ -332,7 +332,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/args.d",
 		"name": "dpq2.args",
 		"members": [
 			{
@@ -473,7 +473,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/connection.d",
 		"name": "dpq2.connection",
 		"members": [
 			{
@@ -913,7 +913,50 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/arrays.d",
+		"name": "dpq2.conv.arrays",
+		"members": [
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "toValue",
+						"line": 28,
+						"type": "Value(auto ref T v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "T",
+								"storageClass": [
+									"auto",
+									"ref"
+								]
+							}
+						],
+						"endline": 106,
+						"char": 7,
+						"kind": "function"
+					}
+				],
+				"name": "toValue",
+				"line": 28,
+				"comment": "Converts dynamic or static array of supported types to the coresponding PG array type value\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "isArrayType!T",
+				"char": 7,
+				"kind": "template"
+			}
+		],
+		"comment": "    Module to handle PostgreSQL array types\n",
+		"kind": "module"
+	},
+	{
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/from_bson.d",
 		"name": "dpq2.conv.from_bson",
 		"members": [
 			{
@@ -943,7 +986,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/from_d_types.d",
 		"name": "dpq2.conv.from_d_types",
 		"members": [
 			{
@@ -951,7 +994,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 21,
+						"line": 22,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -959,13 +1002,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 28,
+						"endline": 29,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 21,
+				"line": 22,
 				"comment": "Converts Nullable!T to Value\n",
 				"parameters": [
 					{
@@ -982,7 +1025,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 31,
+						"line": 32,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -990,13 +1033,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 43,
+						"endline": 36,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 31,
+				"line": 32,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1013,7 +1056,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 46,
+						"line": 43,
 						"type": "@trusted Value(T v, ValueFormat valueFormat = ValueFormat.BINARY)",
 						"parameters": [
 							{
@@ -1026,14 +1069,14 @@
 								"default": "ValueFormat.BINARY"
 							}
 						],
-						"endline": 57,
+						"endline": 54,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 46,
-				"comment": "\n",
+				"line": 43,
+				"comment": "    Converts types implicitly convertible to string to PG Value.\n    Note that if string is null it is written as an empty string.\n    If NULL is a desired DB value, Nullable!string can be used instead.\n",
 				"parameters": [
 					{
 						"name": "T",
@@ -1049,7 +1092,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 60,
+						"line": 57,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1057,13 +1100,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 64,
+						"endline": 61,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 60,
+				"line": 57,
 				"comment": "Constructs Value from array of bytes\n",
 				"parameters": [
 					{
@@ -1080,7 +1123,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 67,
+						"line": 64,
 						"type": "@trusted Value(T v)",
 						"parameters": [
 							{
@@ -1088,13 +1131,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 73,
+						"endline": 70,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 67,
+				"line": 64,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1112,7 +1155,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 76,
+						"line": 73,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1120,13 +1163,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 97,
+						"endline": 94,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 76,
+				"line": 73,
 				"comment": "Constructs Value from Date\n",
 				"parameters": [
 					{
@@ -1143,7 +1186,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 100,
+						"line": 97,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1151,13 +1194,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 106,
+						"endline": 103,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 100,
+				"line": 97,
 				"comment": "Constructs Value from TimeOfDay\n",
 				"parameters": [
 					{
@@ -1174,7 +1217,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 109,
+						"line": 106,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1182,13 +1225,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 130,
+						"endline": 127,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 109,
+				"line": 106,
 				"comment": "Constructs Value from TimeStamp or from TimeStampUTC\n",
 				"parameters": [
 					{
@@ -1205,7 +1248,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 154,
+						"line": 151,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1213,13 +1256,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 158,
+						"endline": 155,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 154,
+				"line": 151,
 				"comment": "    Constructs Value from DateTime\n    It uses Timestamp without TZ as a resulting PG type\n",
 				"parameters": [
 					{
@@ -1236,7 +1279,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 166,
+						"line": 163,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1244,13 +1287,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 172,
+						"endline": 169,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 166,
+				"line": 163,
 				"comment": "    Constructs Value from SysTime\n    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.\n    It means that PG value will have 10 times lower precision.\n    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.\n",
 				"parameters": [
 					{
@@ -1267,7 +1310,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 175,
+						"line": 172,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1275,13 +1318,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 179,
+						"endline": 176,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 175,
+				"line": 172,
 				"comment": "Constructs Value from UUID\n",
 				"parameters": [
 					{
@@ -1298,7 +1341,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 182,
+						"line": 179,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1306,13 +1349,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 189,
+						"endline": 186,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 182,
+				"line": 179,
 				"comment": "Constructs Value from Json\n",
 				"parameters": [
 					{
@@ -1329,7 +1372,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/geometric.d",
 		"name": "dpq2.conv.geometric",
 		"members": [
 			{
@@ -1361,15 +1404,15 @@
 					{
 						"endchar": 1,
 						"name": "isValidBoxType",
-						"line": 38,
+						"line": 51,
 						"type": "bool()",
-						"endline": 48,
+						"endline": 61,
 						"char": 6,
 						"kind": "function"
 					}
 				],
 				"name": "isValidBoxType",
-				"line": 38,
+				"line": 51,
 				"comment": "Checks that type have \"min\" and \"max\" members of suitable returning type of point\n",
 				"parameters": [
 					{
@@ -1385,15 +1428,15 @@
 					{
 						"endchar": 1,
 						"name": "isValidLineSegmentType",
-						"line": 51,
+						"line": 64,
 						"type": "bool()",
-						"endline": 61,
+						"endline": 74,
 						"char": 6,
 						"kind": "function"
 					}
 				],
 				"name": "isValidLineSegmentType",
-				"line": 51,
+				"line": 64,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1409,15 +1452,15 @@
 					{
 						"endchar": 1,
 						"name": "isValidPolygon",
-						"line": 64,
+						"line": 77,
 						"type": "bool()",
-						"endline": 67,
+						"endline": 80,
 						"char": 6,
 						"kind": "function"
 					}
 				],
 				"name": "isValidPolygon",
-				"line": 64,
+				"line": 77,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1430,13 +1473,13 @@
 			},
 			{
 				"name": "Line",
-				"line": 107,
+				"line": 127,
 				"comment": "Infinite line - {A,B,C} (Ax + By + C = 0)\n",
 				"members": [
 					{
 						"offset": 0,
 						"name": "a",
-						"line": 109,
+						"line": 129,
 						"comment": "\n",
 						"deco": "d",
 						"char": 12,
@@ -1448,7 +1491,7 @@
 					{
 						"offset": 8,
 						"name": "b",
-						"line": 110,
+						"line": 130,
 						"comment": "\n",
 						"deco": "d",
 						"char": 12,
@@ -1460,7 +1503,7 @@
 					{
 						"offset": 16,
 						"name": "c",
-						"line": 111,
+						"line": 131,
 						"comment": "\n",
 						"deco": "d",
 						"char": 12,
@@ -1477,11 +1520,11 @@
 				"members": [
 					{
 						"name": "Path",
-						"line": 115,
+						"line": 135,
 						"members": [
 							{
 								"name": "isClosed",
-								"line": 118,
+								"line": 138,
 								"comment": "\n",
 								"deco": "b",
 								"char": 10,
@@ -1489,7 +1532,7 @@
 							},
 							{
 								"name": "points",
-								"line": 119,
+								"line": 139,
 								"comment": "\n",
 								"type": "Point[]",
 								"char": 13,
@@ -1501,7 +1544,7 @@
 					}
 				],
 				"name": "Path",
-				"line": 115,
+				"line": 135,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1517,11 +1560,11 @@
 				"members": [
 					{
 						"name": "Circle",
-						"line": 123,
+						"line": 143,
 						"members": [
 							{
 								"name": "center",
-								"line": 126,
+								"line": 146,
 								"comment": "\n",
 								"type": "Point",
 								"char": 11,
@@ -1529,7 +1572,7 @@
 							},
 							{
 								"name": "radius",
-								"line": 127,
+								"line": 147,
 								"comment": "\n",
 								"deco": "d",
 								"char": 12,
@@ -1541,7 +1584,7 @@
 					}
 				],
 				"name": "Circle",
-				"line": 123,
+				"line": 143,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1558,7 +1601,7 @@
 					{
 						"endchar": 1,
 						"name": "binaryValueAs",
-						"line": 217,
+						"line": 237,
 						"type": "Vec2Ddouble(in Value v)",
 						"parameters": [
 							{
@@ -1569,13 +1612,13 @@
 								]
 							}
 						],
-						"endline": 230,
+						"endline": 250,
 						"char": 13,
 						"kind": "function"
 					}
 				],
 				"name": "binaryValueAs",
-				"line": 217,
+				"line": 237,
 				"comment": "Convert to Point\n",
 				"parameters": [
 					{
@@ -1592,14 +1635,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/jsonb.d",
 		"name": "dpq2.conv.jsonb",
 		"members": [],
 		"comment": "\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/time.d",
 		"name": "dpq2.conv.time",
 		"members": [
 			{
@@ -2169,7 +2212,7 @@
 			{
 				"name": "TimeStampUTC",
 				"line": 279,
-				"comment": "Assumed that this is UTC timestamp\n",
+				"comment": "Assumed that this is UTC timestamp\nExample:\nOid tests$(DDOX_UNITTEST_HEADER __unittest_dpq2_conv_time_318_6)\n---\nassert(detectOidTypeFromNative!TimeStamp == OidType.TimeStamp);\nassert(detectOidTypeFromNative!TimeStampUTC == OidType.TimeStampWithZone);\nassert(detectOidTypeFromNative!SysTime == OidType.TimeStampWithZone);\nassert(detectOidTypeFromNative!Date == OidType.Date);\nassert(detectOidTypeFromNative!TimeOfDay == OidType.Time);\n\n---\n$(DDOX_UNITTEST_FOOTER __unittest_dpq2_conv_time_318_6)\n",
 				"deco": "S4dpq24conv4time__T10TTimeStampVbi1ZQr",
 				"char": 1,
 				"kind": "alias"
@@ -2179,7 +2222,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/to_bson.d",
 		"name": "dpq2.conv.to_bson",
 		"members": [
 			{
@@ -2229,12 +2272,12 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/conv/to_d_types.d",
 		"name": "dpq2.conv.to_d_types",
 		"members": [
 			{
 				"name": "PGboolean",
-				"line": 27,
+				"line": 28,
 				"comment": "boolean\n",
 				"deco": "b",
 				"char": 1,
@@ -2242,7 +2285,7 @@
 			},
 			{
 				"name": "PGsmallint",
-				"line": 28,
+				"line": 29,
 				"comment": "smallint\n",
 				"deco": "s",
 				"char": 1,
@@ -2250,7 +2293,7 @@
 			},
 			{
 				"name": "PGinteger",
-				"line": 29,
+				"line": 30,
 				"comment": "integer\n",
 				"deco": "i",
 				"char": 1,
@@ -2258,7 +2301,7 @@
 			},
 			{
 				"name": "PGbigint",
-				"line": 30,
+				"line": 31,
 				"comment": "bigint\n",
 				"deco": "l",
 				"char": 1,
@@ -2266,7 +2309,7 @@
 			},
 			{
 				"name": "PGreal",
-				"line": 31,
+				"line": 32,
 				"comment": "real\n",
 				"deco": "f",
 				"char": 1,
@@ -2274,7 +2317,7 @@
 			},
 			{
 				"name": "PGdouble_precision",
-				"line": 32,
+				"line": 33,
 				"comment": "double precision\n",
 				"deco": "d",
 				"char": 1,
@@ -2282,7 +2325,7 @@
 			},
 			{
 				"name": "PGtext",
-				"line": 33,
+				"line": 34,
 				"comment": "text\n",
 				"deco": "Aya",
 				"char": 1,
@@ -2290,7 +2333,7 @@
 			},
 			{
 				"name": "PGnumeric",
-				"line": 34,
+				"line": 35,
 				"comment": "numeric represented as string\n",
 				"deco": "Aya",
 				"char": 1,
@@ -2298,7 +2341,7 @@
 			},
 			{
 				"name": "PGbytea",
-				"line": 35,
+				"line": 36,
 				"comment": "bytea\n",
 				"deco": "Ayh",
 				"char": 1,
@@ -2306,7 +2349,7 @@
 			},
 			{
 				"name": "PGuuid",
-				"line": 36,
+				"line": 37,
 				"comment": "UUID\n",
 				"deco": "S3std4uuid4UUID",
 				"char": 1,
@@ -2314,7 +2357,7 @@
 			},
 			{
 				"name": "PGdate",
-				"line": 37,
+				"line": 38,
 				"comment": "Date (no time of day)\n",
 				"deco": "S3std8datetime4date4Date",
 				"char": 1,
@@ -2322,7 +2365,7 @@
 			},
 			{
 				"name": "PGtime_without_time_zone",
-				"line": 38,
+				"line": 39,
 				"comment": "Time of day (no date)\n",
 				"deco": "S3std8datetime4date9TimeOfDay",
 				"char": 1,
@@ -2330,7 +2373,7 @@
 			},
 			{
 				"name": "PGtimestamp",
-				"line": 39,
+				"line": 40,
 				"comment": "Both date and time without time zone\n",
 				"deco": "S4dpq24conv4time__T10TTimeStampVbi0ZQr",
 				"char": 1,
@@ -2338,7 +2381,7 @@
 			},
 			{
 				"name": "PGtimestamptz",
-				"line": 40,
+				"line": 41,
 				"comment": "Both date and time stored in UTC time zone\n",
 				"deco": "S4dpq24conv4time__T10TTimeStampVbi1ZQr",
 				"char": 1,
@@ -2346,7 +2389,7 @@
 			},
 			{
 				"name": "PGjson",
-				"line": 41,
+				"line": 42,
 				"comment": "json or jsonb\n",
 				"deco": "S4vibe4data4json4Json",
 				"char": 1,
@@ -2354,7 +2397,7 @@
 			},
 			{
 				"name": "PGline",
-				"line": 42,
+				"line": 43,
 				"comment": "Line (geometric type)\n",
 				"deco": "S4dpq24conv9geometric4Line",
 				"char": 1,
@@ -2365,7 +2408,7 @@
 					{
 						"endchar": 1,
 						"name": "as",
-						"line": 49,
+						"line": 53,
 						"type": "pure @trusted T(in Value v)",
 						"parameters": [
 							{
@@ -2376,14 +2419,14 @@
 								]
 							}
 						],
-						"endline": 69,
+						"endline": 91,
 						"char": 3,
 						"kind": "function"
 					}
 				],
 				"name": "as",
-				"line": 49,
-				"comment": "Returns cell value as native string based type from text or binary formatted field\n",
+				"line": 53,
+				"comment": "    Returns cell value as a native string based type from text or binary formatted field.\n    Throws: AssertError if the db value is NULL and Nullable is not used to retrieve the value\n",
 				"parameters": [
 					{
 						"name": "T",
@@ -2399,7 +2442,7 @@
 					{
 						"endchar": 1,
 						"name": "as",
-						"line": 72,
+						"line": 108,
 						"type": "T(in Value v)",
 						"parameters": [
 							{
@@ -2410,14 +2453,14 @@
 								]
 							}
 						],
-						"endline": 85,
+						"endline": 124,
 						"char": 3,
 						"kind": "function"
 					}
 				],
 				"name": "as",
-				"line": 72,
-				"comment": "Returns value as D type value from binary formatted field\n",
+				"line": 108,
+				"comment": "    Returns value as D type value from binary formatted field.\n    Throws: AssertError if the db value is NULL and Nullable is not used to retrieve the value\n",
 				"parameters": [
 					{
 						"name": "T",
@@ -2433,7 +2476,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/exception.d",
 		"name": "dpq2.exception",
 		"members": [
 			{
@@ -2450,7 +2493,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/oids.d",
 		"name": "dpq2.oids",
 		"members": [
 			{
@@ -2520,7 +2563,7 @@
 				"members": [
 					{
 						"name": "Undefined",
-						"line": 188,
+						"line": 199,
 						"value": "0u",
 						"comment": "\n",
 						"char": 5,
@@ -2528,7 +2571,7 @@
 					},
 					{
 						"name": "Bool",
-						"line": 190,
+						"line": 201,
 						"value": "16u",
 						"comment": "\n",
 						"char": 5,
@@ -2536,7 +2579,7 @@
 					},
 					{
 						"name": "ByteArray",
-						"line": 191,
+						"line": 202,
 						"value": "17u",
 						"comment": "\n",
 						"char": 5,
@@ -2544,7 +2587,7 @@
 					},
 					{
 						"name": "Char",
-						"line": 192,
+						"line": 203,
 						"value": "18u",
 						"comment": "\n",
 						"char": 5,
@@ -2552,7 +2595,7 @@
 					},
 					{
 						"name": "Name",
-						"line": 193,
+						"line": 204,
 						"value": "19u",
 						"comment": "\n",
 						"char": 5,
@@ -2560,7 +2603,7 @@
 					},
 					{
 						"name": "Int8",
-						"line": 194,
+						"line": 205,
 						"value": "20u",
 						"comment": "\n",
 						"char": 5,
@@ -2568,7 +2611,7 @@
 					},
 					{
 						"name": "Int2",
-						"line": 195,
+						"line": 206,
 						"value": "21u",
 						"comment": "\n",
 						"char": 5,
@@ -2576,7 +2619,7 @@
 					},
 					{
 						"name": "Int2Vector",
-						"line": 196,
+						"line": 207,
 						"value": "22u",
 						"comment": "\n",
 						"char": 5,
@@ -2584,7 +2627,7 @@
 					},
 					{
 						"name": "Int4",
-						"line": 197,
+						"line": 208,
 						"value": "23u",
 						"comment": "\n",
 						"char": 5,
@@ -2592,7 +2635,7 @@
 					},
 					{
 						"name": "RegProc",
-						"line": 198,
+						"line": 209,
 						"value": "24u",
 						"comment": "\n",
 						"char": 5,
@@ -2600,7 +2643,7 @@
 					},
 					{
 						"name": "Text",
-						"line": 199,
+						"line": 210,
 						"value": "25u",
 						"comment": "\n",
 						"char": 5,
@@ -2608,7 +2651,7 @@
 					},
 					{
 						"name": "Oid",
-						"line": 200,
+						"line": 211,
 						"value": "26u",
 						"comment": "\n",
 						"char": 5,
@@ -2616,7 +2659,7 @@
 					},
 					{
 						"name": "Tid",
-						"line": 201,
+						"line": 212,
 						"value": "27u",
 						"comment": "\n",
 						"char": 5,
@@ -2624,7 +2667,7 @@
 					},
 					{
 						"name": "Xid",
-						"line": 202,
+						"line": 213,
 						"value": "28u",
 						"comment": "\n",
 						"char": 5,
@@ -2632,7 +2675,7 @@
 					},
 					{
 						"name": "Cid",
-						"line": 203,
+						"line": 214,
 						"value": "29u",
 						"comment": "\n",
 						"char": 5,
@@ -2640,7 +2683,7 @@
 					},
 					{
 						"name": "OidVector",
-						"line": 204,
+						"line": 215,
 						"value": "30u",
 						"comment": "\n",
 						"char": 5,
@@ -2648,7 +2691,7 @@
 					},
 					{
 						"name": "AccessControlList",
-						"line": 206,
+						"line": 217,
 						"value": "1033u",
 						"comment": "\n",
 						"char": 5,
@@ -2656,7 +2699,7 @@
 					},
 					{
 						"name": "TypeCatalog",
-						"line": 207,
+						"line": 218,
 						"value": "71u",
 						"comment": "\n",
 						"char": 5,
@@ -2664,7 +2707,7 @@
 					},
 					{
 						"name": "AttributeCatalog",
-						"line": 208,
+						"line": 219,
 						"value": "75u",
 						"comment": "\n",
 						"char": 5,
@@ -2672,7 +2715,7 @@
 					},
 					{
 						"name": "ProcCatalog",
-						"line": 209,
+						"line": 220,
 						"value": "81u",
 						"comment": "\n",
 						"char": 5,
@@ -2680,7 +2723,7 @@
 					},
 					{
 						"name": "ClassCatalog",
-						"line": 210,
+						"line": 221,
 						"value": "83u",
 						"comment": "\n",
 						"char": 5,
@@ -2688,7 +2731,7 @@
 					},
 					{
 						"name": "Json",
-						"line": 212,
+						"line": 223,
 						"value": "114u",
 						"comment": "\n",
 						"char": 5,
@@ -2696,7 +2739,7 @@
 					},
 					{
 						"name": "Jsonb",
-						"line": 213,
+						"line": 224,
 						"value": "3802u",
 						"comment": "\n",
 						"char": 5,
@@ -2704,7 +2747,7 @@
 					},
 					{
 						"name": "Xml",
-						"line": 214,
+						"line": 225,
 						"value": "142u",
 						"comment": "\n",
 						"char": 5,
@@ -2712,7 +2755,7 @@
 					},
 					{
 						"name": "NodeTree",
-						"line": 215,
+						"line": 226,
 						"value": "194u",
 						"comment": "\n",
 						"char": 5,
@@ -2720,7 +2763,7 @@
 					},
 					{
 						"name": "StorageManager",
-						"line": 216,
+						"line": 227,
 						"value": "210u",
 						"comment": "\n",
 						"char": 5,
@@ -2728,7 +2771,7 @@
 					},
 					{
 						"name": "Point",
-						"line": 218,
+						"line": 229,
 						"value": "600u",
 						"comment": "\n",
 						"char": 5,
@@ -2736,7 +2779,7 @@
 					},
 					{
 						"name": "LineSegment",
-						"line": 219,
+						"line": 230,
 						"value": "601u",
 						"comment": "\n",
 						"char": 5,
@@ -2744,7 +2787,7 @@
 					},
 					{
 						"name": "Path",
-						"line": 220,
+						"line": 231,
 						"value": "602u",
 						"comment": "\n",
 						"char": 5,
@@ -2752,7 +2795,7 @@
 					},
 					{
 						"name": "Box",
-						"line": 221,
+						"line": 232,
 						"value": "603u",
 						"comment": "\n",
 						"char": 5,
@@ -2760,7 +2803,7 @@
 					},
 					{
 						"name": "Polygon",
-						"line": 222,
+						"line": 233,
 						"value": "604u",
 						"comment": "\n",
 						"char": 5,
@@ -2768,7 +2811,7 @@
 					},
 					{
 						"name": "Line",
-						"line": 223,
+						"line": 234,
 						"value": "628u",
 						"comment": "\n",
 						"char": 5,
@@ -2776,7 +2819,7 @@
 					},
 					{
 						"name": "Float4",
-						"line": 225,
+						"line": 236,
 						"value": "700u",
 						"comment": "\n",
 						"char": 5,
@@ -2784,7 +2827,7 @@
 					},
 					{
 						"name": "Float8",
-						"line": 226,
+						"line": 237,
 						"value": "701u",
 						"comment": "\n",
 						"char": 5,
@@ -2792,7 +2835,7 @@
 					},
 					{
 						"name": "AbsTime",
-						"line": 227,
+						"line": 238,
 						"value": "702u",
 						"comment": "\n",
 						"char": 5,
@@ -2800,7 +2843,7 @@
 					},
 					{
 						"name": "RelTime",
-						"line": 228,
+						"line": 239,
 						"value": "703u",
 						"comment": "\n",
 						"char": 5,
@@ -2808,7 +2851,7 @@
 					},
 					{
 						"name": "Interval",
-						"line": 229,
+						"line": 240,
 						"value": "704u",
 						"comment": "\n",
 						"char": 5,
@@ -2816,7 +2859,7 @@
 					},
 					{
 						"name": "Unknown",
-						"line": 230,
+						"line": 241,
 						"value": "705u",
 						"comment": "\n",
 						"char": 5,
@@ -2824,7 +2867,7 @@
 					},
 					{
 						"name": "Circle",
-						"line": 232,
+						"line": 243,
 						"value": "718u",
 						"comment": "\n",
 						"char": 5,
@@ -2832,7 +2875,7 @@
 					},
 					{
 						"name": "Money",
-						"line": 233,
+						"line": 244,
 						"value": "790u",
 						"comment": "\n",
 						"char": 5,
@@ -2840,7 +2883,7 @@
 					},
 					{
 						"name": "MacAddress",
-						"line": 234,
+						"line": 245,
 						"value": "829u",
 						"comment": "\n",
 						"char": 5,
@@ -2848,7 +2891,7 @@
 					},
 					{
 						"name": "HostAddress",
-						"line": 235,
+						"line": 246,
 						"value": "869u",
 						"comment": "\n",
 						"char": 5,
@@ -2856,7 +2899,7 @@
 					},
 					{
 						"name": "NetworkAddress",
-						"line": 236,
+						"line": 247,
 						"value": "650u",
 						"comment": "\n",
 						"char": 5,
@@ -2864,7 +2907,7 @@
 					},
 					{
 						"name": "FixedString",
-						"line": 238,
+						"line": 249,
 						"value": "1042u",
 						"comment": "\n",
 						"char": 5,
@@ -2872,7 +2915,7 @@
 					},
 					{
 						"name": "VariableString",
-						"line": 239,
+						"line": 250,
 						"value": "1043u",
 						"comment": "\n",
 						"char": 5,
@@ -2880,7 +2923,7 @@
 					},
 					{
 						"name": "Date",
-						"line": 241,
+						"line": 252,
 						"value": "1082u",
 						"comment": "\n",
 						"char": 5,
@@ -2888,7 +2931,7 @@
 					},
 					{
 						"name": "Time",
-						"line": 242,
+						"line": 253,
 						"value": "1083u",
 						"comment": "\n",
 						"char": 5,
@@ -2896,7 +2939,7 @@
 					},
 					{
 						"name": "TimeStamp",
-						"line": 243,
+						"line": 254,
 						"value": "1114u",
 						"comment": "\n",
 						"char": 5,
@@ -2904,7 +2947,7 @@
 					},
 					{
 						"name": "TimeStampWithZone",
-						"line": 244,
+						"line": 255,
 						"value": "1184u",
 						"comment": "\n",
 						"char": 5,
@@ -2912,7 +2955,7 @@
 					},
 					{
 						"name": "TimeInterval",
-						"line": 245,
+						"line": 256,
 						"value": "1186u",
 						"comment": "\n",
 						"char": 5,
@@ -2920,7 +2963,7 @@
 					},
 					{
 						"name": "TimeWithZone",
-						"line": 246,
+						"line": 257,
 						"value": "1266u",
 						"comment": "\n",
 						"char": 5,
@@ -2928,7 +2971,7 @@
 					},
 					{
 						"name": "FixedBitString",
-						"line": 248,
+						"line": 259,
 						"value": "1560u",
 						"comment": "\n",
 						"char": 5,
@@ -2936,7 +2979,7 @@
 					},
 					{
 						"name": "VariableBitString",
-						"line": 249,
+						"line": 260,
 						"value": "1562u",
 						"comment": "\n",
 						"char": 5,
@@ -2944,7 +2987,7 @@
 					},
 					{
 						"name": "Numeric",
-						"line": 251,
+						"line": 262,
 						"value": "1700u",
 						"comment": "\n",
 						"char": 5,
@@ -2952,7 +2995,7 @@
 					},
 					{
 						"name": "RefCursor",
-						"line": 252,
+						"line": 263,
 						"value": "1790u",
 						"comment": "\n",
 						"char": 5,
@@ -2960,7 +3003,7 @@
 					},
 					{
 						"name": "RegProcWithArgs",
-						"line": 253,
+						"line": 264,
 						"value": "2202u",
 						"comment": "\n",
 						"char": 5,
@@ -2968,7 +3011,7 @@
 					},
 					{
 						"name": "RegOperator",
-						"line": 254,
+						"line": 265,
 						"value": "2203u",
 						"comment": "\n",
 						"char": 5,
@@ -2976,7 +3019,7 @@
 					},
 					{
 						"name": "RegOperatorWithArgs",
-						"line": 255,
+						"line": 266,
 						"value": "2204u",
 						"comment": "\n",
 						"char": 5,
@@ -2984,7 +3027,7 @@
 					},
 					{
 						"name": "RegClass",
-						"line": 256,
+						"line": 267,
 						"value": "2205u",
 						"comment": "\n",
 						"char": 5,
@@ -2992,7 +3035,7 @@
 					},
 					{
 						"name": "RegType",
-						"line": 257,
+						"line": 268,
 						"value": "2206u",
 						"comment": "\n",
 						"char": 5,
@@ -3000,7 +3043,7 @@
 					},
 					{
 						"name": "UUID",
-						"line": 259,
+						"line": 270,
 						"value": "2950u",
 						"comment": "\n",
 						"char": 5,
@@ -3008,7 +3051,7 @@
 					},
 					{
 						"name": "TSVector",
-						"line": 260,
+						"line": 271,
 						"value": "3614u",
 						"comment": "\n",
 						"char": 5,
@@ -3016,7 +3059,7 @@
 					},
 					{
 						"name": "GTSVector",
-						"line": 261,
+						"line": 272,
 						"value": "3642u",
 						"comment": "\n",
 						"char": 5,
@@ -3024,7 +3067,7 @@
 					},
 					{
 						"name": "TSQuery",
-						"line": 262,
+						"line": 273,
 						"value": "3615u",
 						"comment": "\n",
 						"char": 5,
@@ -3032,7 +3075,7 @@
 					},
 					{
 						"name": "RegConfig",
-						"line": 263,
+						"line": 274,
 						"value": "3734u",
 						"comment": "\n",
 						"char": 5,
@@ -3040,7 +3083,7 @@
 					},
 					{
 						"name": "RegDictionary",
-						"line": 264,
+						"line": 275,
 						"value": "3769u",
 						"comment": "\n",
 						"char": 5,
@@ -3048,7 +3091,7 @@
 					},
 					{
 						"name": "TXidSnapshot",
-						"line": 265,
+						"line": 276,
 						"value": "2970u",
 						"comment": "\n",
 						"char": 5,
@@ -3056,7 +3099,7 @@
 					},
 					{
 						"name": "Int4Range",
-						"line": 267,
+						"line": 278,
 						"value": "3904u",
 						"comment": "\n",
 						"char": 5,
@@ -3064,7 +3107,7 @@
 					},
 					{
 						"name": "NumRange",
-						"line": 268,
+						"line": 279,
 						"value": "3906u",
 						"comment": "\n",
 						"char": 5,
@@ -3072,7 +3115,7 @@
 					},
 					{
 						"name": "TimeStampRange",
-						"line": 269,
+						"line": 280,
 						"value": "3908u",
 						"comment": "\n",
 						"char": 5,
@@ -3080,7 +3123,7 @@
 					},
 					{
 						"name": "TimeStampWithZoneRange",
-						"line": 270,
+						"line": 281,
 						"value": "3910u",
 						"comment": "\n",
 						"char": 5,
@@ -3088,7 +3131,7 @@
 					},
 					{
 						"name": "DateRange",
-						"line": 271,
+						"line": 282,
 						"value": "3912u",
 						"comment": "\n",
 						"char": 5,
@@ -3096,7 +3139,7 @@
 					},
 					{
 						"name": "Int8Range",
-						"line": 272,
+						"line": 283,
 						"value": "3926u",
 						"comment": "\n",
 						"char": 5,
@@ -3104,7 +3147,7 @@
 					},
 					{
 						"name": "XmlArray",
-						"line": 275,
+						"line": 286,
 						"value": "143u",
 						"comment": "\n",
 						"char": 5,
@@ -3112,7 +3155,7 @@
 					},
 					{
 						"name": "JsonArray",
-						"line": 276,
+						"line": 287,
 						"value": "3807u",
 						"comment": "\n",
 						"char": 5,
@@ -3120,7 +3163,7 @@
 					},
 					{
 						"name": "JsonbArray",
-						"line": 277,
+						"line": 288,
 						"value": "199u",
 						"comment": "\n",
 						"char": 5,
@@ -3128,7 +3171,7 @@
 					},
 					{
 						"name": "BoolArray",
-						"line": 278,
+						"line": 289,
 						"value": "1000u",
 						"comment": "\n",
 						"char": 5,
@@ -3136,7 +3179,7 @@
 					},
 					{
 						"name": "ByteArrayArray",
-						"line": 279,
+						"line": 290,
 						"value": "1001u",
 						"comment": "\n",
 						"char": 5,
@@ -3144,7 +3187,7 @@
 					},
 					{
 						"name": "CharArray",
-						"line": 280,
+						"line": 291,
 						"value": "1002u",
 						"comment": "\n",
 						"char": 5,
@@ -3152,7 +3195,7 @@
 					},
 					{
 						"name": "NameArray",
-						"line": 281,
+						"line": 292,
 						"value": "1003u",
 						"comment": "\n",
 						"char": 5,
@@ -3160,7 +3203,7 @@
 					},
 					{
 						"name": "Int2Array",
-						"line": 282,
+						"line": 293,
 						"value": "1005u",
 						"comment": "\n",
 						"char": 5,
@@ -3168,7 +3211,7 @@
 					},
 					{
 						"name": "Int2VectorArray",
-						"line": 283,
+						"line": 294,
 						"value": "1006u",
 						"comment": "\n",
 						"char": 5,
@@ -3176,7 +3219,7 @@
 					},
 					{
 						"name": "Int4Array",
-						"line": 284,
+						"line": 295,
 						"value": "1007u",
 						"comment": "\n",
 						"char": 5,
@@ -3184,7 +3227,7 @@
 					},
 					{
 						"name": "RegProcArray",
-						"line": 285,
+						"line": 296,
 						"value": "1008u",
 						"comment": "\n",
 						"char": 5,
@@ -3192,7 +3235,7 @@
 					},
 					{
 						"name": "TextArray",
-						"line": 286,
+						"line": 297,
 						"value": "1009u",
 						"comment": "\n",
 						"char": 5,
@@ -3200,7 +3243,7 @@
 					},
 					{
 						"name": "OidArray",
-						"line": 287,
+						"line": 298,
 						"value": "1028u",
 						"comment": "\n",
 						"char": 5,
@@ -3208,7 +3251,7 @@
 					},
 					{
 						"name": "TidArray",
-						"line": 288,
+						"line": 299,
 						"value": "1010u",
 						"comment": "\n",
 						"char": 5,
@@ -3216,7 +3259,7 @@
 					},
 					{
 						"name": "XidArray",
-						"line": 289,
+						"line": 300,
 						"value": "1011u",
 						"comment": "\n",
 						"char": 5,
@@ -3224,7 +3267,7 @@
 					},
 					{
 						"name": "CidArray",
-						"line": 290,
+						"line": 301,
 						"value": "1012u",
 						"comment": "\n",
 						"char": 5,
@@ -3232,7 +3275,7 @@
 					},
 					{
 						"name": "OidVectorArray",
-						"line": 291,
+						"line": 302,
 						"value": "1013u",
 						"comment": "\n",
 						"char": 5,
@@ -3240,7 +3283,7 @@
 					},
 					{
 						"name": "FixedStringArray",
-						"line": 292,
+						"line": 303,
 						"value": "1014u",
 						"comment": "\n",
 						"char": 5,
@@ -3248,7 +3291,7 @@
 					},
 					{
 						"name": "VariableStringArray",
-						"line": 293,
+						"line": 304,
 						"value": "1015u",
 						"comment": "\n",
 						"char": 5,
@@ -3256,7 +3299,7 @@
 					},
 					{
 						"name": "Int8Array",
-						"line": 294,
+						"line": 305,
 						"value": "1016u",
 						"comment": "\n",
 						"char": 5,
@@ -3264,7 +3307,7 @@
 					},
 					{
 						"name": "PointArray",
-						"line": 295,
+						"line": 306,
 						"value": "1017u",
 						"comment": "\n",
 						"char": 5,
@@ -3272,7 +3315,7 @@
 					},
 					{
 						"name": "LineSegmentArray",
-						"line": 296,
+						"line": 307,
 						"value": "1018u",
 						"comment": "\n",
 						"char": 5,
@@ -3280,7 +3323,7 @@
 					},
 					{
 						"name": "PathArray",
-						"line": 297,
+						"line": 308,
 						"value": "1019u",
 						"comment": "\n",
 						"char": 5,
@@ -3288,7 +3331,7 @@
 					},
 					{
 						"name": "BoxArray",
-						"line": 298,
+						"line": 309,
 						"value": "1020u",
 						"comment": "\n",
 						"char": 5,
@@ -3296,7 +3339,7 @@
 					},
 					{
 						"name": "Float4Array",
-						"line": 299,
+						"line": 310,
 						"value": "1021u",
 						"comment": "\n",
 						"char": 5,
@@ -3304,7 +3347,7 @@
 					},
 					{
 						"name": "Float8Array",
-						"line": 300,
+						"line": 311,
 						"value": "1022u",
 						"comment": "\n",
 						"char": 5,
@@ -3312,7 +3355,7 @@
 					},
 					{
 						"name": "AbsTimeArray",
-						"line": 301,
+						"line": 312,
 						"value": "1023u",
 						"comment": "\n",
 						"char": 5,
@@ -3320,7 +3363,7 @@
 					},
 					{
 						"name": "RelTimeArray",
-						"line": 302,
+						"line": 313,
 						"value": "1024u",
 						"comment": "\n",
 						"char": 5,
@@ -3328,7 +3371,7 @@
 					},
 					{
 						"name": "IntervalArray",
-						"line": 303,
+						"line": 314,
 						"value": "1025u",
 						"comment": "\n",
 						"char": 5,
@@ -3336,7 +3379,7 @@
 					},
 					{
 						"name": "PolygonArray",
-						"line": 304,
+						"line": 315,
 						"value": "1027u",
 						"comment": "\n",
 						"char": 5,
@@ -3344,7 +3387,7 @@
 					},
 					{
 						"name": "AccessControlListArray",
-						"line": 305,
+						"line": 316,
 						"value": "1034u",
 						"comment": "\n",
 						"char": 5,
@@ -3352,7 +3395,7 @@
 					},
 					{
 						"name": "MacAddressArray",
-						"line": 306,
+						"line": 317,
 						"value": "1040u",
 						"comment": "\n",
 						"char": 5,
@@ -3360,7 +3403,7 @@
 					},
 					{
 						"name": "HostAdressArray",
-						"line": 307,
+						"line": 318,
 						"value": "1041u",
 						"comment": "\n",
 						"char": 5,
@@ -3368,7 +3411,7 @@
 					},
 					{
 						"name": "NetworkAdressArray",
-						"line": 308,
+						"line": 319,
 						"value": "651u",
 						"comment": "\n",
 						"char": 5,
@@ -3376,7 +3419,7 @@
 					},
 					{
 						"name": "CStringArray",
-						"line": 309,
+						"line": 320,
 						"value": "1263u",
 						"comment": "\n",
 						"char": 5,
@@ -3384,7 +3427,7 @@
 					},
 					{
 						"name": "TimeStampArray",
-						"line": 310,
+						"line": 321,
 						"value": "1115u",
 						"comment": "\n",
 						"char": 5,
@@ -3392,7 +3435,7 @@
 					},
 					{
 						"name": "DateArray",
-						"line": 311,
+						"line": 322,
 						"value": "1182u",
 						"comment": "\n",
 						"char": 5,
@@ -3400,7 +3443,7 @@
 					},
 					{
 						"name": "TimeArray",
-						"line": 312,
+						"line": 323,
 						"value": "1183u",
 						"comment": "\n",
 						"char": 5,
@@ -3408,7 +3451,7 @@
 					},
 					{
 						"name": "TimeStampWithZoneArray",
-						"line": 313,
+						"line": 324,
 						"value": "1185u",
 						"comment": "\n",
 						"char": 5,
@@ -3416,7 +3459,7 @@
 					},
 					{
 						"name": "TimeIntervalArray",
-						"line": 314,
+						"line": 325,
 						"value": "1187u",
 						"comment": "\n",
 						"char": 5,
@@ -3424,7 +3467,7 @@
 					},
 					{
 						"name": "NumericArray",
-						"line": 315,
+						"line": 326,
 						"value": "1231u",
 						"comment": "\n",
 						"char": 5,
@@ -3432,7 +3475,7 @@
 					},
 					{
 						"name": "TimeWithZoneArray",
-						"line": 316,
+						"line": 327,
 						"value": "1270u",
 						"comment": "\n",
 						"char": 5,
@@ -3440,7 +3483,7 @@
 					},
 					{
 						"name": "FixedBitStringArray",
-						"line": 317,
+						"line": 328,
 						"value": "1561u",
 						"comment": "\n",
 						"char": 5,
@@ -3448,7 +3491,7 @@
 					},
 					{
 						"name": "VariableBitStringArray",
-						"line": 318,
+						"line": 329,
 						"value": "1563u",
 						"comment": "\n",
 						"char": 5,
@@ -3456,7 +3499,7 @@
 					},
 					{
 						"name": "RefCursorArray",
-						"line": 319,
+						"line": 330,
 						"value": "2201u",
 						"comment": "\n",
 						"char": 5,
@@ -3464,7 +3507,7 @@
 					},
 					{
 						"name": "RegProcWithArgsArray",
-						"line": 320,
+						"line": 331,
 						"value": "2207u",
 						"comment": "\n",
 						"char": 5,
@@ -3472,7 +3515,7 @@
 					},
 					{
 						"name": "RegOperatorArray",
-						"line": 321,
+						"line": 332,
 						"value": "2208u",
 						"comment": "\n",
 						"char": 5,
@@ -3480,7 +3523,7 @@
 					},
 					{
 						"name": "RegOperatorWithArgsArray",
-						"line": 322,
+						"line": 333,
 						"value": "2209u",
 						"comment": "\n",
 						"char": 5,
@@ -3488,7 +3531,7 @@
 					},
 					{
 						"name": "RegClassArray",
-						"line": 323,
+						"line": 334,
 						"value": "2210u",
 						"comment": "\n",
 						"char": 5,
@@ -3496,7 +3539,7 @@
 					},
 					{
 						"name": "RegTypeArray",
-						"line": 324,
+						"line": 335,
 						"value": "2211u",
 						"comment": "\n",
 						"char": 5,
@@ -3504,7 +3547,7 @@
 					},
 					{
 						"name": "UUIDArray",
-						"line": 325,
+						"line": 336,
 						"value": "2951u",
 						"comment": "\n",
 						"char": 5,
@@ -3512,7 +3555,7 @@
 					},
 					{
 						"name": "TSVectorArray",
-						"line": 326,
+						"line": 337,
 						"value": "3643u",
 						"comment": "\n",
 						"char": 5,
@@ -3520,7 +3563,7 @@
 					},
 					{
 						"name": "GTSVectorArray",
-						"line": 327,
+						"line": 338,
 						"value": "3644u",
 						"comment": "\n",
 						"char": 5,
@@ -3528,7 +3571,7 @@
 					},
 					{
 						"name": "TSQueryArray",
-						"line": 328,
+						"line": 339,
 						"value": "3645u",
 						"comment": "\n",
 						"char": 5,
@@ -3536,7 +3579,7 @@
 					},
 					{
 						"name": "RegConfigArray",
-						"line": 329,
+						"line": 340,
 						"value": "3735u",
 						"comment": "\n",
 						"char": 5,
@@ -3544,7 +3587,7 @@
 					},
 					{
 						"name": "RegDictionaryArray",
-						"line": 330,
+						"line": 341,
 						"value": "3770u",
 						"comment": "\n",
 						"char": 5,
@@ -3552,7 +3595,7 @@
 					},
 					{
 						"name": "TXidSnapshotArray",
-						"line": 331,
+						"line": 342,
 						"value": "2949u",
 						"comment": "\n",
 						"char": 5,
@@ -3560,7 +3603,7 @@
 					},
 					{
 						"name": "Int4RangeArray",
-						"line": 332,
+						"line": 343,
 						"value": "3905u",
 						"comment": "\n",
 						"char": 5,
@@ -3568,7 +3611,7 @@
 					},
 					{
 						"name": "NumRangeArray",
-						"line": 333,
+						"line": 344,
 						"value": "3907u",
 						"comment": "\n",
 						"char": 5,
@@ -3576,7 +3619,7 @@
 					},
 					{
 						"name": "TimeStampRangeArray",
-						"line": 334,
+						"line": 345,
 						"value": "3909u",
 						"comment": "\n",
 						"char": 5,
@@ -3584,7 +3627,7 @@
 					},
 					{
 						"name": "TimeStampWithZoneRangeArray",
-						"line": 335,
+						"line": 346,
 						"value": "3911u",
 						"comment": "\n",
 						"char": 5,
@@ -3592,7 +3635,7 @@
 					},
 					{
 						"name": "DateRangeArray",
-						"line": 336,
+						"line": 347,
 						"value": "3913u",
 						"comment": "\n",
 						"char": 5,
@@ -3600,7 +3643,7 @@
 					},
 					{
 						"name": "Int8RangeArray",
-						"line": 337,
+						"line": 348,
 						"value": "3927u",
 						"comment": "\n",
 						"char": 5,
@@ -3608,7 +3651,7 @@
 					},
 					{
 						"name": "Record",
-						"line": 340,
+						"line": 351,
 						"value": "2249u",
 						"comment": "\n",
 						"char": 5,
@@ -3616,7 +3659,7 @@
 					},
 					{
 						"name": "RecordArray",
-						"line": 341,
+						"line": 352,
 						"value": "2287u",
 						"comment": "\n",
 						"char": 5,
@@ -3624,7 +3667,7 @@
 					},
 					{
 						"name": "CString",
-						"line": 342,
+						"line": 353,
 						"value": "2275u",
 						"comment": "\n",
 						"char": 5,
@@ -3632,7 +3675,7 @@
 					},
 					{
 						"name": "AnyVoid",
-						"line": 343,
+						"line": 354,
 						"value": "2276u",
 						"comment": "\n",
 						"char": 5,
@@ -3640,7 +3683,7 @@
 					},
 					{
 						"name": "AnyArray",
-						"line": 344,
+						"line": 355,
 						"value": "2277u",
 						"comment": "\n",
 						"char": 5,
@@ -3648,7 +3691,7 @@
 					},
 					{
 						"name": "Void",
-						"line": 345,
+						"line": 356,
 						"value": "2278u",
 						"comment": "\n",
 						"char": 5,
@@ -3656,7 +3699,7 @@
 					},
 					{
 						"name": "Trigger",
-						"line": 346,
+						"line": 357,
 						"value": "2279u",
 						"comment": "\n",
 						"char": 5,
@@ -3664,7 +3707,7 @@
 					},
 					{
 						"name": "EventTrigger",
-						"line": 347,
+						"line": 358,
 						"value": "3838u",
 						"comment": "\n",
 						"char": 5,
@@ -3672,7 +3715,7 @@
 					},
 					{
 						"name": "LanguageHandler",
-						"line": 348,
+						"line": 359,
 						"value": "2280u",
 						"comment": "\n",
 						"char": 5,
@@ -3680,7 +3723,7 @@
 					},
 					{
 						"name": "Internal",
-						"line": 349,
+						"line": 360,
 						"value": "2281u",
 						"comment": "\n",
 						"char": 5,
@@ -3688,7 +3731,7 @@
 					},
 					{
 						"name": "Opaque",
-						"line": 350,
+						"line": 361,
 						"value": "2282u",
 						"comment": "\n",
 						"char": 5,
@@ -3696,7 +3739,7 @@
 					},
 					{
 						"name": "AnyElement",
-						"line": 351,
+						"line": 362,
 						"value": "2283u",
 						"comment": "\n",
 						"char": 5,
@@ -3704,7 +3747,7 @@
 					},
 					{
 						"name": "AnyNoArray",
-						"line": 352,
+						"line": 363,
 						"value": "2776u",
 						"comment": "\n",
 						"char": 5,
@@ -3712,7 +3755,7 @@
 					},
 					{
 						"name": "AnyEnum",
-						"line": 353,
+						"line": 364,
 						"value": "3500u",
 						"comment": "\n",
 						"char": 5,
@@ -3720,7 +3763,7 @@
 					},
 					{
 						"name": "FDWHandler",
-						"line": 354,
+						"line": 365,
 						"value": "3115u",
 						"comment": "\n",
 						"char": 5,
@@ -3728,7 +3771,7 @@
 					},
 					{
 						"name": "AnyRange",
-						"line": 355,
+						"line": 366,
 						"value": "3831u",
 						"comment": "\n",
 						"char": 5,
@@ -3736,7 +3779,7 @@
 					}
 				],
 				"name": "OidType",
-				"line": 186,
+				"line": 197,
 				"comment": "Enum of Oid types defined in PG\n",
 				"baseDeco": "k",
 				"char": 8,
@@ -3747,14 +3790,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/package.d",
 		"name": "dpq2",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/query.d",
 		"name": "dpq2.query",
 		"members": [
 			{
@@ -4010,7 +4053,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/result.d",
 		"name": "dpq2.result",
 		"members": [
 			{
@@ -4769,7 +4812,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-alpha.12/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0-rc.1/dpq2/src/dpq2/value.d",
 		"name": "dpq2.value",
 		"members": [
 			{

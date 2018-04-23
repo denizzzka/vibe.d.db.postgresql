@@ -31,6 +31,11 @@ $('#symbolSearchPane').show();</script>
 			<ul class="tree-view">
 				<li>
 					<div class="module ">
+						<a href="../../dpq2/conv/arrays.html">arrays</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
 						<a href="../../dpq2/conv/from_bson.html">from_bson</a>
 					</div>
 				</li>
@@ -155,7 +160,10 @@ $('#symbolSearchPane').show();</script>
 								<a id="toValue" class="public" href="../../dpq2/conv/from_d_types/toValue.html">toValue</a><span class="decoration">(v, valueFormat)</span>
 							</code>
 						</td>
-						<td></td>
+						<td>Converts types implicitly convertible to string to PG Value.
+    Note that if string is null it is written as an empty string.
+    If NULL is a desired DB value, Nullable!string can be used instead.
+</td>
 					</tr>
 					<tr>
 						<td>
