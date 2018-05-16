@@ -381,6 +381,7 @@ var symbols = [
 {name: 'vibe.db.postgresql.Dpq2Connection.socketTimeout', kind: "variabledeclaration", path: './vibe/db/postgresql/Dpq2Connection.socketTimeout.html', attributes: []},
 {name: 'vibe.db.postgresql.Dpq2Connection.statementTimeout', kind: "variabledeclaration", path: './vibe/db/postgresql/Dpq2Connection.statementTimeout.html', attributes: []},
 {name: 'vibe.db.postgresql.Dpq2Connection.this', kind: "functiondeclaration", path: './vibe/db/postgresql/Dpq2Connection.this.html', attributes: ["trusted"]},
+{name: 'vibe.db.postgresql.Dpq2Connection.waitForNotify', kind: "functiondeclaration", path: './vibe/db/postgresql/Dpq2Connection.waitForNotify.html', attributes: []},
 {name: 'vibe.db.postgresql.LockedConnection', kind: "aliasdeclaration", path: './vibe/db/postgresql/LockedConnection.html', attributes: []},
 {name: 'vibe.db.postgresql.PostgresClient', kind: "classdeclaration", path: './vibe/db/postgresql/PostgresClient.html', attributes: []},
 {name: 'vibe.db.postgresql.PostgresClient.createConnection', kind: "functiondeclaration", path: './vibe/db/postgresql/PostgresClient.createConnection.html', attributes: ["safe"]},

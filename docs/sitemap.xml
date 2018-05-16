@@ -245,6 +245,7 @@
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.socketTimeout.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.statementTimeout.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.this.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.waitForNotify.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.cancel.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.consumeInput.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.dbName.html</loc></url>

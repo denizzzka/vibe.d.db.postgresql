@@ -286,6 +286,27 @@ class Dpq2Connection : dpq2.Connection
 
         return res.getAnswer;
     }
+
+    /**
+     * Non blocking method to wait for next notification.
+     *
+     * Params:
+     *      timeout = maximal duration to wait for the new Notify to be received
+     *
+     * Returns: New Notify or null when no other notification is available or timeout occurs.
+     * Throws: ConnectionException on connection failure
+     */
+    Notify waitForNotify(in Duration timeout = Duration.max)
+    {
+        // try read available
+        auto ntf = getNextNotify();
+        if (ntf !is null) return ntf;
+
+        // wait for next one
+        try waitEndOfRead(timeout);
+        catch (PostgresClientTimeoutException) return null;
+        return getNextNotify();
+    }
 }
 
 ///
@@ -385,6 +406,28 @@ version(IntegrationTest) void __integration_test(string connString)
 
     {
         assert(conn.escapeIdentifier("abc") == "\"abc\"");
+    }
+
+    {
+        import core.time : msecs;
+        import vibe.core.core : sleep;
+        import vibe.core.concurrency : async;
+        struct NTF {string name; string extra;}
+
+        auto ntf = async(
+        {
+            auto conn = client.lockConnection;
+            conn.execStatement("LISTEN foo");
+            auto ntf = conn.waitForNotify();
+            assert(ntf !is null);
+            return NTF(ntf.name.idup, ntf.extra.idup);
+        });
+
+        sleep(10.msecs);
+        conn.execStatement("NOTIFY foo, 'bar'");
+
+        assert(ntf.name == "foo");
+        assert(ntf.extra == "bar");
     }
 
     destroy(conn);

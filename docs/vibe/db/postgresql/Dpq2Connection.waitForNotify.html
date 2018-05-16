@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function as</title>
+		<title>Function Dpq2Connection.waitForNotify</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -20,12 +20,12 @@
 $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
-				<li class="tree-view ">
+				<li class="tree-view collapsed">
 					<div class="package ">
 						<a href="../../../dpq2.html">dpq2</a>
 					</div>
 			<ul class="tree-view">
-				<li class="tree-view ">
+				<li class="tree-view collapsed">
 					<div class="package ">conv
 					</div>
 			<ul class="tree-view">
@@ -60,7 +60,7 @@ $('#symbolSearchPane').show();</script>
 					</div>
 				</li>
 				<li>
-					<div class="module selected">
+					<div class="module ">
 						<a href="../../../dpq2/conv/to_bson.html">to_bson</a>
 					</div>
 				</li>
@@ -108,16 +108,16 @@ $('#symbolSearchPane').show();</script>
 				</li>
 			</ul>
 				</li>
-				<li class="tree-view collapsed">
+				<li class="tree-view ">
 					<div class="package ">vibe
 					</div>
 			<ul class="tree-view">
-				<li class="tree-view collapsed">
+				<li class="tree-view ">
 					<div class="package ">db
 					</div>
 			<ul class="tree-view">
 				<li>
-					<div class="module ">
+					<div class="module selected">
 						<a href="../../../vibe/db/postgresql.html">postgresql</a>
 					</div>
 				</li>
@@ -128,23 +128,36 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function as</h1><p></p>
+			<h1>Function Dpq2Connection.waitForNotify</h1><p>Non blocking method to wait for next notification.
+</p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="typ">Bson</span> <span class="pln">as</span>(T)
+			<a href="../../../dpq2/result/Notify.html"><span class="typ">Notify</span></a> <span class="pln">waitForNotify</span>
 			<span class="pun">(</span>
 			<br/>
-			&nbsp;&nbsp;<span class="kwd">in </span><a href="../../../dpq2/value/Value.html"><span class="typ">Value</span></a> <span class="pln">v</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">time<wbr/></span><span class="pun">.</span><span class="typ">Duration</span><span class="pun">)</span> <span class="pln">timeout</span> <span class="pun">=</span> <span class="pln">max</span><span class="pun">()</span>
 			<br/>
-			<span class="pun">)</span>
-			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">== </span><span class="typ">Bson</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="pun">)</span><span class="pun">;</span>
 					</div>
 				</code>
 			</div>
-			
-			
+			<section></section>
+
+			<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="timeout">timeout</td><td> maximal duration to wait for the new Notify to be received</td></tr>
+</table>
+</section>
+<section><h2>Returns</h2>
+<p>New Notify or null when no other notification is available or timeout occurs.
+</p>
+</section>
+<section><h2>Throws</h2>
+<p>ConnectionException on connection failure
+</p>
+</section>
+
 			<footer>
 				<table class="license-info">
 					<tr>
