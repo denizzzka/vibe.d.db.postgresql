@@ -148,6 +148,13 @@ class Dpq2Connection : dpq2.Connection
                 throw new PostgresClientTimeoutException(__FILE__, __LINE__);
 
             consumeInput();
+
+            import derelict.pq.types;
+
+            // To prevent silent remote socket closing, etc, it is need
+            // to check status after in will be setted up by consumeInput
+            if(status == CONNECTION_BAD)
+                throw new ConnectionException(this);
         }
         while (this.isBusy); // wait until PQgetresult won't block anymore
     }
