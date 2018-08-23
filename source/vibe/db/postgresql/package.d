@@ -152,7 +152,7 @@ class Dpq2Connection : dpq2.Connection
             import derelict.pq.types;
 
             // To prevent silent remote socket closing, etc, it is need
-            // to check status after in will be setted up by consumeInput
+            // to check status after it will be setted up by consumeInput
             if(status == CONNECTION_BAD)
                 throw new ConnectionException(this);
         }
