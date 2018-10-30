@@ -18,7 +18,6 @@ PostgresClient client;
 void test()
 {
     auto conn = client.lockConnection();
-    scope(exit) destroy(conn);
 
     try
     {
