@@ -350,7 +350,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/args.d",
 		"name": "dpq2.args",
 		"members": [
 			{
@@ -491,7 +491,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/connection.d",
 		"name": "dpq2.connection",
 		"members": [
 			{
@@ -942,7 +942,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/arrays.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/arrays.d",
 		"name": "dpq2.conv.arrays",
 		"members": [
 			{
@@ -985,7 +985,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/from_bson.d",
 		"name": "dpq2.conv.from_bson",
 		"members": [
 			{
@@ -1015,7 +1015,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/from_d_types.d",
 		"name": "dpq2.conv.from_d_types",
 		"members": [
 			{
@@ -1045,7 +1045,7 @@
 						"kind": "type"
 					}
 				],
-				"constraint": "is(T == Nullable!R, R)",
+				"constraint": "is(T == Nullable!R, R) && !isArrayType!(typeof(v.get))",
 				"char": 7,
 				"kind": "template"
 			},
@@ -1062,13 +1062,44 @@
 								"type": "T"
 							}
 						],
-						"endline": 36,
+						"endline": 42,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
 				"line": 32,
+				"comment": "ditto\n",
+				"parameters": [
+					{
+						"name": "T",
+						"kind": "type"
+					}
+				],
+				"constraint": "is(T == Nullable!R, R) && isArrayType!(typeof(v.get))",
+				"char": 7,
+				"kind": "template"
+			},
+			{
+				"members": [
+					{
+						"endchar": 1,
+						"name": "toValue",
+						"line": 45,
+						"type": "Value(T v)",
+						"parameters": [
+							{
+								"name": "v",
+								"type": "T"
+							}
+						],
+						"endline": 49,
+						"char": 7,
+						"kind": "function"
+					}
+				],
+				"name": "toValue",
+				"line": 45,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1085,7 +1116,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 43,
+						"line": 56,
 						"type": "@trusted Value(T v, ValueFormat valueFormat = ValueFormat.BINARY)",
 						"parameters": [
 							{
@@ -1098,13 +1129,13 @@
 								"default": "ValueFormat.BINARY"
 							}
 						],
-						"endline": 54,
+						"endline": 67,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 43,
+				"line": 56,
 				"comment": "    Converts types implicitly convertible to string to PG Value.\n    Note that if string is null it is written as an empty string.\n    If NULL is a desired DB value, Nullable!string can be used instead.\n",
 				"parameters": [
 					{
@@ -1121,7 +1152,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 57,
+						"line": 70,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1129,13 +1160,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 61,
+						"endline": 74,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 57,
+				"line": 70,
 				"comment": "Constructs Value from array of bytes\n",
 				"parameters": [
 					{
@@ -1152,7 +1183,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 64,
+						"line": 77,
 						"type": "@trusted Value(T v)",
 						"parameters": [
 							{
@@ -1160,13 +1191,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 70,
+						"endline": 83,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 64,
+				"line": 77,
 				"comment": "\n",
 				"parameters": [
 					{
@@ -1184,7 +1215,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 73,
+						"line": 86,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1192,13 +1223,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 94,
+						"endline": 107,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 73,
+				"line": 86,
 				"comment": "Constructs Value from Date\n",
 				"parameters": [
 					{
@@ -1215,7 +1246,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 97,
+						"line": 110,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1223,13 +1254,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 103,
+						"endline": 116,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 97,
+				"line": 110,
 				"comment": "Constructs Value from TimeOfDay\n",
 				"parameters": [
 					{
@@ -1246,7 +1277,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 106,
+						"line": 119,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1254,13 +1285,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 127,
+						"endline": 140,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 106,
+				"line": 119,
 				"comment": "Constructs Value from TimeStamp or from TimeStampUTC\n",
 				"parameters": [
 					{
@@ -1277,7 +1308,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 151,
+						"line": 164,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1285,13 +1316,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 155,
+						"endline": 168,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 151,
+				"line": 164,
 				"comment": "    Constructs Value from DateTime\n    It uses Timestamp without TZ as a resulting PG type\n",
 				"parameters": [
 					{
@@ -1308,7 +1339,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 163,
+						"line": 176,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1316,13 +1347,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 169,
+						"endline": 182,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 163,
+				"line": 176,
 				"comment": "    Constructs Value from SysTime\n    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.\n    It means that PG value will have 10 times lower precision.\n    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.\n",
 				"parameters": [
 					{
@@ -1339,7 +1370,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 172,
+						"line": 185,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1347,13 +1378,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 176,
+						"endline": 189,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 172,
+				"line": 185,
 				"comment": "Constructs Value from UUID\n",
 				"parameters": [
 					{
@@ -1370,7 +1401,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 179,
+						"line": 192,
 						"type": "Value(T v)",
 						"parameters": [
 							{
@@ -1378,13 +1409,13 @@
 								"type": "T"
 							}
 						],
-						"endline": 186,
+						"endline": 199,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 179,
+				"line": 192,
 				"comment": "Constructs Value from Json\n",
 				"parameters": [
 					{
@@ -1401,7 +1432,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/geometric.d",
 		"name": "dpq2.conv.geometric",
 		"members": [
 			{
@@ -1664,14 +1695,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/jsonb.d",
 		"name": "dpq2.conv.jsonb",
 		"members": [],
 		"comment": "\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/time.d",
 		"name": "dpq2.conv.time",
 		"members": [
 			{
@@ -2251,7 +2282,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/to_bson.d",
 		"name": "dpq2.conv.to_bson",
 		"members": [
 			{
@@ -2293,7 +2324,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/conv/to_d_types.d",
 		"name": "dpq2.conv.to_d_types",
 		"members": [
 			{
@@ -2497,7 +2528,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/exception.d",
 		"name": "dpq2.exception",
 		"members": [
 			{
@@ -2514,7 +2545,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/oids.d",
 		"name": "dpq2.oids",
 		"members": [
 			{
@@ -3811,14 +3842,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/package.d",
 		"name": "dpq2",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/query.d",
 		"name": "dpq2.query",
 		"members": [
 			{
@@ -4074,7 +4105,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/result.d",
 		"name": "dpq2.result",
 		"members": [
 			{
@@ -4833,7 +4864,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.0-rc.6/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.0/dpq2/src/dpq2/value.d",
 		"name": "dpq2.value",
 		"members": [
 			{
