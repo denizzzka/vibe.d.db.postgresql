@@ -350,7 +350,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/args.d",
 		"name": "dpq2.args",
 		"members": [
 			{
@@ -491,7 +491,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/connection.d",
 		"name": "dpq2.connection",
 		"members": [
 			{
@@ -942,7 +942,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/arrays.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/arrays.d",
 		"name": "dpq2.conv.arrays",
 		"members": [
 			{
@@ -950,7 +950,7 @@
 					{
 						"endchar": 1,
 						"name": "toValue",
-						"line": 28,
+						"line": 69,
 						"type": "Value(auto ref T v)",
 						"parameters": [
 							{
@@ -962,13 +962,13 @@
 								]
 							}
 						],
-						"endline": 100,
+						"endline": 128,
 						"char": 7,
 						"kind": "function"
 					}
 				],
 				"name": "toValue",
-				"line": 28,
+				"line": 69,
 				"comment": "Converts dynamic or static array of supported types to the coresponding PG array type value\n",
 				"parameters": [
 					{
@@ -985,7 +985,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/from_bson.d",
 		"name": "dpq2.conv.from_bson",
 		"members": [
 			{
@@ -1015,7 +1015,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/from_d_types.d",
 		"name": "dpq2.conv.from_d_types",
 		"members": [
 			{
@@ -1432,7 +1432,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/geometric.d",
 		"name": "dpq2.conv.geometric",
 		"members": [
 			{
@@ -1695,14 +1695,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/jsonb.d",
 		"name": "dpq2.conv.jsonb",
 		"members": [],
 		"comment": "\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/time.d",
 		"name": "dpq2.conv.time",
 		"members": [
 			{
@@ -2282,7 +2282,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/to_bson.d",
 		"name": "dpq2.conv.to_bson",
 		"members": [
 			{
@@ -2324,12 +2324,12 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/conv/to_d_types.d",
 		"name": "dpq2.conv.to_d_types",
 		"members": [
 			{
 				"name": "PGboolean",
-				"line": 28,
+				"line": 29,
 				"comment": "boolean\n",
 				"deco": "b",
 				"char": 1,
@@ -2337,7 +2337,7 @@
 			},
 			{
 				"name": "PGsmallint",
-				"line": 29,
+				"line": 30,
 				"comment": "smallint\n",
 				"deco": "s",
 				"char": 1,
@@ -2345,7 +2345,7 @@
 			},
 			{
 				"name": "PGinteger",
-				"line": 30,
+				"line": 31,
 				"comment": "integer\n",
 				"deco": "i",
 				"char": 1,
@@ -2353,7 +2353,7 @@
 			},
 			{
 				"name": "PGbigint",
-				"line": 31,
+				"line": 32,
 				"comment": "bigint\n",
 				"deco": "l",
 				"char": 1,
@@ -2361,7 +2361,7 @@
 			},
 			{
 				"name": "PGreal",
-				"line": 32,
+				"line": 33,
 				"comment": "real\n",
 				"deco": "f",
 				"char": 1,
@@ -2369,7 +2369,7 @@
 			},
 			{
 				"name": "PGdouble_precision",
-				"line": 33,
+				"line": 34,
 				"comment": "double precision\n",
 				"deco": "d",
 				"char": 1,
@@ -2377,7 +2377,7 @@
 			},
 			{
 				"name": "PGtext",
-				"line": 34,
+				"line": 35,
 				"comment": "text\n",
 				"deco": "Aya",
 				"char": 1,
@@ -2385,7 +2385,7 @@
 			},
 			{
 				"name": "PGnumeric",
-				"line": 35,
+				"line": 36,
 				"comment": "numeric represented as string\n",
 				"deco": "Aya",
 				"char": 1,
@@ -2393,7 +2393,7 @@
 			},
 			{
 				"name": "PGbytea",
-				"line": 36,
+				"line": 37,
 				"comment": "bytea\n",
 				"deco": "Ayh",
 				"char": 1,
@@ -2401,7 +2401,7 @@
 			},
 			{
 				"name": "PGuuid",
-				"line": 37,
+				"line": 38,
 				"comment": "UUID\n",
 				"deco": "S3std4uuid4UUID",
 				"char": 1,
@@ -2409,7 +2409,7 @@
 			},
 			{
 				"name": "PGdate",
-				"line": 38,
+				"line": 39,
 				"comment": "Date (no time of day)\n",
 				"deco": "S3std8datetime4date4Date",
 				"char": 1,
@@ -2417,7 +2417,7 @@
 			},
 			{
 				"name": "PGtime_without_time_zone",
-				"line": 39,
+				"line": 40,
 				"comment": "Time of day (no date)\n",
 				"deco": "S3std8datetime4date9TimeOfDay",
 				"char": 1,
@@ -2425,7 +2425,7 @@
 			},
 			{
 				"name": "PGtimestamp",
-				"line": 40,
+				"line": 41,
 				"comment": "Both date and time without time zone\n",
 				"deco": "S4dpq24conv4time__T10TTimeStampVbi0ZQr",
 				"char": 1,
@@ -2433,7 +2433,7 @@
 			},
 			{
 				"name": "PGtimestamptz",
-				"line": 41,
+				"line": 42,
 				"comment": "Both date and time stored in UTC time zone\n",
 				"deco": "S4dpq24conv4time__T10TTimeStampVbi1ZQr",
 				"char": 1,
@@ -2441,7 +2441,7 @@
 			},
 			{
 				"name": "PGjson",
-				"line": 42,
+				"line": 43,
 				"comment": "json or jsonb\n",
 				"deco": "S4vibe4data4json4Json",
 				"char": 1,
@@ -2449,7 +2449,7 @@
 			},
 			{
 				"name": "PGline",
-				"line": 43,
+				"line": 44,
 				"comment": "Line (geometric type)\n",
 				"deco": "S4dpq24conv9geometric4Line",
 				"char": 1,
@@ -2460,7 +2460,7 @@
 					{
 						"endchar": 1,
 						"name": "as",
-						"line": 53,
+						"line": 54,
 						"type": "pure @trusted T(in Value v)",
 						"parameters": [
 							{
@@ -2471,13 +2471,13 @@
 								]
 							}
 						],
-						"endline": 91,
+						"endline": 92,
 						"char": 3,
 						"kind": "function"
 					}
 				],
 				"name": "as",
-				"line": 53,
+				"line": 54,
 				"comment": "    Returns cell value as a native string based type from text or binary formatted field.\n    Throws: AssertError if the db value is NULL and Nullable is not used to retrieve the value\n",
 				"parameters": [
 					{
@@ -2494,7 +2494,7 @@
 					{
 						"endchar": 1,
 						"name": "as",
-						"line": 108,
+						"line": 109,
 						"type": "T(in Value v)",
 						"parameters": [
 							{
@@ -2505,13 +2505,13 @@
 								]
 							}
 						],
-						"endline": 124,
+						"endline": 125,
 						"char": 3,
 						"kind": "function"
 					}
 				],
 				"name": "as",
-				"line": 108,
+				"line": 109,
 				"comment": "    Returns value as D type value from binary formatted field.\n    Throws: AssertError if the db value is NULL and Nullable is not used to retrieve the value\n",
 				"parameters": [
 					{
@@ -2528,7 +2528,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/exception.d",
 		"name": "dpq2.exception",
 		"members": [
 			{
@@ -2545,7 +2545,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/oids.d",
 		"name": "dpq2.oids",
 		"members": [
 			{
@@ -3842,14 +3842,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/package.d",
 		"name": "dpq2",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/query.d",
 		"name": "dpq2.query",
 		"members": [
 			{
@@ -4105,21 +4105,21 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/result.d",
 		"name": "dpq2.result",
 		"members": [
 			{
 				"name": "Result",
-				"line": 56,
+				"line": 64,
 				"comment": "Contains result of query regardless of whether it contains an error or data answer\n",
 				"members": [
 					{
 						"endchar": 5,
 						"name": "status",
-						"line": 66,
+						"line": 74,
 						"comment": "Returns the result status of the command.\n",
 						"deco": "yFNbZi",
-						"endline": 69,
+						"endline": 77,
 						"originalType": "immutable nothrow ExecStatusType()",
 						"char": 20,
 						"kind": "function"
@@ -4127,27 +4127,27 @@
 					{
 						"endchar": 5,
 						"name": "statusString",
-						"line": 72,
+						"line": 80,
 						"comment": "Text description of result status.\n",
 						"deco": "yFZAya",
-						"endline": 75,
+						"endline": 83,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "resultErrorMessage",
-						"line": 78,
+						"line": 86,
 						"comment": "Returns the error message associated with the command, or an empty string if there was no error.\n",
 						"deco": "yFZAya",
-						"endline": 81,
+						"endline": 89,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "resultErrorField",
-						"line": 84,
+						"line": 92,
 						"comment": "Returns an individual field of an error report.\n",
 						"deco": "yFiZAya",
 						"parameters": [
@@ -4156,27 +4156,27 @@
 								"deco": "i"
 							}
 						],
-						"endline": 87,
+						"endline": 95,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "getAnswer",
-						"line": 90,
+						"line": 98,
 						"comment": "Creates Answer object\n",
 						"deco": "yFZyC4dpq26result6Answer",
-						"endline": 93,
+						"endline": 101,
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "toString",
-						"line": 96,
+						"line": 104,
 						"comment": "\n",
 						"deco": "yFZAya",
-						"endline": 103,
+						"endline": 111,
 						"char": 12,
 						"kind": "function"
 					}
@@ -4189,30 +4189,30 @@
 					{
 						"endchar": 5,
 						"name": "cmdStatus",
-						"line": 134,
+						"line": 142,
 						"comment": " Returns the command status tag from the SQL command that generated the PGresult\n Commonly this is just the name of the command, but it might include\n additional data such as the number of rows processed.\n",
 						"deco": "yFZAya",
-						"endline": 137,
+						"endline": 145,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "cmdTuples",
-						"line": 147,
-						"comment": " Returns the number of rows affected by the SQL command.\n This function returns a string containing the number of rows affected by the SQL statement\n that generated the Answer. This function can only be used following the execution of\n a SELECT, CREATE TABLE AS, INSERT, UPDATE, DELETE, MOVE, FETCH, or COPY statement,\n or an EXECUTE of a prepared query that contains an INSERT, UPDATE, or DELETE statement.\n If the command that generated the Anser was anything else, cmdTuples returns an empty string.\n",
+						"line": 155,
+						"comment": " Returns the number of rows affected by the SQL command.\n This function returns a string containing the number of rows affected by the SQL statement\n that generated the Answer. This function can only be used following the execution of\n a SELECT, CREATE TABLE AS, INSERT, UPDATE, DELETE, MOVE, FETCH, or COPY statement,\n or an EXECUTE of a prepared query that contains an INSERT, UPDATE, or DELETE statement.\n If the command that generated the Anwser was anything else, cmdTuples returns an empty string.\n",
 						"deco": "yFZAya",
-						"endline": 150,
+						"endline": 158,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 57,
 						"name": "length",
-						"line": 153,
+						"line": 161,
 						"comment": "Returns row count\n",
 						"deco": "yFNbZm",
-						"endline": 153,
+						"endline": 161,
 						"originalType": "immutable nothrow size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4220,10 +4220,10 @@
 					{
 						"endchar": 62,
 						"name": "columnCount",
-						"line": 156,
+						"line": 164,
 						"comment": "Returns column count\n",
 						"deco": "yFNbZm",
-						"endline": 156,
+						"endline": 164,
 						"originalType": "immutable nothrow size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4231,7 +4231,7 @@
 					{
 						"endchar": 5,
 						"name": "columnFormat",
-						"line": 159,
+						"line": 167,
 						"comment": "Returns column format\n",
 						"deco": "yFxmZE4dpq25value11ValueFormat",
 						"parameters": [
@@ -4240,7 +4240,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 164,
+						"endline": 172,
 						"originalType": "immutable ValueFormat(const size_t colNum)",
 						"char": 17,
 						"kind": "function"
@@ -4248,7 +4248,7 @@
 					{
 						"endchar": 5,
 						"name": "OID",
-						"line": 167,
+						"line": 175,
 						"comment": "Returns column Oid\n",
 						"deco": "yFmZE4dpq24oids7OidType",
 						"parameters": [
@@ -4257,7 +4257,7 @@
 								"deco": "m"
 							}
 						],
-						"endline": 172,
+						"endline": 180,
 						"originalType": "immutable OidType(size_t colNum)",
 						"char": 13,
 						"kind": "function"
@@ -4265,7 +4265,7 @@
 					{
 						"endchar": 5,
 						"name": "isArray",
-						"line": 175,
+						"line": 183,
 						"comment": "Checks if column type is array\n",
 						"deco": "yFxmZb",
 						"parameters": [
@@ -4274,7 +4274,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 180,
+						"endline": 188,
 						"originalType": "immutable bool(const size_t colNum)",
 						"char": 10,
 						"kind": "function"
@@ -4282,7 +4282,7 @@
 					{
 						"endchar": 5,
 						"name": "columnNum",
-						"line": 184,
+						"line": 192,
 						"comment": "Returns column number by field name\n",
 						"deco": "yFAyaZm",
 						"parameters": [
@@ -4291,7 +4291,7 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 193,
+						"endline": 201,
 						"originalType": "immutable size_t(string columnName)",
 						"char": 12,
 						"kind": "function"
@@ -4299,7 +4299,7 @@
 					{
 						"endchar": 5,
 						"name": "columnName",
-						"line": 196,
+						"line": 204,
 						"comment": "Returns column name by field number\n",
 						"deco": "yFxmZAya",
 						"parameters": [
@@ -4308,7 +4308,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 208,
+						"endline": 216,
 						"originalType": "immutable string(in size_t colNum)",
 						"char": 12,
 						"kind": "function"
@@ -4316,7 +4316,7 @@
 					{
 						"endchar": 5,
 						"name": "columnExists",
-						"line": 211,
+						"line": 219,
 						"comment": "Returns true if the column exists, false if not\n",
 						"deco": "yFAyaZb",
 						"parameters": [
@@ -4325,14 +4325,14 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 216,
+						"endline": 224,
 						"char": 10,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 219,
+						"line": 227,
 						"comment": "Returns row of cells\n",
 						"deco": "yFxmZyS4dpq26result3Row",
 						"parameters": [
@@ -4341,7 +4341,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 222,
+						"endline": 230,
 						"originalType": "immutable immutable(Row)(in size_t row)",
 						"char": 21,
 						"kind": "function"
@@ -4349,10 +4349,10 @@
 					{
 						"endchar": 5,
 						"name": "nParams",
-						"line": 229,
+						"line": 237,
 						"comment": "     Returns the number of parameters of a prepared statement.\n     This function is only useful when inspecting the result of describePrepared.\n     For other types of queries it will return zero.\n",
 						"deco": "yFZk",
-						"endline": 232,
+						"endline": 240,
 						"char": 10,
 						"kind": "function"
 					},
@@ -4361,7 +4361,7 @@
 							{
 								"endchar": 5,
 								"name": "paramType",
-								"line": 240,
+								"line": 248,
 								"type": "OidType(T paramNum)",
 								"parameters": [
 									{
@@ -4369,13 +4369,13 @@
 										"type": "T"
 									}
 								],
-								"endline": 243,
+								"endline": 251,
 								"char": 13,
 								"kind": "function"
 							}
 						],
 						"name": "paramType",
-						"line": 240,
+						"line": 248,
 						"comment": "     Returns the data type of the indicated statement parameter.\n     Parameter numbers start at 0.\n     This function is only useful when inspecting the result of describePrepared.\n     For other types of queries it will return zero.\n",
 						"parameters": [
 							{
@@ -4389,10 +4389,10 @@
 					{
 						"endchar": 5,
 						"name": "toString",
-						"line": 246,
+						"line": 254,
 						"comment": "\n",
 						"deco": "yFZAya",
-						"endline": 261,
+						"endline": 269,
 						"char": 21,
 						"kind": "function",
 						"overrides": [
@@ -4404,7 +4404,7 @@
 					}
 				],
 				"name": "Answer",
-				"line": 107,
+				"line": 115,
 				"comment": "Contains result of query with valid data answer\n",
 				"base": "dpq2.result.Result",
 				"char": 11,
@@ -4415,7 +4415,7 @@
 					{
 						"endchar": 1,
 						"name": "rangify",
-						"line": 291,
+						"line": 299,
 						"type": "(T obj)",
 						"parameters": [
 							{
@@ -4423,7 +4423,7 @@
 								"type": "T"
 							}
 						],
-						"endline": 311,
+						"endline": 319,
 						"char": 6,
 						"kind": "function",
 						"storageClass": [
@@ -4432,7 +4432,7 @@
 					}
 				],
 				"name": "rangify",
-				"line": 291,
+				"line": 299,
 				"comment": "Creates forward range from immutable Answer\n",
 				"parameters": [
 					{
@@ -4445,13 +4445,13 @@
 			},
 			{
 				"name": "Row",
-				"line": 314,
+				"line": 322,
 				"comment": "Represents one row from the answer table\n",
 				"members": [
 					{
 						"endchar": 5,
 						"name": "this",
-						"line": 320,
+						"line": 328,
 						"comment": "\n",
 						"deco": "yFNcyC4dpq26result6AnswerxmZySQyQv3Row",
 						"parameters": [
@@ -4464,7 +4464,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 326,
+						"endline": 334,
 						"originalType": "immutable ref (immutable Answer answer, in size_t row)",
 						"char": 5,
 						"kind": "constructor"
@@ -4472,7 +4472,7 @@
 					{
 						"endchar": 5,
 						"name": "size",
-						"line": 329,
+						"line": 337,
 						"comment": "Returns the actual length of a cell value in bytes.\n",
 						"deco": "yFxmZm",
 						"parameters": [
@@ -4481,7 +4481,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 334,
+						"endline": 342,
 						"originalType": "immutable size_t(const size_t col)",
 						"char": 12,
 						"kind": "function"
@@ -4489,7 +4489,7 @@
 					{
 						"endchar": 5,
 						"name": "isNULL",
-						"line": 339,
+						"line": 347,
 						"comment": "Checks if value is NULL\n\nDo not confuse it with Nullable's isNull method\n",
 						"deco": "yFxmZb",
 						"parameters": [
@@ -4498,15 +4498,32 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 344,
+						"endline": 352,
 						"originalType": "immutable bool(const size_t col)",
 						"char": 10,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
+						"name": "columnExists",
+						"line": 355,
+						"comment": "Checks if column with name exists\n",
+						"deco": "yFxAyaZb",
+						"parameters": [
+							{
+								"name": "column",
+								"deco": "xAya"
+							}
+						],
+						"endline": 358,
+						"originalType": "immutable bool(in string column)",
+						"char": 10,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
 						"name": "opIndex",
-						"line": 347,
+						"line": 361,
 						"comment": "Returns cell value by column number\n",
 						"deco": "yFxmZyS4dpq25value5Value",
 						"parameters": [
@@ -4515,7 +4532,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 358,
+						"endline": 372,
 						"originalType": "immutable immutable(Value)(in size_t col)",
 						"char": 23,
 						"kind": "function"
@@ -4523,7 +4540,7 @@
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 361,
+						"line": 375,
 						"comment": "Returns cell value by field name\n",
 						"deco": "yFxAyaZyS4dpq25value5Value",
 						"parameters": [
@@ -4532,7 +4549,7 @@
 								"deco": "xAya"
 							}
 						],
-						"endline": 364,
+						"endline": 378,
 						"originalType": "immutable immutable(Value)(in string column)",
 						"char": 23,
 						"kind": "function"
@@ -4540,7 +4557,7 @@
 					{
 						"endchar": 5,
 						"name": "columnNum",
-						"line": 367,
+						"line": 381,
 						"comment": "Returns column number by field name\n",
 						"deco": "yFAyaZm",
 						"parameters": [
@@ -4549,7 +4566,7 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 370,
+						"endline": 384,
 						"originalType": "immutable size_t(string columnName)",
 						"char": 12,
 						"kind": "function"
@@ -4557,7 +4574,7 @@
 					{
 						"endchar": 5,
 						"name": "columnName",
-						"line": 373,
+						"line": 387,
 						"comment": "Returns column name by field number\n",
 						"deco": "yFxmZAya",
 						"parameters": [
@@ -4566,7 +4583,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 376,
+						"endline": 390,
 						"originalType": "immutable string(in size_t colNum)",
 						"char": 12,
 						"kind": "function"
@@ -4574,10 +4591,10 @@
 					{
 						"endchar": 52,
 						"name": "length",
-						"line": 379,
+						"line": 393,
 						"comment": "Returns column count\n",
 						"deco": "yFZm",
-						"endline": 379,
+						"endline": 393,
 						"originalType": "immutable size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4585,10 +4602,10 @@
 					{
 						"endchar": 5,
 						"name": "toString",
-						"line": 382,
+						"line": 396,
 						"comment": "\n",
 						"deco": "yFZAya",
-						"endline": 390,
+						"endline": 404,
 						"char": 12,
 						"kind": "function"
 					}
@@ -4599,7 +4616,7 @@
 			{
 				"endchar": 1,
 				"name": "asArray",
-				"line": 394,
+				"line": 408,
 				"comment": "Creates Array from appropriate Value\n",
 				"deco": "FyS4dpq25value5ValueZySQu6result5Array",
 				"parameters": [
@@ -4608,14 +4625,14 @@
 						"deco": "yS4dpq25value5Value"
 					}
 				],
-				"endline": 409,
+				"endline": 423,
 				"char": 19,
 				"kind": "function"
 			},
 			{
 				"endchar": 1,
 				"name": "toString",
-				"line": 412,
+				"line": 426,
 				"comment": "\n",
 				"deco": "FyS4dpq25value5ValueZAya",
 				"parameters": [
@@ -4624,20 +4641,20 @@
 						"deco": "yS4dpq25value5Value"
 					}
 				],
-				"endline": 417,
+				"endline": 431,
 				"originalType": "string(immutable Value v)",
 				"char": 8,
 				"kind": "function"
 			},
 			{
 				"name": "ArrayProperties",
-				"line": 433,
+				"line": 447,
 				"comment": "\n",
 				"members": [
 					{
 						"offset": 0,
 						"name": "OID",
-						"line": 435,
+						"line": 449,
 						"comment": "Oid\n",
 						"deco": "E4dpq24oids7OidType",
 						"init": "cast(OidType)0u",
@@ -4647,7 +4664,7 @@
 					{
 						"offset": 8,
 						"name": "dimsSize",
-						"line": 436,
+						"line": 450,
 						"comment": "Dimensions sizes info\n",
 						"deco": "Ai",
 						"char": 11,
@@ -4656,7 +4673,7 @@
 					{
 						"offset": 24,
 						"name": "nElems",
-						"line": 437,
+						"line": 451,
 						"comment": "Total elements\n",
 						"deco": "m",
 						"originalType": "size_t",
@@ -4669,13 +4686,13 @@
 			},
 			{
 				"name": "Array",
-				"line": 490,
+				"line": 504,
 				"comment": "Represents Value as array\n\nActually it is a reference to the cell value of the answer table\n",
 				"members": [
 					{
 						"offset": 0,
 						"name": "ap",
-						"line": 492,
+						"line": 506,
 						"comment": "\n",
 						"deco": "yS4dpq26result15ArrayProperties",
 						"originalType": "ArrayProperties",
@@ -4688,10 +4705,10 @@
 					{
 						"endchar": 5,
 						"name": "length",
-						"line": 539,
+						"line": 555,
 						"comment": "Returns number of elements in array\nUseful for one-dimensional arrays\n",
 						"deco": "yFZm",
-						"endline": 542,
+						"endline": 558,
 						"originalType": "immutable size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4699,7 +4716,7 @@
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 546,
+						"line": 562,
 						"comment": "Returns Value struct by index\nUseful for one-dimensional arrays\n",
 						"deco": "yFmZyS4dpq25value5Value",
 						"parameters": [
@@ -4708,7 +4725,7 @@
 								"deco": "m"
 							}
 						],
-						"endline": 549,
+						"endline": 565,
 						"originalType": "immutable immutable(Value)(size_t n)",
 						"char": 23,
 						"kind": "function"
@@ -4716,7 +4733,7 @@
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 553,
+						"line": 569,
 						"comment": "Returns Value struct by index\nUseful for one-dimensional arrays\n",
 						"deco": "yFiZyS4dpq25value5Value",
 						"parameters": [
@@ -4725,27 +4742,27 @@
 								"deco": "i"
 							}
 						],
-						"endline": 556,
+						"endline": 572,
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "getValue",
-						"line": 560,
+						"line": 576,
 						"comment": "Returns Value struct\nUseful for multidimensional arrays\n",
 						"deco": "yFYyS4dpq25value5Value",
-						"endline": 565,
+						"endline": 581,
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "isNULL",
-						"line": 568,
+						"line": 590,
 						"comment": "Value NULL checking\n",
 						"deco": "yFYb",
-						"endline": 572,
+						"endline": 594,
 						"char": 10,
 						"kind": "function"
 					}
@@ -4755,36 +4772,36 @@
 			},
 			{
 				"name": "Notify",
-				"line": 617,
+				"line": 647,
 				"comment": "Notify\n",
 				"members": [
 					{
 						"endchar": 52,
 						"name": "name",
-						"line": 635,
+						"line": 665,
 						"comment": "Returns notification condition name\n",
 						"deco": "FZAya",
-						"endline": 635,
+						"endline": 665,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 51,
 						"name": "extra",
-						"line": 638,
+						"line": 668,
 						"comment": "Returns notification parameter\n",
 						"deco": "FZAya",
-						"endline": 638,
+						"endline": 668,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 37,
 						"name": "pid",
-						"line": 641,
+						"line": 671,
 						"comment": "Returns process ID of notifying server process\n",
 						"deco": "FZm",
-						"endline": 641,
+						"endline": 671,
 						"originalType": "size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4796,7 +4813,7 @@
 			{
 				"members": [],
 				"name": "ResponseException",
-				"line": 645,
+				"line": 675,
 				"comment": "Covers errors of Answer creation when data was not received due to syntax errors, etc\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,
@@ -4806,7 +4823,7 @@
 				"members": [
 					{
 						"name": "FATAL_ERROR",
-						"line": 664,
+						"line": 694,
 						"value": "0",
 						"comment": "\n",
 						"char": 5,
@@ -4814,7 +4831,7 @@
 					},
 					{
 						"name": "COLUMN_NOT_FOUND",
-						"line": 665,
+						"line": 695,
 						"value": "1",
 						"comment": "Column is not found\n",
 						"char": 5,
@@ -4822,7 +4839,7 @@
 					},
 					{
 						"name": "OUT_OF_RANGE",
-						"line": 666,
+						"line": 696,
 						"value": "2",
 						"comment": "\n",
 						"char": 5,
@@ -4830,7 +4847,7 @@
 					}
 				],
 				"name": "ExceptionType",
-				"line": 662,
+				"line": 692,
 				"comment": "Answer exception types\n",
 				"baseDeco": "i",
 				"char": 1,
@@ -4841,7 +4858,7 @@
 					{
 						"offset": 76,
 						"name": "type",
-						"line": 672,
+						"line": 702,
 						"comment": "Exception type\n",
 						"deco": "xE4dpq26result13ExceptionType",
 						"originalType": "ExceptionType",
@@ -4853,7 +4870,7 @@
 					}
 				],
 				"name": "AnswerException",
-				"line": 670,
+				"line": 700,
 				"comment": "Covers errors of access to Answer data\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,
@@ -4864,7 +4881,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.1/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.5/dpq2/src/dpq2/value.d",
 		"name": "dpq2.value",
 		"members": [
 			{
@@ -4898,7 +4915,7 @@
 								"default": "cast(ValueFormat)1"
 							}
 						],
-						"endline": 40,
+						"endline": 45,
 						"originalType": "inout pure ref @safe (immutable(ubyte)[] data, in OidType oidType, bool isNull = false, in ValueFormat format = ValueFormat.BINARY)",
 						"char": 5,
 						"kind": "constructor"
@@ -4906,7 +4923,7 @@
 					{
 						"endchar": 5,
 						"name": "this",
-						"line": 43,
+						"line": 48,
 						"comment": "Null Value constructor\n",
 						"deco": "FNaNcNfxE4dpq25value11ValueFormatxEQBa4oids7OidTypeZSQBsQBq5Value",
 						"parameters": [
@@ -4919,7 +4936,7 @@
 								"deco": "xE4dpq24oids7OidType"
 							}
 						],
-						"endline": 47,
+						"endline": 52,
 						"originalType": "pure ref @safe (in ValueFormat format, in OidType oidType)",
 						"char": 5,
 						"kind": "constructor"
@@ -4927,50 +4944,50 @@
 					{
 						"endchar": 9,
 						"name": "isNull",
-						"line": 52,
+						"line": 57,
 						"comment": "Indicates if the value is NULL\n",
 						"deco": "xFNaNbNiNfZb",
-						"endline": 55,
+						"endline": 60,
 						"char": 14,
 						"kind": "function"
 					},
 					{
 						"endchar": 9,
 						"name": "isArray",
-						"line": 58,
+						"line": 63,
 						"comment": "Indicates if the value is array type\n",
 						"deco": "xFNaNbNiNfZb",
-						"endline": 61,
+						"endline": 66,
 						"char": 14,
 						"kind": "function"
 					},
 					{
 						"endchar": 9,
 						"name": "oidType",
-						"line": 65,
+						"line": 70,
 						"comment": "Returns Oid of the value\n",
 						"deco": "xFNaNbNiNfZE4dpq24oids7OidType",
-						"endline": 68,
+						"endline": 73,
 						"char": 17,
 						"kind": "function"
 					},
 					{
 						"endchar": 9,
 						"name": "format",
-						"line": 71,
+						"line": 76,
 						"comment": "Returns ValueFormat representation (text or binary)\n",
 						"deco": "xFNaNbNiNfZE4dpq25value11ValueFormat",
-						"endline": 74,
+						"endline": 79,
 						"char": 21,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "toString",
-						"line": 93,
+						"line": 98,
 						"comment": "\n",
 						"deco": "xFNeZAya",
-						"endline": 100,
+						"endline": 105,
 						"char": 12,
 						"kind": "function"
 					}
@@ -4982,7 +4999,7 @@
 				"members": [
 					{
 						"name": "TEXT",
-						"line": 122,
+						"line": 127,
 						"value": "0",
 						"comment": "\n",
 						"char": 5,
@@ -4990,7 +5007,7 @@
 					},
 					{
 						"name": "BINARY",
-						"line": 123,
+						"line": 128,
 						"value": "1",
 						"comment": "\n",
 						"char": 5,
@@ -4998,7 +5015,7 @@
 					}
 				],
 				"name": "ValueFormat",
-				"line": 121,
+				"line": 126,
 				"comment": "\n",
 				"baseDeco": "i",
 				"char": 1,
@@ -5008,7 +5025,7 @@
 				"members": [
 					{
 						"name": "NOT_ARRAY",
-						"line": 131,
+						"line": 136,
 						"value": "0",
 						"comment": "Format of the value isn't array\n",
 						"char": 5,
@@ -5016,7 +5033,7 @@
 					},
 					{
 						"name": "NOT_BINARY",
-						"line": 132,
+						"line": 137,
 						"value": "1",
 						"comment": "Format of the column isn't binary\n",
 						"char": 5,
@@ -5024,7 +5041,7 @@
 					},
 					{
 						"name": "NOT_TEXT",
-						"line": 133,
+						"line": 138,
 						"value": "2",
 						"comment": "Format of the column isn't text string\n",
 						"char": 5,
@@ -5032,7 +5049,7 @@
 					},
 					{
 						"name": "NOT_IMPLEMENTED",
-						"line": 134,
+						"line": 139,
 						"value": "3",
 						"comment": "Support of this type isn't implemented (or format isn't matches to specified D type)\n",
 						"char": 5,
@@ -5040,15 +5057,15 @@
 					},
 					{
 						"name": "SIZE_MISMATCH",
-						"line": 135,
+						"line": 140,
 						"value": "4",
-						"comment": "Value size is not matched to the Postgres value\n",
+						"comment": "Value size is not matched to the Postgres value or vice versa\n",
 						"char": 5,
 						"kind": "enum member"
 					},
 					{
 						"name": "CORRUPTED_JSONB",
-						"line": 136,
+						"line": 141,
 						"value": "5",
 						"comment": "Corrupted JSONB value\n",
 						"char": 5,
@@ -5056,15 +5073,39 @@
 					},
 					{
 						"name": "DATE_VALUE_OVERFLOW",
-						"line": 137,
+						"line": 142,
 						"value": "6",
 						"comment": "Date value isn't fits to Postgres binary Date value\n",
+						"char": 5,
+						"kind": "enum member"
+					},
+					{
+						"name": "DIMENSION_MISMATCH",
+						"line": 143,
+						"value": "7",
+						"comment": "Array dimension size is not matched to the Postgres array\n",
+						"char": 5,
+						"kind": "enum member"
+					},
+					{
+						"name": "CORRUPTED_ARRAY",
+						"line": 144,
+						"value": "8",
+						"comment": "Corrupted array value\n",
+						"char": 5,
+						"kind": "enum member"
+					},
+					{
+						"name": "OUT_OF_RANGE",
+						"line": 145,
+						"value": "9",
+						"comment": "Index is out of range\n",
 						"char": 5,
 						"kind": "enum member"
 					}
 				],
 				"name": "ConvExceptionType",
-				"line": 129,
+				"line": 134,
 				"comment": "Conversion exception types\n",
 				"baseDeco": "i",
 				"char": 1,
@@ -5075,7 +5116,7 @@
 					{
 						"offset": 76,
 						"name": "type",
-						"line": 143,
+						"line": 151,
 						"comment": "Exception type\n",
 						"deco": "xE4dpq25value17ConvExceptionType",
 						"originalType": "ConvExceptionType",
@@ -5088,7 +5129,7 @@
 					}
 				],
 				"name": "ValueConvException",
-				"line": 141,
+				"line": 149,
 				"comment": "Value conversion exception\n",
 				"base": "std.conv.ConvException",
 				"char": 1,

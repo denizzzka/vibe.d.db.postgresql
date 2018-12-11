@@ -146,6 +146,13 @@ $('#symbolSearchPane').show();</script>
 						<th>Name</th><th>Description</th>
 					</tr>
 					<tr>
+						<td id="CORRUPTED_ARRAY">
+							<code>CORRUPTED_ARRAY</code>
+						</td>
+						<td>Corrupted array value
+</td>
+					</tr>
+					<tr>
 						<td id="CORRUPTED_JSONB">
 							<code>CORRUPTED_JSONB</code>
 						</td>
@@ -157,6 +164,13 @@ $('#symbolSearchPane').show();</script>
 							<code>DATE_VALUE_OVERFLOW</code>
 						</td>
 						<td>Date value isn't fits to Postgres binary Date value
+</td>
+					</tr>
+					<tr>
+						<td id="DIMENSION_MISMATCH">
+							<code>DIMENSION_MISMATCH</code>
+						</td>
+						<td>Array dimension size is not matched to the Postgres array
 </td>
 					</tr>
 					<tr>
@@ -188,10 +202,17 @@ $('#symbolSearchPane').show();</script>
 </td>
 					</tr>
 					<tr>
+						<td id="OUT_OF_RANGE">
+							<code>OUT_OF_RANGE</code>
+						</td>
+						<td>Index is out of range
+</td>
+					</tr>
+					<tr>
 						<td id="SIZE_MISMATCH">
 							<code>SIZE_MISMATCH</code>
 						</td>
-						<td>Value size is not matched to the Postgres value
+						<td>Value size is not matched to the Postgres value or vice versa
 </td>
 					</tr>
 				</table>
