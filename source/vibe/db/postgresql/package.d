@@ -181,7 +181,7 @@ class Dpq2Connection : dpq2.Connection
 
         runStatementBlockingMannerWithMultipleResults(sendsStatement, (r){ res ~= r; }, false);
 
-        enforce(res.length == 1, "Simple query without row by row mode can return only one Result instance, not "~res.length.to!string);
+        enforce(res.length == 1, "Simple query without row-by-row mode can return only one Result instance, not "~res.length.to!string);
 
         return res[0];
     }
