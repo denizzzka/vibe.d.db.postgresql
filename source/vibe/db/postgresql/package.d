@@ -270,7 +270,7 @@ class Dpq2Connection : dpq2.Connection
 
     /// Row-by-row version of execStatement
     ///
-    /// Delegate will be called for each received row.
+    /// Delegate called for each received row.
     ///
     /// More info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html
     void execStatementRbR(in ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
