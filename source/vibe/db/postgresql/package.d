@@ -188,7 +188,7 @@ class Dpq2Connection : dpq2.Connection
 
     private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatement, void delegate(immutable(Result)) processResult)
     {
-        logDebugV("runStatementBlockingManner");
+        logDebugV(__FUNCTION__);
         immutable(Result)[] res;
 
         doQuery(()
