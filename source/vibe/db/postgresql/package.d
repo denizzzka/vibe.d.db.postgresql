@@ -179,14 +179,14 @@ class Dpq2Connection : dpq2.Connection
     {
         immutable(Result)[] res;
 
-        runStatementBlockingMannerWithMultipleResults(sendsStatement, (r){ res ~= r; });
+        runStatementBlockingMannerWithMultipleResults(sendsStatement, (r){ res ~= r; }, false);
 
         enforce(res.length == 1, "Simple query without row by row mode can return only one Result instance, not "~res.length.to!string);
 
         return res[0];
     }
 
-    private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatement, void delegate(immutable(Result)) processResult)
+    private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatement, void delegate(immutable(Result)) processResult, bool isRowByRowMode)
     {
         logDebugV(__FUNCTION__);
         immutable(Result)[] res;
@@ -194,6 +194,9 @@ class Dpq2Connection : dpq2.Connection
         doQuery(()
             {
                 sendsStatement();
+
+                if(isRowByRowMode)
+                    enforce(setSingleRowMode, "Failed to set row-by-row mode");
 
                 try
                 {
@@ -236,6 +239,7 @@ class Dpq2Connection : dpq2.Connection
                             throw new ConnectionException(this, __FILE__, __LINE__);
 
                         if(r is null) break;
+
                         processResult(r);
                     }
                 }
@@ -262,6 +266,29 @@ class Dpq2Connection : dpq2.Connection
         auto res = runStatementBlockingManner({ sendQueryParams(params); });
 
         return res.getAnswer;
+    }
+
+    /// Row-by-row version of execStatement
+    ///
+    /// Delegate will be called for each received Answer piece.
+    /// These answers will be have only one row.
+    ///
+    /// More info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html
+    void execStatementRbR(in ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
+    {
+        runStatementBlockingMannerWithMultipleResults(
+                { sendQueryParams(params); },
+                (r)
+                {
+                    auto answer = r.getAnswer;
+
+                    enforce(answer.length <= 1, `0 or 1 rows can be received, not `~answer.length.to!string);
+
+                    if(answer.length == 1)
+                        answerRowProcessDg(r.getAnswer[0]);
+                },
+                true
+            );
     }
 
     ///
@@ -385,6 +412,22 @@ version(IntegrationTest) void __integration_test(string connString)
         auto r = conn.execPreparedStatement(p);
 
         assert(r.getAnswer[0][0].as!PGinteger == 123);
+    }
+
+    {
+        int[] res;
+
+        QueryParams p;
+        p.sqlCommand = `SELECT generate_series(0, 3) as i, pg_sleep(0.2)`;
+
+        conn.execStatementRbR(p,
+            (immutable(Row) r)
+            {
+                res ~= r[0].as!int;
+            }
+        );
+
+        assert(res.length == 4);
     }
 
     {
