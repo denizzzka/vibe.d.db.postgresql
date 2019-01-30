@@ -175,25 +175,25 @@ class Dpq2Connection : dpq2.Connection
         doesQueryAndCollectsResults();
     }
 
-    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement)
+    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatementDg)
     {
         immutable(Result)[] res;
 
-        runStatementBlockingMannerWithMultipleResults(sendsStatement, (r){ res ~= r; }, false);
+        runStatementBlockingMannerWithMultipleResults(sendsStatementDg, (r){ res ~= r; }, false);
 
         enforce(res.length == 1, "Simple query without row-by-row mode can return only one Result instance, not "~res.length.to!string);
 
         return res[0];
     }
 
-    private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatement, void delegate(immutable(Result)) processResult, bool isRowByRowMode)
+    private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatementDg, void delegate(immutable(Result)) processResult, bool isRowByRowMode)
     {
         logDebugV(__FUNCTION__);
         immutable(Result)[] res;
 
         doQuery(()
             {
-                sendsStatement();
+                sendsStatementDg();
 
                 if(isRowByRowMode)
                     enforce(setSingleRowMode, "Failed to set row-by-row mode");
@@ -380,6 +380,16 @@ version(IntegrationTest) void __integration_test(string connString)
         );
 
         assert(res.getAnswer[0][1].as!PGinteger == 567);
+    }
+
+    {
+        QueryParams p;
+        p.sqlCommand = `SELECT 123`;
+
+        auto res = conn.execStatement(p);
+
+        assert(res.length == 1);
+        assert(res[0][0].as!int == 123);
     }
 
     {
