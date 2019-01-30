@@ -198,31 +198,7 @@ class Dpq2Connection : dpq2.Connection
                 if(isRowByRowMode)
                     enforce(setSingleRowMode, "Failed to set row-by-row mode");
 
-                try
-                {
-                    waitEndOfRead(statementTimeout);
-
-                    if(isRowByRowMode)
-                    {
-                        // Enable autoclean of results queue
-                        scope(failure)
-                        {
-                            while(getResult() !is null){}
-                        }
-                    }
-                }
-                catch(PostgresClientTimeoutException e)
-                {
-                    logDebugV("Exceeded Posgres query time limit");
-
-                    try
-                        cancel(); // cancel sql query
-                    catch(CancellationException ce) // means successful cancellation
-                        e.msg ~= ", "~ce.msg;
-
-                    throw e;
-                }
-                finally
+                scope(exit)
                 {
                     logDebugV("consumeInput()");
                     consumeInput(); // TODO: redundant call (also called in waitEndOfRead) - can be moved into catch block?
@@ -251,6 +227,31 @@ class Dpq2Connection : dpq2.Connection
 
                         processResult(r);
                     }
+                }
+
+                if(isRowByRowMode)
+                {
+                    // Enable autoclean of results queue
+                    scope(failure)
+                    {
+                        while(getResult() !is null){}
+                    }
+                }
+
+                try
+                {
+                    waitEndOfRead(statementTimeout);
+                }
+                catch(PostgresClientTimeoutException e)
+                {
+                    logDebugV("Exceeded Posgres query time limit");
+
+                    try
+                        cancel(); // cancel sql query
+                    catch(CancellationException ce) // means successful cancellation
+                        e.msg ~= ", "~ce.msg;
+
+                    throw e;
                 }
             }
         );
