@@ -201,6 +201,15 @@ class Dpq2Connection : dpq2.Connection
                 try
                 {
                     waitEndOfRead(statementTimeout);
+
+                    if(isRowByRowMode)
+                    {
+                        // Enable autoclean of results queue
+                        scope(failure)
+                        {
+                            while(getResult() !is null){}
+                        }
+                    }
                 }
                 catch(PostgresClientTimeoutException e)
                 {
