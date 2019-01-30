@@ -294,7 +294,11 @@ class Dpq2Connection : dpq2.Connection
                     enforce(answer.length <= 1, `0 or 1 rows can be received, not `~answer.length.to!string);
 
                     if(answer.length == 1)
-                        answerRowProcessDg(r.getAnswer[0]);
+                    {
+                        enforce(r.status == PGRES_SINGLE_TUPLE, `Wrong result status: `~r.status.to!string);
+
+                        answerRowProcessDg(answer[0]);
+                    }
                 },
                 true
             );
