@@ -383,6 +383,23 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
+        // Row-by-row result receiving
+        int[] res;
+
+        QueryParams p;
+        p.sqlCommand = `SELECT generate_series(0, 3) as i, pg_sleep(0.2)`;
+
+        conn.execStatementRbR(p,
+            (immutable(Row) r)
+            {
+                res ~= r[0].as!int;
+            }
+        );
+
+        assert(res.length == 4);
+    }
+
+    {
         QueryParams p;
         p.sqlCommand = `SELECT 123`;
 
@@ -421,22 +438,6 @@ version(IntegrationTest) void __integration_test(string connString)
         auto r = conn.execPreparedStatement(p);
 
         assert(r.getAnswer[0][0].as!PGinteger == 123);
-    }
-
-    {
-        int[] res;
-
-        QueryParams p;
-        p.sqlCommand = `SELECT generate_series(0, 3) as i, pg_sleep(0.2)`;
-
-        conn.execStatementRbR(p,
-            (immutable(Row) r)
-            {
-                res ~= r[0].as!int;
-            }
-        );
-
-        assert(res.length == 4);
     }
 
     {
