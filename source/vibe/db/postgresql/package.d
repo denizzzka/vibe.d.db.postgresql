@@ -74,7 +74,7 @@ class PostgresClient
     }
 
     ///
-    Connection createConnection(in ClientSettings cs) @safe
+    private Connection createConnection(in ClientSettings cs) @safe
     {
         return new Connection(cs);
     }
