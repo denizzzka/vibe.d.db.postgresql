@@ -196,7 +196,15 @@ class Dpq2Connection : dpq2.Connection
                 sendsStatementDg();
 
                 if(isRowByRowMode)
+                {
                     enforce(setSingleRowMode, "Failed to set row-by-row mode");
+                }
+
+                scope(failure)
+                {
+                    if(isRowByRowMode)
+                        while(getResult() !is null){} // autoclean of results queue
+                }
 
                 scope(exit)
                 {
@@ -226,15 +234,6 @@ class Dpq2Connection : dpq2.Connection
                         if(r is null) break;
 
                         processResult(r);
-                    }
-                }
-
-                if(isRowByRowMode)
-                {
-                    // Enable autoclean of results queue
-                    scope(failure)
-                    {
-                        while(getResult() !is null){}
                     }
                 }
 
@@ -411,6 +410,31 @@ version(IntegrationTest) void __integration_test(string connString)
         );
 
         assert(res.length == 4);
+    }
+
+    {
+        // Row-by-row result receiving: error while receiving
+        size_t rowCounter;
+
+        QueryParams p;
+        p.sqlCommand =
+            `SELECT 1.0 / (generate_series(1, 100000) % 80000)`; // division by zero error at generate_series=80000
+
+        import std.exception: assertThrown;
+
+        assertThrown!ResponseException( // catches ERROR:  division by zero
+            conn.execStatementRbR(p,
+                (immutable(Row) r)
+                {
+                    rowCounter++;
+                }
+            )
+        );
+
+        import std.stdio;
+        writeln("rowCounter=", rowCounter);
+
+        assert(rowCounter > 0);
     }
 
     {
