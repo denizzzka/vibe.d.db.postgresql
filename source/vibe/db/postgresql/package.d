@@ -431,9 +431,6 @@ version(IntegrationTest) void __integration_test(string connString)
             )
         );
 
-        import std.stdio;
-        writeln("rowCounter=", rowCounter);
-
         assert(rowCounter > 0);
     }
 
