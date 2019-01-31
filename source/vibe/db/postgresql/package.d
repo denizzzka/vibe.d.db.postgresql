@@ -282,10 +282,33 @@ class Dpq2Connection : dpq2.Connection
     /// Delegate called for each received row.
     ///
     /// More info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html
+    ///
+    void execStatementRbR(
+        string sqlCommand,
+        void delegate(immutable(Row)) answerRowProcessDg,
+        ValueFormat resultFormat = ValueFormat.BINARY
+    )
+    {
+        QueryParams p;
+        p.resultFormat = resultFormat;
+        p.sqlCommand = sqlCommand;
+
+        execStatementRbR(p, answerRowProcessDg);
+    }
+
+    /// Ditto
     void execStatementRbR(in ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
     {
+        runStatementWithRowByRowResult(
+            { sendQueryParams(params); },
+            answerRowProcessDg
+        );
+    }
+
+    private void runStatementWithRowByRowResult(void delegate() sendsStatementDg, void delegate(immutable(Row)) answerRowProcessDg)
+    {
         runStatementBlockingMannerWithMultipleResults(
-                { sendQueryParams(params); },
+                sendsStatementDg,
                 (r)
                 {
                     auto answer = r.getAnswer;
@@ -399,10 +422,8 @@ version(IntegrationTest) void __integration_test(string connString)
         // Row-by-row result receiving
         int[] res;
 
-        QueryParams p;
-        p.sqlCommand = `SELECT generate_series(0, 3) as i, pg_sleep(0.2)`;
-
-        conn.execStatementRbR(p,
+        conn.execStatementRbR(
+            `SELECT generate_series(0, 3) as i, pg_sleep(0.2)`,
             (immutable(Row) r)
             {
                 res ~= r[0].as!int;
