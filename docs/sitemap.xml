@@ -243,6 +243,8 @@
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.execPreparedStatement.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.execStatement.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.execStatement.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.execStatementRbR.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.execStatementRbR.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.prepareStatement.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.resetStart.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.socketTimeout.html</loc></url>
@@ -276,7 +278,6 @@
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.untrace.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/LockedConnection.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.html</loc></url>
-<url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.createConnection.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.lockConnection.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.this.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.this.html</loc></url>

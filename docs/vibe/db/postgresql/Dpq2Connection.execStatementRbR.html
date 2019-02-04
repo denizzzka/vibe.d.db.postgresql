@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function PostgresClient.createConnection</title>
+		<title>Function Dpq2Connection.execStatementRbR</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -128,20 +128,41 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function PostgresClient.createConnection</h1><p></p>
+			<h1>Function Dpq2Connection.execStatementRbR</h1><p>Row-by-row version of execStatement
+</p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<a href="../../../vibe/db/postgresql/Dpq2Connection.html"><span class="typ">Dpq2Connection</span></a> <span class="pln">createConnection</span>
+			<span class="typ">void</span> <span class="pln">execStatementRbR</span>
 			<span class="pun">(</span>
 			<br/>
-			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><a href="../../../vibe/db/postgresql/ClientSettings.html"><span class="typ">ClientSettings</span></a><span class="pun">)</span> <span class="pln">cs</span>
+			&nbsp;&nbsp;<span class="typ">string</span> <span class="pln">sqlCommand</span><span class="pun">,</span>
 			<br/>
-			<span class="pun">)</span><span class="pln"> </span><span class="kwd">@safe</span><span class="pun">;</span>
+			&nbsp;&nbsp;<span class="typ">void</span> <span class="kwd">delegate</span><span class="pun">(</span><span class="kwd">immutable</span><span class="pun">(</span><a href="../../../dpq2/result/Row.html"><span class="typ">Row</span></a><span class="pun">)</span><span class="pun">)</span> <span class="pln">answerRowProcessDg</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<a href="../../../dpq2/value/ValueFormat.html"><span class="typ">ValueFormat</span></a> <span class="pln">resultFormat</span> <span class="pun">=</span> <span class="kwd">cast</span><span class="pun">(</span><span class="typ">ValueFormat</span><span class="pun">)</span><span class="lit">1</span>
+			<br/>
+			<span class="pun">)</span><span class="pun">;</span>
+			<br/>
+			<br/>
+			<span class="typ">void</span> <span class="pln">execStatementRbR</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">ref </span><span class="kwd">const</span><span class="pun">(</span><a href="../../../dpq2/args/QueryParams.html"><span class="typ">QueryParams</span></a><span class="pun">)</span> <span class="pln">params</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="typ">void</span> <span class="kwd">delegate</span><span class="pun">(</span><span class="kwd">immutable</span><span class="pun">(</span><a href="../../../dpq2/result/Row.html"><span class="typ">Row</span></a><span class="pun">)</span><span class="pun">)</span> <span class="pln">answerRowProcessDg</span>
+			<br/>
+			<span class="pun">)</span><span class="pun">;</span>
 					</div>
 				</code>
 			</div>
-			
+			<section><p>Delegate called for each received row.
+</p>
+
+<p>More info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html
+</p>
+</section>
+
 			
 			<footer>
 				<table class="license-info">

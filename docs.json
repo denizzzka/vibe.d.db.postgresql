@@ -118,23 +118,6 @@
 						"originalType": "LockedConnection()",
 						"char": 22,
 						"kind": "function"
-					},
-					{
-						"endchar": 5,
-						"name": "createConnection",
-						"line": 77,
-						"comment": "\n",
-						"deco": "FNfxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2Connection",
-						"parameters": [
-							{
-								"name": "cs",
-								"deco": "xS4vibe2db10postgresql14ClientSettings"
-							}
-						],
-						"endline": 80,
-						"originalType": "@safe Connection(in ClientSettings cs)",
-						"char": 16,
-						"kind": "function"
 					}
 				],
 				"char": 1,
@@ -209,7 +192,7 @@
 					{
 						"endchar": 5,
 						"name": "execStatement",
-						"line": 239,
+						"line": 260,
 						"comment": "\n",
 						"deco": "FAyaE4dpq25value11ValueFormatZyCQBb6result6Answer",
 						"parameters": [
@@ -223,7 +206,7 @@
 								"default": "cast(ValueFormat)1"
 							}
 						],
-						"endline": 249,
+						"endline": 270,
 						"originalType": "immutable(Answer)(string sqlCommand, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 23,
 						"kind": "function"
@@ -231,7 +214,7 @@
 					{
 						"endchar": 5,
 						"name": "execStatement",
-						"line": 252,
+						"line": 273,
 						"comment": "\n",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"parameters": [
@@ -243,15 +226,65 @@
 								"deco": "xS4dpq24args11QueryParams"
 							}
 						],
-						"endline": 257,
+						"endline": 278,
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
+						"name": "execStatementRbR",
+						"line": 286,
+						"comment": "Row-by-row version of execStatement\n\nDelegate called for each received row.\n\nMore info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html\n\n",
+						"deco": "FAyaDFyS4dpq26result3RowZvEQt5value11ValueFormatZv",
+						"parameters": [
+							{
+								"name": "sqlCommand",
+								"deco": "Aya"
+							},
+							{
+								"name": "answerRowProcessDg",
+								"deco": "DFyS4dpq26result3RowZv"
+							},
+							{
+								"name": "resultFormat",
+								"deco": "E4dpq25value11ValueFormat",
+								"default": "cast(ValueFormat)1"
+							}
+						],
+						"endline": 297,
+						"originalType": "void(string sqlCommand, void delegate(immutable(Row)) answerRowProcessDg, ValueFormat resultFormat = ValueFormat.BINARY)",
+						"char": 10,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
+						"name": "execStatementRbR",
+						"line": 300,
+						"comment": "Ditto\n",
+						"deco": "FKxS4dpq24args11QueryParamsDFySQBb6result3RowZvZv",
+						"parameters": [
+							{
+								"name": "params",
+								"storageClass": [
+									"ref"
+								],
+								"deco": "xS4dpq24args11QueryParams"
+							},
+							{
+								"name": "answerRowProcessDg",
+								"deco": "DFyS4dpq26result3RowZv"
+							}
+						],
+						"endline": 306,
+						"originalType": "void(ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)",
+						"char": 10,
+						"kind": "function"
+					},
+					{
+						"endchar": 5,
 						"name": "prepareStatement",
-						"line": 260,
+						"line": 330,
 						"comment": "\n",
 						"deco": "FAyaQdAkZv",
 						"parameters": [
@@ -269,7 +302,7 @@
 								"default": "null"
 							}
 						],
-						"endline": 272,
+						"endline": 342,
 						"originalType": "void(string statementName, string sqlStatement, Oid[] oids = null)",
 						"char": 10,
 						"kind": "function"
@@ -277,7 +310,7 @@
 					{
 						"endchar": 5,
 						"name": "execPreparedStatement",
-						"line": 275,
+						"line": 345,
 						"comment": "\n",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"parameters": [
@@ -289,7 +322,7 @@
 								"deco": "xS4dpq24args11QueryParams"
 							}
 						],
-						"endline": 280,
+						"endline": 350,
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"kind": "function"
@@ -297,7 +330,7 @@
 					{
 						"endchar": 5,
 						"name": "describePreparedStatement",
-						"line": 283,
+						"line": 353,
 						"comment": "\n",
 						"deco": "FAyaZyC4dpq26result6Answer",
 						"parameters": [
@@ -306,14 +339,14 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 288,
+						"endline": 358,
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "waitForNotify",
-						"line": 299,
+						"line": 369,
 						"comment": " Non blocking method to wait for next notification.\n\n Params:\n      timeout = maximal duration to wait for the new Notify to be received\n\n Returns: New Notify or null when no other notification is available or timeout occurs.\n Throws: ConnectionException on connection failure\n",
 						"deco": "FxS4core4time8DurationZC4dpq26result6Notify",
 						"parameters": [
@@ -323,7 +356,7 @@
 								"default": "max()"
 							}
 						],
-						"endline": 309,
+						"endline": 379,
 						"originalType": "Notify(in Duration timeout = Duration.max)",
 						"char": 12,
 						"kind": "function"
@@ -339,7 +372,7 @@
 			{
 				"members": [],
 				"name": "PostgresClientTimeoutException",
-				"line": 313,
+				"line": 383,
 				"comment": "\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,
@@ -350,7 +383,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/args.d",
 		"name": "dpq2.args",
 		"members": [
 			{
@@ -491,7 +524,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/connection.d",
 		"name": "dpq2.connection",
 		"members": [
 			{
@@ -942,7 +975,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/arrays.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/arrays.d",
 		"name": "dpq2.conv.arrays",
 		"members": [
 			{
@@ -985,7 +1018,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/from_bson.d",
 		"name": "dpq2.conv.from_bson",
 		"members": [
 			{
@@ -1015,7 +1048,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/from_d_types.d",
 		"name": "dpq2.conv.from_d_types",
 		"members": [
 			{
@@ -1432,7 +1465,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/geometric.d",
 		"name": "dpq2.conv.geometric",
 		"members": [
 			{
@@ -1695,14 +1728,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/jsonb.d",
 		"name": "dpq2.conv.jsonb",
 		"members": [],
 		"comment": "\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/time.d",
 		"name": "dpq2.conv.time",
 		"members": [
 			{
@@ -2282,7 +2315,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/to_bson.d",
 		"name": "dpq2.conv.to_bson",
 		"members": [
 			{
@@ -2324,7 +2357,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/conv/to_d_types.d",
 		"name": "dpq2.conv.to_d_types",
 		"members": [
 			{
@@ -2528,7 +2561,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/exception.d",
 		"name": "dpq2.exception",
 		"members": [
 			{
@@ -2545,7 +2578,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/oids.d",
 		"name": "dpq2.oids",
 		"members": [
 			{
@@ -3842,14 +3875,14 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/package.d",
 		"name": "dpq2",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/query.d",
 		"name": "dpq2.query",
 		"members": [
 			{
@@ -4105,7 +4138,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/result.d",
 		"name": "dpq2.result",
 		"members": [
 			{
@@ -4189,30 +4222,30 @@
 					{
 						"endchar": 5,
 						"name": "cmdStatus",
-						"line": 142,
+						"line": 143,
 						"comment": " Returns the command status tag from the SQL command that generated the PGresult\n Commonly this is just the name of the command, but it might include\n additional data such as the number of rows processed.\n",
 						"deco": "yFZAya",
-						"endline": 145,
+						"endline": 146,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "cmdTuples",
-						"line": 155,
+						"line": 156,
 						"comment": " Returns the number of rows affected by the SQL command.\n This function returns a string containing the number of rows affected by the SQL statement\n that generated the Answer. This function can only be used following the execution of\n a SELECT, CREATE TABLE AS, INSERT, UPDATE, DELETE, MOVE, FETCH, or COPY statement,\n or an EXECUTE of a prepared query that contains an INSERT, UPDATE, or DELETE statement.\n If the command that generated the Anwser was anything else, cmdTuples returns an empty string.\n",
 						"deco": "yFZAya",
-						"endline": 158,
+						"endline": 159,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 57,
 						"name": "length",
-						"line": 161,
+						"line": 162,
 						"comment": "Returns row count\n",
 						"deco": "yFNbZm",
-						"endline": 161,
+						"endline": 162,
 						"originalType": "immutable nothrow size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4220,10 +4253,10 @@
 					{
 						"endchar": 62,
 						"name": "columnCount",
-						"line": 164,
+						"line": 165,
 						"comment": "Returns column count\n",
 						"deco": "yFNbZm",
-						"endline": 164,
+						"endline": 165,
 						"originalType": "immutable nothrow size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4231,7 +4264,7 @@
 					{
 						"endchar": 5,
 						"name": "columnFormat",
-						"line": 167,
+						"line": 168,
 						"comment": "Returns column format\n",
 						"deco": "yFxmZE4dpq25value11ValueFormat",
 						"parameters": [
@@ -4240,7 +4273,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 172,
+						"endline": 173,
 						"originalType": "immutable ValueFormat(const size_t colNum)",
 						"char": 17,
 						"kind": "function"
@@ -4248,7 +4281,7 @@
 					{
 						"endchar": 5,
 						"name": "OID",
-						"line": 175,
+						"line": 176,
 						"comment": "Returns column Oid\n",
 						"deco": "yFmZE4dpq24oids7OidType",
 						"parameters": [
@@ -4257,7 +4290,7 @@
 								"deco": "m"
 							}
 						],
-						"endline": 180,
+						"endline": 181,
 						"originalType": "immutable OidType(size_t colNum)",
 						"char": 13,
 						"kind": "function"
@@ -4265,7 +4298,7 @@
 					{
 						"endchar": 5,
 						"name": "isArray",
-						"line": 183,
+						"line": 184,
 						"comment": "Checks if column type is array\n",
 						"deco": "yFxmZb",
 						"parameters": [
@@ -4274,7 +4307,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 188,
+						"endline": 189,
 						"originalType": "immutable bool(const size_t colNum)",
 						"char": 10,
 						"kind": "function"
@@ -4282,7 +4315,7 @@
 					{
 						"endchar": 5,
 						"name": "columnNum",
-						"line": 192,
+						"line": 193,
 						"comment": "Returns column number by field name\n",
 						"deco": "yFAyaZm",
 						"parameters": [
@@ -4291,7 +4324,7 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 201,
+						"endline": 202,
 						"originalType": "immutable size_t(string columnName)",
 						"char": 12,
 						"kind": "function"
@@ -4299,7 +4332,7 @@
 					{
 						"endchar": 5,
 						"name": "columnName",
-						"line": 204,
+						"line": 205,
 						"comment": "Returns column name by field number\n",
 						"deco": "yFxmZAya",
 						"parameters": [
@@ -4308,7 +4341,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 216,
+						"endline": 217,
 						"originalType": "immutable string(in size_t colNum)",
 						"char": 12,
 						"kind": "function"
@@ -4316,7 +4349,7 @@
 					{
 						"endchar": 5,
 						"name": "columnExists",
-						"line": 219,
+						"line": 220,
 						"comment": "Returns true if the column exists, false if not\n",
 						"deco": "yFAyaZb",
 						"parameters": [
@@ -4325,14 +4358,14 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 224,
+						"endline": 225,
 						"char": 10,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 227,
+						"line": 228,
 						"comment": "Returns row of cells\n",
 						"deco": "yFxmZyS4dpq26result3Row",
 						"parameters": [
@@ -4341,7 +4374,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 230,
+						"endline": 231,
 						"originalType": "immutable immutable(Row)(in size_t row)",
 						"char": 21,
 						"kind": "function"
@@ -4349,10 +4382,10 @@
 					{
 						"endchar": 5,
 						"name": "nParams",
-						"line": 237,
+						"line": 238,
 						"comment": "     Returns the number of parameters of a prepared statement.\n     This function is only useful when inspecting the result of describePrepared.\n     For other types of queries it will return zero.\n",
 						"deco": "yFZk",
-						"endline": 240,
+						"endline": 241,
 						"char": 10,
 						"kind": "function"
 					},
@@ -4361,7 +4394,7 @@
 							{
 								"endchar": 5,
 								"name": "paramType",
-								"line": 248,
+								"line": 249,
 								"type": "OidType(T paramNum)",
 								"parameters": [
 									{
@@ -4369,13 +4402,13 @@
 										"type": "T"
 									}
 								],
-								"endline": 251,
+								"endline": 252,
 								"char": 13,
 								"kind": "function"
 							}
 						],
 						"name": "paramType",
-						"line": 248,
+						"line": 249,
 						"comment": "     Returns the data type of the indicated statement parameter.\n     Parameter numbers start at 0.\n     This function is only useful when inspecting the result of describePrepared.\n     For other types of queries it will return zero.\n",
 						"parameters": [
 							{
@@ -4389,10 +4422,10 @@
 					{
 						"endchar": 5,
 						"name": "toString",
-						"line": 254,
+						"line": 255,
 						"comment": "\n",
 						"deco": "yFZAya",
-						"endline": 269,
+						"endline": 270,
 						"char": 21,
 						"kind": "function",
 						"overrides": [
@@ -4415,7 +4448,7 @@
 					{
 						"endchar": 1,
 						"name": "rangify",
-						"line": 299,
+						"line": 300,
 						"type": "(T obj)",
 						"parameters": [
 							{
@@ -4423,7 +4456,7 @@
 								"type": "T"
 							}
 						],
-						"endline": 319,
+						"endline": 320,
 						"char": 6,
 						"kind": "function",
 						"storageClass": [
@@ -4432,7 +4465,7 @@
 					}
 				],
 				"name": "rangify",
-				"line": 299,
+				"line": 300,
 				"comment": "Creates forward range from immutable Answer\n",
 				"parameters": [
 					{
@@ -4445,13 +4478,13 @@
 			},
 			{
 				"name": "Row",
-				"line": 322,
+				"line": 323,
 				"comment": "Represents one row from the answer table\n",
 				"members": [
 					{
 						"endchar": 5,
 						"name": "this",
-						"line": 328,
+						"line": 329,
 						"comment": "\n",
 						"deco": "yFNcyC4dpq26result6AnswerxmZySQyQv3Row",
 						"parameters": [
@@ -4464,7 +4497,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 334,
+						"endline": 335,
 						"originalType": "immutable ref (immutable Answer answer, in size_t row)",
 						"char": 5,
 						"kind": "constructor"
@@ -4472,7 +4505,7 @@
 					{
 						"endchar": 5,
 						"name": "size",
-						"line": 337,
+						"line": 338,
 						"comment": "Returns the actual length of a cell value in bytes.\n",
 						"deco": "yFxmZm",
 						"parameters": [
@@ -4481,7 +4514,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 342,
+						"endline": 343,
 						"originalType": "immutable size_t(const size_t col)",
 						"char": 12,
 						"kind": "function"
@@ -4489,7 +4522,7 @@
 					{
 						"endchar": 5,
 						"name": "isNULL",
-						"line": 347,
+						"line": 348,
 						"comment": "Checks if value is NULL\n\nDo not confuse it with Nullable's isNull method\n",
 						"deco": "yFxmZb",
 						"parameters": [
@@ -4498,7 +4531,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 352,
+						"endline": 353,
 						"originalType": "immutable bool(const size_t col)",
 						"char": 10,
 						"kind": "function"
@@ -4506,7 +4539,7 @@
 					{
 						"endchar": 5,
 						"name": "columnExists",
-						"line": 355,
+						"line": 356,
 						"comment": "Checks if column with name exists\n",
 						"deco": "yFxAyaZb",
 						"parameters": [
@@ -4515,7 +4548,7 @@
 								"deco": "xAya"
 							}
 						],
-						"endline": 358,
+						"endline": 359,
 						"originalType": "immutable bool(in string column)",
 						"char": 10,
 						"kind": "function"
@@ -4523,7 +4556,7 @@
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 361,
+						"line": 362,
 						"comment": "Returns cell value by column number\n",
 						"deco": "yFxmZyS4dpq25value5Value",
 						"parameters": [
@@ -4532,7 +4565,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 372,
+						"endline": 373,
 						"originalType": "immutable immutable(Value)(in size_t col)",
 						"char": 23,
 						"kind": "function"
@@ -4540,7 +4573,7 @@
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 375,
+						"line": 376,
 						"comment": "Returns cell value by field name\n",
 						"deco": "yFxAyaZyS4dpq25value5Value",
 						"parameters": [
@@ -4549,7 +4582,7 @@
 								"deco": "xAya"
 							}
 						],
-						"endline": 378,
+						"endline": 379,
 						"originalType": "immutable immutable(Value)(in string column)",
 						"char": 23,
 						"kind": "function"
@@ -4557,7 +4590,7 @@
 					{
 						"endchar": 5,
 						"name": "columnNum",
-						"line": 381,
+						"line": 382,
 						"comment": "Returns column number by field name\n",
 						"deco": "yFAyaZm",
 						"parameters": [
@@ -4566,7 +4599,7 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 384,
+						"endline": 385,
 						"originalType": "immutable size_t(string columnName)",
 						"char": 12,
 						"kind": "function"
@@ -4574,7 +4607,7 @@
 					{
 						"endchar": 5,
 						"name": "columnName",
-						"line": 387,
+						"line": 388,
 						"comment": "Returns column name by field number\n",
 						"deco": "yFxmZAya",
 						"parameters": [
@@ -4583,7 +4616,7 @@
 								"deco": "xm"
 							}
 						],
-						"endline": 390,
+						"endline": 391,
 						"originalType": "immutable string(in size_t colNum)",
 						"char": 12,
 						"kind": "function"
@@ -4591,10 +4624,10 @@
 					{
 						"endchar": 52,
 						"name": "length",
-						"line": 393,
+						"line": 394,
 						"comment": "Returns column count\n",
 						"deco": "yFZm",
-						"endline": 393,
+						"endline": 394,
 						"originalType": "immutable size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4602,10 +4635,10 @@
 					{
 						"endchar": 5,
 						"name": "toString",
-						"line": 396,
+						"line": 397,
 						"comment": "\n",
 						"deco": "yFZAya",
-						"endline": 404,
+						"endline": 405,
 						"char": 12,
 						"kind": "function"
 					}
@@ -4616,7 +4649,7 @@
 			{
 				"endchar": 1,
 				"name": "asArray",
-				"line": 408,
+				"line": 409,
 				"comment": "Creates Array from appropriate Value\n",
 				"deco": "FyS4dpq25value5ValueZySQu6result5Array",
 				"parameters": [
@@ -4625,14 +4658,14 @@
 						"deco": "yS4dpq25value5Value"
 					}
 				],
-				"endline": 423,
+				"endline": 424,
 				"char": 19,
 				"kind": "function"
 			},
 			{
 				"endchar": 1,
 				"name": "toString",
-				"line": 426,
+				"line": 427,
 				"comment": "\n",
 				"deco": "FyS4dpq25value5ValueZAya",
 				"parameters": [
@@ -4641,20 +4674,20 @@
 						"deco": "yS4dpq25value5Value"
 					}
 				],
-				"endline": 431,
+				"endline": 432,
 				"originalType": "string(immutable Value v)",
 				"char": 8,
 				"kind": "function"
 			},
 			{
 				"name": "ArrayProperties",
-				"line": 447,
+				"line": 448,
 				"comment": "\n",
 				"members": [
 					{
 						"offset": 0,
 						"name": "OID",
-						"line": 449,
+						"line": 450,
 						"comment": "Oid\n",
 						"deco": "E4dpq24oids7OidType",
 						"init": "cast(OidType)0u",
@@ -4664,7 +4697,7 @@
 					{
 						"offset": 8,
 						"name": "dimsSize",
-						"line": 450,
+						"line": 451,
 						"comment": "Dimensions sizes info\n",
 						"deco": "Ai",
 						"char": 11,
@@ -4673,7 +4706,7 @@
 					{
 						"offset": 24,
 						"name": "nElems",
-						"line": 451,
+						"line": 452,
 						"comment": "Total elements\n",
 						"deco": "m",
 						"originalType": "size_t",
@@ -4686,13 +4719,13 @@
 			},
 			{
 				"name": "Array",
-				"line": 504,
+				"line": 505,
 				"comment": "Represents Value as array\n\nActually it is a reference to the cell value of the answer table\n",
 				"members": [
 					{
 						"offset": 0,
 						"name": "ap",
-						"line": 506,
+						"line": 507,
 						"comment": "\n",
 						"deco": "yS4dpq26result15ArrayProperties",
 						"originalType": "ArrayProperties",
@@ -4705,10 +4738,10 @@
 					{
 						"endchar": 5,
 						"name": "length",
-						"line": 555,
+						"line": 556,
 						"comment": "Returns number of elements in array\nUseful for one-dimensional arrays\n",
 						"deco": "yFZm",
-						"endline": 558,
+						"endline": 559,
 						"originalType": "immutable size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4716,7 +4749,7 @@
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 562,
+						"line": 563,
 						"comment": "Returns Value struct by index\nUseful for one-dimensional arrays\n",
 						"deco": "yFmZyS4dpq25value5Value",
 						"parameters": [
@@ -4725,7 +4758,7 @@
 								"deco": "m"
 							}
 						],
-						"endline": 565,
+						"endline": 566,
 						"originalType": "immutable immutable(Value)(size_t n)",
 						"char": 23,
 						"kind": "function"
@@ -4733,7 +4766,7 @@
 					{
 						"endchar": 5,
 						"name": "opIndex",
-						"line": 569,
+						"line": 570,
 						"comment": "Returns Value struct by index\nUseful for one-dimensional arrays\n",
 						"deco": "yFiZyS4dpq25value5Value",
 						"parameters": [
@@ -4742,27 +4775,27 @@
 								"deco": "i"
 							}
 						],
-						"endline": 572,
+						"endline": 573,
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "getValue",
-						"line": 576,
+						"line": 577,
 						"comment": "Returns Value struct\nUseful for multidimensional arrays\n",
 						"deco": "yFYyS4dpq25value5Value",
-						"endline": 581,
+						"endline": 582,
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "isNULL",
-						"line": 590,
+						"line": 591,
 						"comment": "Value NULL checking\n",
 						"deco": "yFYb",
-						"endline": 594,
+						"endline": 595,
 						"char": 10,
 						"kind": "function"
 					}
@@ -4772,36 +4805,36 @@
 			},
 			{
 				"name": "Notify",
-				"line": 647,
+				"line": 648,
 				"comment": "Notify\n",
 				"members": [
 					{
 						"endchar": 52,
 						"name": "name",
-						"line": 665,
+						"line": 666,
 						"comment": "Returns notification condition name\n",
 						"deco": "FZAya",
-						"endline": 665,
+						"endline": 666,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 51,
 						"name": "extra",
-						"line": 668,
+						"line": 669,
 						"comment": "Returns notification parameter\n",
 						"deco": "FZAya",
-						"endline": 668,
+						"endline": 669,
 						"char": 12,
 						"kind": "function"
 					},
 					{
 						"endchar": 37,
 						"name": "pid",
-						"line": 671,
+						"line": 672,
 						"comment": "Returns process ID of notifying server process\n",
 						"deco": "FZm",
-						"endline": 671,
+						"endline": 672,
 						"originalType": "size_t()",
 						"char": 12,
 						"kind": "function"
@@ -4813,7 +4846,7 @@
 			{
 				"members": [],
 				"name": "ResponseException",
-				"line": 675,
+				"line": 676,
 				"comment": "Covers errors of Answer creation when data was not received due to syntax errors, etc\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,
@@ -4823,7 +4856,7 @@
 				"members": [
 					{
 						"name": "FATAL_ERROR",
-						"line": 694,
+						"line": 695,
 						"value": "0",
 						"comment": "\n",
 						"char": 5,
@@ -4831,7 +4864,7 @@
 					},
 					{
 						"name": "COLUMN_NOT_FOUND",
-						"line": 695,
+						"line": 696,
 						"value": "1",
 						"comment": "Column is not found\n",
 						"char": 5,
@@ -4839,7 +4872,7 @@
 					},
 					{
 						"name": "OUT_OF_RANGE",
-						"line": 696,
+						"line": 697,
 						"value": "2",
 						"comment": "\n",
 						"char": 5,
@@ -4847,7 +4880,7 @@
 					}
 				],
 				"name": "ExceptionType",
-				"line": 692,
+				"line": 693,
 				"comment": "Answer exception types\n",
 				"baseDeco": "i",
 				"char": 1,
@@ -4858,7 +4891,7 @@
 					{
 						"offset": 76,
 						"name": "type",
-						"line": 702,
+						"line": 703,
 						"comment": "Exception type\n",
 						"deco": "xE4dpq26result13ExceptionType",
 						"originalType": "ExceptionType",
@@ -4870,7 +4903,7 @@
 					}
 				],
 				"name": "AnswerException",
-				"line": 700,
+				"line": 701,
 				"comment": "Covers errors of access to Answer data\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,
@@ -4881,7 +4914,7 @@
 		"kind": "module"
 	},
 	{
-		"file": "../../../.dub/packages/dpq2-1.0.6/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.7/dpq2/src/dpq2/value.d",
 		"name": "dpq2.value",
 		"members": [
 			{

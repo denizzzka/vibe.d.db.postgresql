@@ -74,7 +74,7 @@ class PostgresClient
     }
 
     ///
-    Connection createConnection(in ClientSettings cs) @safe
+    private Connection createConnection(in ClientSettings cs) @safe
     {
         return new Connection(cs);
     }
@@ -175,14 +175,67 @@ class Dpq2Connection : dpq2.Connection
         doesQueryAndCollectsResults();
     }
 
-    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatement)
+    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatementDg)
     {
-        logDebugV("runStatementBlockingManner");
+        immutable(Result)[] res;
+
+        runStatementBlockingMannerWithMultipleResults(sendsStatementDg, (r){ res ~= r; }, false);
+
+        enforce(res.length == 1, "Simple query without row-by-row mode can return only one Result instance, not "~res.length.to!string);
+
+        return res[0];
+    }
+
+    private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatementDg, void delegate(immutable(Result)) processResult, bool isRowByRowMode)
+    {
+        logDebugV(__FUNCTION__);
         immutable(Result)[] res;
 
         doQuery(()
             {
-                sendsStatement();
+                sendsStatementDg();
+
+                if(isRowByRowMode)
+                {
+                    enforce(setSingleRowMode, "Failed to set row-by-row mode");
+                }
+
+                scope(failure)
+                {
+                    if(isRowByRowMode)
+                        while(getResult() !is null){} // autoclean of results queue
+                }
+
+                scope(exit)
+                {
+                    logDebugV("consumeInput()");
+                    consumeInput(); // TODO: redundant call (also called in waitEndOfRead) - can be moved into catch block?
+
+                    while(true)
+                    {
+                        logDebugV("getResult()");
+                        auto r = getResult();
+
+                        /*
+                         I am trying to check connection status with PostgreSQL server
+                         with PQstatus and it always always return CONNECTION_OK even
+                         when the cable to the server is unplugged.
+                                                    – user1972556 (stackoverflow.com)
+
+                         ...the idea of testing connections is fairly silly, since the
+                         connection might die between when you test it and when you run
+                         your "real" query. Don't test connections, just use them, and
+                         if they fail be prepared to retry everything since you opened
+                         the transaction. – Craig Ringer Jan 14 '13 at 2:59
+                         */
+                        if(status == CONNECTION_BAD)
+                            throw new ConnectionException(this, __FILE__, __LINE__);
+
+                        if(r is null) break;
+
+                        processResult(r);
+                    }
+                }
 
                 try
                 {
@@ -199,40 +252,8 @@ class Dpq2Connection : dpq2.Connection
 
                     throw e;
                 }
-                finally
-                {
-                    logDebugV("consumeInput()");
-                    consumeInput();
-
-                    while(true)
-                    {
-                        logDebugV("getResult()");
-                        auto r = getResult();
-                        if(r is null) break;
-                        res ~= r;
-                    }
-                }
             }
         );
-
-        /*
-         I am trying to check connection status with PostgreSQL server
-         with PQstatus and it always always return CONNECTION_OK even
-         when the cable to the server is unplugged.
-                                    – user1972556 (stackoverflow.com)
-
-         ...the idea of testing connections is fairly silly, since the
-         connection might die between when you test it and when you run
-         your "real" query. Don't test connections, just use them, and
-         if they fail be prepared to retry everything since you opened
-         the transaction. – Craig Ringer Jan 14 '13 at 2:59
-         */
-        if(status == CONNECTION_BAD)
-            throw new ConnectionException(this, __FILE__, __LINE__);
-
-        enforce(res.length == 1, "Simple query can return only one Result instance, not "~res.length.to!string);
-
-        return res[0];
     }
 
     ///
@@ -254,6 +275,55 @@ class Dpq2Connection : dpq2.Connection
         auto res = runStatementBlockingManner({ sendQueryParams(params); });
 
         return res.getAnswer;
+    }
+
+    /// Row-by-row version of execStatement
+    ///
+    /// Delegate called for each received row.
+    ///
+    /// More info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html
+    ///
+    void execStatementRbR(
+        string sqlCommand,
+        void delegate(immutable(Row)) answerRowProcessDg,
+        ValueFormat resultFormat = ValueFormat.BINARY
+    )
+    {
+        QueryParams p;
+        p.resultFormat = resultFormat;
+        p.sqlCommand = sqlCommand;
+
+        execStatementRbR(p, answerRowProcessDg);
+    }
+
+    /// Ditto
+    void execStatementRbR(in ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
+    {
+        runStatementWithRowByRowResult(
+            { sendQueryParams(params); },
+            answerRowProcessDg
+        );
+    }
+
+    private void runStatementWithRowByRowResult(void delegate() sendsStatementDg, void delegate(immutable(Row)) answerRowProcessDg)
+    {
+        runStatementBlockingMannerWithMultipleResults(
+                sendsStatementDg,
+                (r)
+                {
+                    auto answer = r.getAnswer;
+
+                    enforce(answer.length <= 1, `0 or 1 rows can be received, not `~answer.length.to!string);
+
+                    if(answer.length == 1)
+                    {
+                        enforce(r.status == PGRES_SINGLE_TUPLE, `Wrong result status: `~r.status.to!string);
+
+                        answerRowProcessDg(answer[0]);
+                    }
+                },
+                true
+            );
     }
 
     ///
@@ -346,6 +416,53 @@ version(IntegrationTest) void __integration_test(string connString)
         );
 
         assert(res.getAnswer[0][1].as!PGinteger == 567);
+    }
+
+    {
+        // Row-by-row result receiving
+        int[] res;
+
+        conn.execStatementRbR(
+            `SELECT generate_series(0, 3) as i, pg_sleep(0.2)`,
+            (immutable(Row) r)
+            {
+                res ~= r[0].as!int;
+            }
+        );
+
+        assert(res.length == 4);
+    }
+
+    {
+        // Row-by-row result receiving: error while receiving
+        size_t rowCounter;
+
+        QueryParams p;
+        p.sqlCommand =
+            `SELECT 1.0 / (generate_series(1, 100000) % 80000)`; // division by zero error at generate_series=80000
+
+        import std.exception: assertThrown;
+
+        assertThrown!ResponseException( // catches ERROR:  division by zero
+            conn.execStatementRbR(p,
+                (immutable(Row) r)
+                {
+                    rowCounter++;
+                }
+            )
+        );
+
+        assert(rowCounter > 0);
+    }
+
+    {
+        QueryParams p;
+        p.sqlCommand = `SELECT 123`;
+
+        auto res = conn.execStatement(p);
+
+        assert(res.length == 1);
+        assert(res[0][0].as!int == 123);
     }
 
     {
