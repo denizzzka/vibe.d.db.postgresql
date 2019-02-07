@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function PostgresClient.this</title>
+		<title>PostgresClient.this - multiple declarations</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -128,7 +128,46 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function PostgresClient.this</h1><p></p>
+			<h1>PostgresClient.this - multiple declarations</h1>
+			<nav class="page-nav">
+				<ul>
+					<li>
+						<a href="#0">
+							Function <code>PostgresClient.this</code>
+						</a>
+					</li>
+					<li>
+						<a href="#1">
+							Function <code>PostgresClient.this</code>
+						</a>
+					</li>
+					<li>
+						<a href="#2">
+							Function <code>PostgresClient.this</code>
+						</a>
+					</li>
+				</ul>
+			</nav><h2 id="0">Function PostgresClient.this</h2><p>Useful for external Connection implementation
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">this</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">@safe</span> <a href="../../../vibe/db/postgresql/Dpq2Connection.html"><span class="typ">Dpq2Connection</span></a> <span class="kwd">delegate</span><span class="pun">(</span><span class="kwd">const</span><span class="pun">(</span><a href="../../../vibe/db/postgresql/ClientSettings.html"><span class="typ">ClientSettings</span></a><span class="pun">)</span><span class="pun">)</span> <span class="pln">connFactory</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">immutable</span><span class="pun">(</span><a href="../../../vibe/db/postgresql/ClientSettings.html"><span class="typ">ClientSettings</span></a><span class="pun">)</span> <span class="pln">cs</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="typ">uint</span> <span class="pln">connNum</span>
+			<br/>
+			<span class="pun">)</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			
+			<h2 id="1">Function PostgresClient.this</h2><p>afterStartConnectOrReset is called after connection established
+</p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
@@ -142,20 +181,15 @@ $('#symbolSearchPane').show();</script>
 			&nbsp;&nbsp;<span class="typ">void</span> <span class="kwd">delegate</span><span class="pun">(</span><a href="../../../vibe/db/postgresql/Dpq2Connection.html"><span class="typ">Dpq2Connection</span></a><span class="pun">)</span> <span class="pln">afterStartConnectOrReset</span> <span class="pun">=</span> <span class="kwd">cast</span><span class="pun">(</span><span class="typ">void </span><span class="kwd">delegate</span><span class="pun">(</span><span class="typ">Dpq2Connection</span><span class="pun">))</span><span class="kwd">null</span>
 			<br/>
 			<span class="pun">)</span><span class="pun">;</span>
-			<br/>
-			<br/>
-			<span class="pln">this</span>
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">@safe</span> <a href="../../../vibe/db/postgresql/Dpq2Connection.html"><span class="typ">Dpq2Connection</span></a> <span class="kwd">delegate</span><span class="pun">(</span><span class="kwd">const</span><span class="pun">(</span><a href="../../../vibe/db/postgresql/ClientSettings.html"><span class="typ">ClientSettings</span></a><span class="pun">)</span><span class="pun">)</span> <span class="pln">connFactory</span><span class="pun">,</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">immutable</span><span class="pun">(</span><a href="../../../vibe/db/postgresql/ClientSettings.html"><span class="typ">ClientSettings</span></a><span class="pun">)</span> <span class="pln">cs</span><span class="pun">,</span>
-			<br/>
-			&nbsp;&nbsp;<span class="typ">uint</span> <span class="pln">connNum</span>
-			<br/>
-			<span class="pun">)</span><span class="pun">;</span>
-			<br/>
-			<br/>
+					</div>
+				</code>
+			</div>
+			
+			<h2 id="2">Function PostgresClient.this</h2><p>Useful for external Connection implementation
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
 			<span class="pln">this</span>
 			<span class="pun">(</span>
 			<br/>
@@ -167,7 +201,10 @@ $('#symbolSearchPane').show();</script>
 					</div>
 				</code>
 			</div>
-			
+			<section><p>Not cares about checking of connection string
+</p>
+</section>
+
 			
 			<footer>
 				<table class="license-info">

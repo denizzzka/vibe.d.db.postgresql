@@ -12,7 +12,7 @@
 						"offset": 0,
 						"name": "connString",
 						"line": 20,
-						"comment": "\n",
+						"comment": "PostgreSQL connection string\n",
 						"deco": "Aya",
 						"char": 12,
 						"kind": "variable"
@@ -21,7 +21,7 @@
 						"offset": 16,
 						"name": "afterStartConnectOrReset",
 						"line": 21,
-						"comment": "\n",
+						"comment": "called after connection established\n",
 						"deco": "DFC4vibe2db10postgresql14Dpq2ConnectionZv",
 						"originalType": "void delegate(Connection)",
 						"char": 31,
@@ -40,7 +40,7 @@
 						"endchar": 5,
 						"name": "this",
 						"line": 30,
-						"comment": "\n",
+						"comment": "afterStartConnectOrReset is called after connection established\n",
 						"deco": "FAyakDFC4vibe2db10postgresql14Dpq2ConnectionZvZCQBoQBmQBm14PostgresClient",
 						"parameters": [
 							{
@@ -66,7 +66,7 @@
 						"endchar": 5,
 						"name": "this",
 						"line": 45,
-						"comment": "\n",
+						"comment": "Useful for external Connection implementation\n",
 						"deco": "FDFNfxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2ConnectionySQCnQClQClQCckZCQDcQDaQDa14PostgresClient",
 						"parameters": [
 							{
@@ -90,8 +90,8 @@
 					{
 						"endchar": 5,
 						"name": "this",
-						"line": 58,
-						"comment": "\n",
+						"line": 60,
+						"comment": "Useful for external Connection implementation\n\nNot cares about checking of connection string\n",
 						"deco": "FDxFNaNfZC4vibe2db10postgresql14Dpq2ConnectionkZCQBnQBlQBl14PostgresClient",
 						"parameters": [
 							{
@@ -103,7 +103,7 @@
 								"deco": "k"
 							}
 						],
-						"endline": 66,
+						"endline": 68,
 						"originalType": "(Connection delegate() const pure @safe connFactory, uint connNum)",
 						"char": 5,
 						"kind": "constructor"
@@ -111,10 +111,10 @@
 					{
 						"endchar": 5,
 						"name": "lockConnection",
-						"line": 69,
+						"line": 71,
 						"comment": "Get connection from the pool.\n",
 						"deco": "FZS4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCd",
-						"endline": 74,
+						"endline": 76,
 						"originalType": "LockedConnection()",
 						"char": 22,
 						"kind": "function"
@@ -125,7 +125,7 @@
 			},
 			{
 				"name": "LockedConnection",
-				"line": 87,
+				"line": 89,
 				"comment": "\n",
 				"deco": "S4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCd",
 				"char": 1,
@@ -136,7 +136,7 @@
 					{
 						"offset": 24,
 						"name": "socketTimeout",
-						"line": 94,
+						"line": 96,
 						"comment": "\n",
 						"deco": "S4core4time8Duration",
 						"init": "Duration(100000000L)",
@@ -146,7 +146,7 @@
 					{
 						"offset": 32,
 						"name": "statementTimeout",
-						"line": 95,
+						"line": 97,
 						"comment": "\n",
 						"deco": "S4core4time8Duration",
 						"init": "Duration(300000000L)",
@@ -156,7 +156,7 @@
 					{
 						"endchar": 5,
 						"name": "this",
-						"line": 100,
+						"line": 102,
 						"comment": "\n",
 						"deco": "FNeKxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2Connection",
 						"parameters": [
@@ -168,7 +168,7 @@
 								"deco": "xS4vibe2db10postgresql14ClientSettings"
 							}
 						],
-						"endline": 112,
+						"endline": 114,
 						"originalType": "@trusted (ref const ClientSettings settings)",
 						"char": 5,
 						"kind": "constructor"
@@ -176,10 +176,10 @@
 					{
 						"endchar": 5,
 						"name": "resetStart",
-						"line": 115,
+						"line": 117,
 						"comment": "\n",
 						"deco": "FZv",
-						"endline": 121,
+						"endline": 123,
 						"char": 19,
 						"kind": "function",
 						"overrides": [
@@ -192,7 +192,7 @@
 					{
 						"endchar": 5,
 						"name": "execStatement",
-						"line": 260,
+						"line": 262,
 						"comment": "\n",
 						"deco": "FAyaE4dpq25value11ValueFormatZyCQBb6result6Answer",
 						"parameters": [
@@ -206,7 +206,7 @@
 								"default": "cast(ValueFormat)1"
 							}
 						],
-						"endline": 270,
+						"endline": 272,
 						"originalType": "immutable(Answer)(string sqlCommand, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 23,
 						"kind": "function"
@@ -214,7 +214,7 @@
 					{
 						"endchar": 5,
 						"name": "execStatement",
-						"line": 273,
+						"line": 275,
 						"comment": "\n",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"parameters": [
@@ -226,7 +226,7 @@
 								"deco": "xS4dpq24args11QueryParams"
 							}
 						],
-						"endline": 278,
+						"endline": 280,
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"kind": "function"
@@ -234,7 +234,7 @@
 					{
 						"endchar": 5,
 						"name": "execStatementRbR",
-						"line": 286,
+						"line": 288,
 						"comment": "Row-by-row version of execStatement\n\nDelegate called for each received row.\n\nMore info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html\n\n",
 						"deco": "FAyaDFyS4dpq26result3RowZvEQt5value11ValueFormatZv",
 						"parameters": [
@@ -252,7 +252,7 @@
 								"default": "cast(ValueFormat)1"
 							}
 						],
-						"endline": 297,
+						"endline": 299,
 						"originalType": "void(string sqlCommand, void delegate(immutable(Row)) answerRowProcessDg, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 10,
 						"kind": "function"
@@ -260,7 +260,7 @@
 					{
 						"endchar": 5,
 						"name": "execStatementRbR",
-						"line": 300,
+						"line": 302,
 						"comment": "Ditto\n",
 						"deco": "FKxS4dpq24args11QueryParamsDFySQBb6result3RowZvZv",
 						"parameters": [
@@ -276,7 +276,7 @@
 								"deco": "DFyS4dpq26result3RowZv"
 							}
 						],
-						"endline": 306,
+						"endline": 308,
 						"originalType": "void(ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)",
 						"char": 10,
 						"kind": "function"
@@ -284,7 +284,7 @@
 					{
 						"endchar": 5,
 						"name": "prepareStatement",
-						"line": 330,
+						"line": 332,
 						"comment": "\n",
 						"deco": "FAyaQdAkZv",
 						"parameters": [
@@ -302,7 +302,7 @@
 								"default": "null"
 							}
 						],
-						"endline": 342,
+						"endline": 344,
 						"originalType": "void(string statementName, string sqlStatement, Oid[] oids = null)",
 						"char": 10,
 						"kind": "function"
@@ -310,7 +310,7 @@
 					{
 						"endchar": 5,
 						"name": "execPreparedStatement",
-						"line": 345,
+						"line": 347,
 						"comment": "\n",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"parameters": [
@@ -322,7 +322,7 @@
 								"deco": "xS4dpq24args11QueryParams"
 							}
 						],
-						"endline": 350,
+						"endline": 352,
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"kind": "function"
@@ -330,7 +330,7 @@
 					{
 						"endchar": 5,
 						"name": "describePreparedStatement",
-						"line": 353,
+						"line": 355,
 						"comment": "\n",
 						"deco": "FAyaZyC4dpq26result6Answer",
 						"parameters": [
@@ -339,14 +339,14 @@
 								"deco": "Aya"
 							}
 						],
-						"endline": 358,
+						"endline": 360,
 						"char": 23,
 						"kind": "function"
 					},
 					{
 						"endchar": 5,
 						"name": "waitForNotify",
-						"line": 369,
+						"line": 371,
 						"comment": " Non blocking method to wait for next notification.\n\n Params:\n      timeout = maximal duration to wait for the new Notify to be received\n\n Returns: New Notify or null when no other notification is available or timeout occurs.\n Throws: ConnectionException on connection failure\n",
 						"deco": "FxS4core4time8DurationZC4dpq26result6Notify",
 						"parameters": [
@@ -356,14 +356,14 @@
 								"default": "max()"
 							}
 						],
-						"endline": 379,
+						"endline": 381,
 						"originalType": "Notify(in Duration timeout = Duration.max)",
 						"char": 12,
 						"kind": "function"
 					}
 				],
 				"name": "Dpq2Connection",
-				"line": 92,
+				"line": 94,
 				"comment": " dpq2.Connection adopted for using with Vibe.d\n",
 				"base": "dpq2.connection.Connection",
 				"char": 1,
@@ -372,7 +372,7 @@
 			{
 				"members": [],
 				"name": "PostgresClientTimeoutException",
-				"line": 383,
+				"line": 385,
 				"comment": "\n",
 				"base": "dpq2.exception.Dpq2Exception",
 				"char": 1,
