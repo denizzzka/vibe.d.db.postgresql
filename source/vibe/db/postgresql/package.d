@@ -17,8 +17,8 @@ import std.conv: to;
 ///
 struct ClientSettings
 {
-    string connString; ///
-    void delegate(Connection) afterStartConnectOrReset; ///
+    string connString; /// PostgreSQL connection string
+    void delegate(Connection) afterStartConnectOrReset; /// called after connection established
 }
 
 /// A Postgres client with connection pooling.
@@ -26,7 +26,7 @@ class PostgresClient
 {
     private ConnectionPool!Connection pool;
 
-    ///
+    /// afterStartConnectOrReset is called after connection established
     this(
         string connString,
         uint connNum,
@@ -41,7 +41,7 @@ class PostgresClient
         this(&createConnection, cs, connNum);
     }
 
-    ///
+    /// Useful for external Connection implementation
     this
     (
         Connection delegate(in ClientSettings) @safe connFactory,
@@ -54,7 +54,9 @@ class PostgresClient
         pool = new ConnectionPool!Connection(() @safe { return connFactory(cs); }, connNum);
     }
 
+    /// Useful for external Connection implementation
     ///
+    /// Not cares about checking of connection string
     this(Connection delegate() const pure @safe connFactory, uint connNum)
     {
         enforce(PQisthreadsafe() == 1);
