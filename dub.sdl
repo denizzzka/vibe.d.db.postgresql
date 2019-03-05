@@ -22,7 +22,7 @@ configuration "integration_test_vibe_core" {
     targetType "executable"
     buildType "unittest"
     versions "IntegrationTest"
-    dependency "vibe-core" version="~>1.4.0"
+    dependency "vibe-core" version=">=1.4.0 <1.7.0"
     subConfiguration "vibe-d:core" "vibe-core"
 }
 
