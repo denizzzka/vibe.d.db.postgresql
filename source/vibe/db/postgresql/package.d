@@ -113,8 +113,14 @@ class Dpq2Connection : dpq2.Connection
             settings.afterStartConnectOrReset(this);
     }
 
-    /// Actually blocks while connection will be established or exception thrown
-    override void resetStart()
+    deprecated("please use .reset() instead")
+    void resetStart()()
+    {
+        reset();
+    }
+
+    /// Blocks while connection will be established or exception thrown
+    void reset()
     {
         super.resetStart;
 
