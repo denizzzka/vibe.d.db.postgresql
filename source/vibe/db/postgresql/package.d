@@ -96,12 +96,12 @@ class Dpq2Connection : dpq2.Connection
     Duration socketTimeout = dur!"seconds"(10); ///
     Duration statementTimeout = dur!"seconds"(30); ///
 
-    private const ClientSettings* settings;
+    private const ClientSettings settings;
 
     ///
     this(const ref ClientSettings settings) @trusted
     {
-        this.settings = &settings;
+        this.settings = settings;
 
         super(settings.connString);
         setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
@@ -113,16 +113,38 @@ class Dpq2Connection : dpq2.Connection
             settings.afterStartConnectOrReset(this);
     }
 
-    ///
-    override void resetStart()
+    deprecated("please use .reset() instead")
+    void resetStart()()
+    {
+        reset();
+    }
+
+    /// Blocks while connection will be established or exception thrown
+    void reset()
     {
         super.resetStart;
+
+        while(true)
+        {
+            if(status() == CONNECTION_BAD)
+                throw new ConnectionException(this);
+
+            if(resetPoll() != PGRES_POLLING_OK)
+            {
+                waitEndOfRead(socketTimeout);
+                continue;
+            }
+            else
+            {
+                break;
+            }
+        }
 
         if(settings.afterStartConnectOrReset !is null)
             settings.afterStartConnectOrReset(this);
     }
 
-    private void waitEndOfRead(in Duration timeout) // TODO: rename to waitEndOf + add FileDescriptorEvent.Trigger argument
+    private auto waitEndOfRead(in Duration timeout) // TODO: rename to waitEndOf + add FileDescriptorEvent.Trigger argument
     {
         import vibe.core.core;
 
@@ -141,8 +163,15 @@ class Dpq2Connection : dpq2.Connection
         else
         {
             auto event = createFileDescriptorEvent(this.posixSocket, FileDescriptorEvent.Trigger.any);
-            scope(exit) destroy(event); // Prevents 100% CPU usage
         }
+
+        return event;
+    }
+
+    private void waitEndOfReadAndConsume(in Duration timeout)
+    {
+        auto event = waitEndOfRead(timeout);
+        scope(exit) destroy(event); // Prevents 100% CPU usage
 
         do
         {
@@ -164,7 +193,7 @@ class Dpq2Connection : dpq2.Connection
 
             if(poll() != PGRES_POLLING_OK)
             {
-                waitEndOfRead(socketTimeout);
+                waitEndOfReadAndConsume(socketTimeout);
                 continue;
             }
             else
@@ -241,7 +270,7 @@ class Dpq2Connection : dpq2.Connection
 
                 try
                 {
-                    waitEndOfRead(statementTimeout);
+                    waitEndOfReadAndConsume(statementTimeout);
                 }
                 catch(PostgresClientTimeoutException e)
                 {
@@ -375,7 +404,7 @@ class Dpq2Connection : dpq2.Connection
         if (ntf !is null) return ntf;
 
         // wait for next one
-        try waitEndOfRead(timeout);
+        try waitEndOfReadAndConsume(timeout);
         catch (PostgresClientTimeoutException) return null;
         return getNextNotify();
     }
