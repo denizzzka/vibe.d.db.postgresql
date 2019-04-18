@@ -31,7 +31,7 @@ void test()
     catch(ConnectionException e)
     {
         logWarn(e.msg);
-        conn.reset();
+        conn.reset(); // may throw ConnectionException too!
     }
     catch(Exception e)
     {
