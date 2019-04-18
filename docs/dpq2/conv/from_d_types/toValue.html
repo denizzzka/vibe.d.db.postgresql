@@ -191,6 +191,11 @@ $('#symbolSearchPane').show();</script>
 							Function <code>toValue</code>
 						</a>
 					</li>
+					<li>
+						<a href="#12">
+							Function <code>toValue</code>
+						</a>
+					</li>
 				</ul>
 			</nav><h2 id="0">Function toValue</h2><p>Converts Nullable!T to Value
 </p>
@@ -235,7 +240,30 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="2">Function toValue</h2><p>Converts types implicitly convertible to string to PG Value.
+			<h2 id="2">Function toValue</h2><p>Convert money.currency to PG value
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<a href="../../../dpq2/value/Value.html"><span class="typ">Value</span></a> <span class="pln">toValue</span>(T)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">T</span> <span class="pln">v</span>
+			<br/>
+			<span class="pun">)</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isInstanceOf</span><span class="pun">!(</span><span class="pln">currency</span><span class="pun">, </span><span class="pln">T</span><span class="pun">) &amp;&amp; (</span><span class="pln">T<wbr/></span><span class="pun">.</span><span class="pln">amount<wbr/></span><span class="pun">.</span><span class="pln">sizeof </span><span class="pun">== </span><span class="lit">8</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section></section>
+
+			<section><h3>Caution</h3>
+<p>here is no check of fractional precision while conversion!
+See also: PostgreSQL's "lc_monetary" description and "money" package description
+</p>
+</section>
+<h2 id="3">Function toValue</h2><p>Converts types implicitly convertible to string to PG Value.
     Note that if string is null it is written as an empty string.
     If NULL is a desired DB value, Nullable!string can be used instead.
 </p>
@@ -256,7 +284,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="3">Function toValue</h2><p>Constructs Value from array of bytes
+			<h2 id="4">Function toValue</h2><p>Constructs Value from array of bytes
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -273,7 +301,8 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="4">Function toValue</h2><p></p>
+			<h2 id="5">Function toValue</h2><p>Constructs Value from boolean
+</p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
@@ -289,7 +318,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="5">Function toValue</h2><p>Constructs Value from Date
+			<h2 id="6">Function toValue</h2><p>Constructs Value from Date
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -306,7 +335,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="6">Function toValue</h2><p>Constructs Value from TimeOfDay
+			<h2 id="7">Function toValue</h2><p>Constructs Value from TimeOfDay
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -323,7 +352,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="7">Function toValue</h2><p>Constructs Value from TimeStamp or from TimeStampUTC
+			<h2 id="8">Function toValue</h2><p>Constructs Value from TimeStamp or from TimeStampUTC
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -340,7 +369,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="8">Function toValue</h2><p>Constructs Value from DateTime
+			<h2 id="9">Function toValue</h2><p>Constructs Value from DateTime
     It uses Timestamp without TZ as a resulting PG type
 </p>
 			<div class="prototype">
@@ -358,7 +387,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="9">Function toValue</h2><p>Constructs Value from SysTime
+			<h2 id="10">Function toValue</h2><p>Constructs Value from SysTime
     Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.
     It means that PG value will have 10 times lower precision.
     And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.
@@ -378,7 +407,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="10">Function toValue</h2><p>Constructs Value from UUID
+			<h2 id="11">Function toValue</h2><p>Constructs Value from UUID
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -395,7 +424,7 @@ $('#symbolSearchPane').show();</script>
 				</code>
 			</div>
 			
-			<h2 id="11">Function toValue</h2><p>Constructs Value from Json
+			<h2 id="12">Function toValue</h2><p>Constructs Value from Json
 </p>
 			<div class="prototype">
 				<code class="lang-d">

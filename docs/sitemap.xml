@@ -19,6 +19,7 @@
 <url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/geometric.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/geometric/binaryValueAs.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/geometric/Circle.html</loc></url>
@@ -88,9 +89,9 @@
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGreal.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGsmallint.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGtext.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGtime_without_time_zone.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGtimestamp.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGtimestamptz.html</loc></url>
-<url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGtime_without_time_zone.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGuuid.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/args.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/args/QueryParams.html</loc></url>
@@ -155,8 +156,11 @@
 <url><loc>http://127.0.0.1/dpq2/query/Queries.getNextNotify.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.prepare.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.prepareEx.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query/Queries.putCopyData.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query/Queries.putCopyEnd.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendDescribePrepared.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendPrepare.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query/Queries.sendPutCopyEnd.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendQuery.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendQueryParams.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendQueryPrepared.html</loc></url>
@@ -246,7 +250,7 @@
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.execStatementRbR.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.execStatementRbR.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.prepareStatement.html</loc></url>
-<url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.resetStart.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.reset.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.socketTimeout.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.statementTimeout.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/Dpq2Connection.this.html</loc></url>
@@ -267,6 +271,7 @@
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.posixSocketDuplicate.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.protocolVersion.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.resetPoll.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/connection/Connection.resetStart.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.serverVersion.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.setClientEncoding.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/connection/Connection.setNoticeProcessor.html</loc></url>

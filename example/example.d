@@ -30,8 +30,8 @@ void test()
     }
     catch(ConnectionException e)
     {
-        conn.resetStart();
         logWarn(e.msg);
+        conn.reset(); // may throw ConnectionException too!
     }
     catch(Exception e)
     {
