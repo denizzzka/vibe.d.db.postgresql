@@ -495,9 +495,6 @@ version(IntegrationTest) void __integration_test(string connString)
         p.sqlCommand =
             `SELECT 1.0 / (generate_series(1, 100000) % 80000)`; // division by zero error at generate_series=80000
 
-        // std.exception.assertThrown causes error here:
-        // "__lambda2.conn has scoped destruction, cannot build closure"
-
         bool assertThrown;
 
         try
