@@ -71,6 +71,7 @@ class PostgresClient
     ///
     /// Do not forgot to call .reset() for connection if ConnectionException
     /// will be catched while using LockedConnection!
+    deprecated("use pickConnection instead or report why lockConnection should be left")
     LockedConnection lockConnection()
     {
         logDebugV("get connection from the pool");
@@ -84,7 +85,8 @@ class PostgresClient
     /// reestablishing of connection by calling .reset()
     void pickConnection(void delegate(scope LockedConnection conn) dg)
     {
-        scope conn = lockConnection();
+        logDebugV("get connection from the pool");
+        scope conn = pool.lockConnection();
         scope(exit) destroy(conn);
 
         try dg(conn);
