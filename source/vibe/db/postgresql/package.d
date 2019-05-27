@@ -90,7 +90,7 @@ class PostgresClient
         try dg(conn);
         catch(ConnectionException e)
         {
-            conn.reset(); // also can throw ConnectionException
+            conn.reset(); // also may throw ConnectionException and this is normal behaviour
 
             throw e;
         }
@@ -496,6 +496,8 @@ version(IntegrationTest) void __integration_test(string connString)
         // std.exception.assertThrown causes error here:
         // "__lambda2.conn has scoped destruction, cannot build closure"
 
+        bool assertThrown;
+
         try
             conn.execStatementRbR(p,
                 (immutable(Row) r)
@@ -503,8 +505,10 @@ version(IntegrationTest) void __integration_test(string connString)
                     rowCounter++;
                 }
             );
-        catch(ResponseException){} // catches ERROR:  division by zero
+        catch(ResponseException) // catches ERROR:  division by zero
+            assertThrown = true;
 
+        assert(assertThrown);
         assert(rowCounter > 0);
     }
 
