@@ -68,11 +68,34 @@ class PostgresClient
     }
 
     /// Get connection from the pool.
+    ///
+    /// Do not forgot to call .reset() for connection if ConnectionException
+    /// will be catched while using LockedConnection!
+    deprecated("use pickConnection instead or report why lockConnection should be left")
     LockedConnection lockConnection()
     {
         logDebugV("get connection from the pool");
 
         return pool.lockConnection();
+    }
+
+    /// Use connection from the pool.
+    ///
+    /// Same as lockConnection but automatically maintains initiation of
+    /// reestablishing of connection by calling .reset()
+    void pickConnection(void delegate(scope LockedConnection conn) dg)
+    {
+        logDebugV("get connection from the pool");
+        scope conn = pool.lockConnection();
+        scope(exit) destroy(conn);
+
+        try dg(conn);
+        catch(ConnectionException e)
+        {
+            conn.reset(); // also may throw ConnectionException and this is normal behaviour
+
+            throw e;
+        }
     }
 
     ///
@@ -438,8 +461,8 @@ version(IntegrationTest) void __integration_test(string connString)
     setLogLevel = LogLevel.debugV;
 
     auto client = new PostgresClient(connString, 3);
-    auto conn = client.lockConnection();
 
+    client.pickConnection((scope conn) {
     {
         auto res = conn.execStatement(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
@@ -472,17 +495,19 @@ version(IntegrationTest) void __integration_test(string connString)
         p.sqlCommand =
             `SELECT 1.0 / (generate_series(1, 100000) % 80000)`; // division by zero error at generate_series=80000
 
-        import std.exception: assertThrown;
+        bool assertThrown;
 
-        assertThrown!ResponseException( // catches ERROR:  division by zero
+        try
             conn.execStatementRbR(p,
                 (immutable(Row) r)
                 {
                     rowCounter++;
                 }
-            )
-        );
+            );
+        catch(ResponseException) // catches ERROR:  division by zero
+            assertThrown = true;
 
+        assert(assertThrown);
         assert(rowCounter > 0);
     }
 
@@ -532,16 +557,24 @@ version(IntegrationTest) void __integration_test(string connString)
         import vibe.core.concurrency;
 
         auto future0 = async({
-            auto conn = client.lockConnection;
-            immutable answer = conn.execStatement("SELECT 'New connection 0'");
-            destroy(conn);
+            client.pickConnection(
+                (scope c)
+                {
+                    immutable answer = c.execStatement("SELECT 'New connection 0'");
+                }
+            );
+
             return 1;
         });
 
         auto future1 = async({
-            auto conn = client.lockConnection;
-            immutable answer = conn.execStatement("SELECT 'New connection 1'");
-            destroy(conn);
+            client.pickConnection(
+                (scope c)
+                {
+                    immutable answer = c.execStatement("SELECT 'New connection 1'");
+                }
+            );
+
             return 1;
         });
 
@@ -560,23 +593,30 @@ version(IntegrationTest) void __integration_test(string connString)
         import core.time : msecs;
         import vibe.core.core : sleep;
         import vibe.core.concurrency : async;
+
         struct NTF {string name; string extra;}
 
-        auto ntf = async(
-        {
-            auto conn = client.lockConnection;
-            conn.execStatement("LISTEN foo");
-            auto ntf = conn.waitForNotify();
-            assert(ntf !is null);
-            return NTF(ntf.name.idup, ntf.extra.idup);
+        auto futureNtf = async({
+            Notify pgNtf;
+
+            client.pickConnection(
+                (scope c)
+                {
+                    c.execStatement("LISTEN foo");
+                    pgNtf = c.waitForNotify();
+                }
+            );
+
+            assert(pgNtf !is null);
+            return NTF(pgNtf.name.idup, pgNtf.extra.idup);
         });
 
         sleep(10.msecs);
         conn.execStatement("NOTIFY foo, 'bar'");
 
-        assert(ntf.name == "foo");
-        assert(ntf.extra == "bar");
+        assert(futureNtf.name == "foo");
+        assert(futureNtf.extra == "bar");
     }
 
-    destroy(conn);
+    }); // pickConnection
 }

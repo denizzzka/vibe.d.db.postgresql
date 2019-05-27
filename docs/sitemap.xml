@@ -284,6 +284,7 @@
 <url><loc>http://127.0.0.1/vibe/db/postgresql/LockedConnection.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.lockConnection.html</loc></url>
+<url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.pickConnection.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.this.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.this.html</loc></url>
 <url><loc>http://127.0.0.1/vibe/db/postgresql/PostgresClient.this.html</loc></url>
