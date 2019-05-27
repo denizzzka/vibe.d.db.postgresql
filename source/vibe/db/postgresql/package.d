@@ -68,11 +68,32 @@ class PostgresClient
     }
 
     /// Get connection from the pool.
+    ///
+    /// Do not forgot to call .reset() for connection if ConnectionException
+    /// will be catched while using LockedConnection!
     LockedConnection lockConnection()
     {
         logDebugV("get connection from the pool");
 
         return pool.lockConnection();
+    }
+
+    /// Use connection from the pool.
+    ///
+    /// Same as lockConnection but automatically maintains initiation of
+    /// reestablishing of connection by calling .reset()
+    void pickConnection(void delegate(scope LockedConnection conn) dg)
+    {
+        scope conn = lockConnection();
+        scope(exit) destroy(conn);
+
+        try dg(conn);
+        catch(ConnectionException e)
+        {
+            conn.reset(); // also can throw ConnectionException
+
+            throw e;
+        }
     }
 
     ///
@@ -438,8 +459,8 @@ version(IntegrationTest) void __integration_test(string connString)
     setLogLevel = LogLevel.debugV;
 
     auto client = new PostgresClient(connString, 3);
-    auto conn = client.lockConnection();
 
+    client.pickConnection((scope conn) {
     {
         auto res = conn.execStatement(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
@@ -472,16 +493,17 @@ version(IntegrationTest) void __integration_test(string connString)
         p.sqlCommand =
             `SELECT 1.0 / (generate_series(1, 100000) % 80000)`; // division by zero error at generate_series=80000
 
-        import std.exception: assertThrown;
+        // std.exception.assertThrown causes error here:
+        // "__lambda2.conn has scoped destruction, cannot build closure"
 
-        assertThrown!ResponseException( // catches ERROR:  division by zero
+        try
             conn.execStatementRbR(p,
                 (immutable(Row) r)
                 {
                     rowCounter++;
                 }
-            )
-        );
+            );
+        catch(ResponseException){} // catches ERROR:  division by zero
 
         assert(rowCounter > 0);
     }
@@ -578,5 +600,5 @@ version(IntegrationTest) void __integration_test(string connString)
         assert(ntf.extra == "bar");
     }
 
-    destroy(conn);
+    }); // pickConnection
 }
