@@ -560,16 +560,24 @@ version(IntegrationTest) void __integration_test(string connString)
         import vibe.core.concurrency;
 
         auto future0 = async({
-            auto conn = client.lockConnection;
-            immutable answer = conn.execStatement("SELECT 'New connection 0'");
-            destroy(conn);
+            client.pickConnection(
+                (scope c)
+                {
+                    immutable answer = c.execStatement("SELECT 'New connection 0'");
+                }
+            );
+
             return 1;
         });
 
         auto future1 = async({
-            auto conn = client.lockConnection;
-            immutable answer = conn.execStatement("SELECT 'New connection 1'");
-            destroy(conn);
+            client.pickConnection(
+                (scope c)
+                {
+                    immutable answer = c.execStatement("SELECT 'New connection 1'");
+                }
+            );
+
             return 1;
         });
 
@@ -588,22 +596,29 @@ version(IntegrationTest) void __integration_test(string connString)
         import core.time : msecs;
         import vibe.core.core : sleep;
         import vibe.core.concurrency : async;
+
         struct NTF {string name; string extra;}
 
-        auto ntf = async(
-        {
-            auto conn = client.lockConnection;
-            conn.execStatement("LISTEN foo");
-            auto ntf = conn.waitForNotify();
-            assert(ntf !is null);
-            return NTF(ntf.name.idup, ntf.extra.idup);
+        auto futureNtf = async({
+            Notify pgNtf;
+
+            client.pickConnection(
+                (scope c)
+                {
+                    c.execStatement("LISTEN foo");
+                    pgNtf = c.waitForNotify();
+                }
+            );
+
+            assert(pgNtf !is null);
+            return NTF(pgNtf.name.idup, pgNtf.extra.idup);
         });
 
         sleep(10.msecs);
         conn.execStatement("NOTIFY foo, 'bar'");
 
-        assert(ntf.name == "foo");
-        assert(ntf.extra == "bar");
+        assert(futureNtf.name == "foo");
+        assert(futureNtf.extra == "bar");
     }
 
     }); // pickConnection
