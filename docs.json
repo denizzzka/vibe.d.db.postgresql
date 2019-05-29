@@ -125,19 +125,32 @@
 					{
 						"parameters": [
 							{
-								"deco": "DFMS4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCdZv",
-								"name": "dg"
+								"kind": "type",
+								"name": "T"
 							}
 						],
-						"line": 86,
-						"kind": "function",
-						"originalType": "void(void delegate(scope LockedConnection conn) dg)",
-						"char": 10,
+						"line": 88,
+						"kind": "template",
+						"char": 7,
+						"members": [
+							{
+								"parameters": [
+									{
+										"type": "T delegate(scope LockedConnection conn)",
+										"name": "dg"
+									}
+								],
+								"line": 88,
+								"kind": "function",
+								"char": 7,
+								"name": "pickConnection",
+								"type": "T(T delegate(scope LockedConnection conn) dg)",
+								"endchar": 5,
+								"endline": 102
+							}
+						],
 						"name": "pickConnection",
-						"deco": "FDFMS4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCdZvZv",
-						"endchar": 5,
-						"endline": 99,
-						"comment": "Use connection from the pool.\n\nSame as lockConnection but automatically maintains initiation of\nreestablishing of connection by calling .reset()\n"
+						"comment": "Use connection from the pool.\n\nSame as lockConnection but automatically maintains initiation of\nreestablishing of connection by calling .reset()\n\nReturns: Value returned by delegate or void\n"
 					}
 				],
 				"comment": "A Postgres client with connection pooling.\n",
@@ -145,20 +158,20 @@
 			},
 			{
 				"kind": "alias",
-				"line": 112,
+				"line": 115,
 				"char": 1,
 				"deco": "S4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCd",
 				"comment": "\n",
 				"name": "LockedConnection"
 			},
 			{
-				"line": 117,
+				"line": 120,
 				"kind": "class",
 				"char": 1,
 				"base": "dpq2.connection.Connection",
 				"members": [
 					{
-						"line": 119,
+						"line": 122,
 						"kind": "variable",
 						"char": 14,
 						"name": "socketTimeout",
@@ -168,7 +181,7 @@
 						"comment": "\n"
 					},
 					{
-						"line": 120,
+						"line": 123,
 						"kind": "variable",
 						"char": 14,
 						"name": "statementTimeout",
@@ -187,24 +200,24 @@
 								"name": "settings"
 							}
 						],
-						"line": 125,
+						"line": 128,
 						"kind": "constructor",
 						"originalType": "@trusted (ref const ClientSettings settings)",
 						"char": 5,
 						"name": "this",
 						"deco": "FNeKxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2Connection",
 						"endchar": 5,
-						"endline": 137,
+						"endline": 140,
 						"comment": "\n"
 					},
 					{
-						"line": 146,
+						"line": 149,
 						"kind": "function",
 						"char": 10,
 						"name": "reset",
 						"deco": "FZv",
 						"endchar": 5,
-						"endline": 168,
+						"endline": 171,
 						"comment": "Blocks while connection will be established or exception thrown\n"
 					},
 					{
@@ -219,14 +232,14 @@
 								"name": "resultFormat"
 							}
 						],
-						"line": 314,
+						"line": 317,
 						"kind": "function",
 						"originalType": "immutable(Answer)(string sqlCommand, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 23,
 						"name": "execStatement",
 						"deco": "FAyaE4dpq25value11ValueFormatZyCQBb6result6Answer",
 						"endchar": 5,
-						"endline": 324,
+						"endline": 327,
 						"comment": "\n"
 					},
 					{
@@ -239,14 +252,14 @@
 								"name": "params"
 							}
 						],
-						"line": 327,
+						"line": 330,
 						"kind": "function",
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"name": "execStatement",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"endchar": 5,
-						"endline": 332,
+						"endline": 335,
 						"comment": "\n"
 					},
 					{
@@ -265,14 +278,14 @@
 								"name": "resultFormat"
 							}
 						],
-						"line": 340,
+						"line": 343,
 						"kind": "function",
 						"originalType": "void(string sqlCommand, void delegate(immutable(Row)) answerRowProcessDg, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 10,
 						"name": "execStatementRbR",
 						"deco": "FAyaDFyS4dpq26result3RowZvEQt5value11ValueFormatZv",
 						"endchar": 5,
-						"endline": 351,
+						"endline": 354,
 						"comment": "Row-by-row version of execStatement\n\nDelegate called for each received row.\n\nMore info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html\n\n"
 					},
 					{
@@ -289,14 +302,14 @@
 								"name": "answerRowProcessDg"
 							}
 						],
-						"line": 354,
+						"line": 357,
 						"kind": "function",
 						"originalType": "void(ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)",
 						"char": 10,
 						"name": "execStatementRbR",
 						"deco": "FKxS4dpq24args11QueryParamsDFySQBb6result3RowZvZv",
 						"endchar": 5,
-						"endline": 360,
+						"endline": 363,
 						"comment": "Ditto\n"
 					},
 					{
@@ -315,14 +328,14 @@
 								"name": "oids"
 							}
 						],
-						"line": 384,
+						"line": 387,
 						"kind": "function",
 						"originalType": "void(string statementName, string sqlStatement, Oid[] oids = null)",
 						"char": 10,
 						"name": "prepareStatement",
 						"deco": "FAyaQdAkZv",
 						"endchar": 5,
-						"endline": 396,
+						"endline": 399,
 						"comment": "\n"
 					},
 					{
@@ -335,14 +348,14 @@
 								"name": "params"
 							}
 						],
-						"line": 399,
+						"line": 402,
 						"kind": "function",
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"name": "execPreparedStatement",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"endchar": 5,
-						"endline": 404,
+						"endline": 407,
 						"comment": "\n"
 					},
 					{
@@ -352,13 +365,13 @@
 								"name": "preparedStatementName"
 							}
 						],
-						"line": 407,
+						"line": 410,
 						"kind": "function",
 						"char": 23,
 						"name": "describePreparedStatement",
 						"deco": "FAyaZyC4dpq26result6Answer",
 						"endchar": 5,
-						"endline": 412,
+						"endline": 415,
 						"comment": "\n"
 					},
 					{
@@ -369,14 +382,14 @@
 								"name": "timeout"
 							}
 						],
-						"line": 423,
+						"line": 426,
 						"kind": "function",
 						"originalType": "Notify(in Duration timeout = Duration.max)",
 						"char": 12,
 						"name": "waitForNotify",
 						"deco": "FxS4core4time8DurationZC4dpq26result6Notify",
 						"endchar": 5,
-						"endline": 433,
+						"endline": 436,
 						"comment": " Non blocking method to wait for next notification.\n\n Params:\n      timeout = maximal duration to wait for the new Notify to be received\n\n Returns: New Notify or null when no other notification is available or timeout occurs.\n Throws: ConnectionException on connection failure\n"
 					}
 				],
@@ -384,7 +397,7 @@
 				"comment": " dpq2.Connection adopted for using with Vibe.d\n"
 			},
 			{
-				"line": 437,
+				"line": 440,
 				"kind": "class",
 				"char": 1,
 				"base": "dpq2.exception.Dpq2Exception",

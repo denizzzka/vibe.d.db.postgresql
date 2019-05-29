@@ -83,13 +83,16 @@ class PostgresClient
     ///
     /// Same as lockConnection but automatically maintains initiation of
     /// reestablishing of connection by calling .reset()
-    void pickConnection(void delegate(scope LockedConnection conn) dg)
+    ///
+    /// Returns: Value returned by delegate or void
+    T pickConnection(T)(T delegate(scope LockedConnection conn) dg)
     {
         logDebugV("get connection from the pool");
         scope conn = pool.lockConnection();
         scope(exit) destroy(conn);
 
-        try dg(conn);
+        try
+            return dg(conn);
         catch(ConnectionException e)
         {
             conn.reset(); // also may throw ConnectionException and this is normal behaviour
