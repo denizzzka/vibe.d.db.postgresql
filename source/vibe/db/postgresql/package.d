@@ -85,7 +85,7 @@ class PostgresClient
     /// reestablishing of connection by calling .reset()
     ///
     /// Returns: Value returned by delegate or void
-    T pickConnection(T)(T delegate(scope LockedConnection conn) dg)
+    T pickConnection(T)(scope T delegate(scope LockedConnection conn) dg)
     {
         logDebugV("get connection from the pool");
         scope conn = pool.lockConnection();
