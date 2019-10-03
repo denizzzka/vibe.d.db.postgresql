@@ -209,7 +209,7 @@ class Dpq2Connection : dpq2.Connection
         while (this.isBusy); // wait until PQgetresult won't block anymore
     }
 
-    private void doQuery(void delegate() doesQueryAndCollectsResults)
+    private void doQuery(scope void delegate() doesQueryAndCollectsResults)
     {
         // Try to get usable connection and send SQL command
         while(true)
@@ -232,7 +232,7 @@ class Dpq2Connection : dpq2.Connection
         doesQueryAndCollectsResults();
     }
 
-    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatementDg)
+    private immutable(Result) runStatementBlockingManner(scope void delegate() sendsStatementDg)
     {
         immutable(Result)[] res;
 
@@ -243,7 +243,11 @@ class Dpq2Connection : dpq2.Connection
         return res[0];
     }
 
-    private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatementDg, void delegate(immutable(Result)) processResult, bool isRowByRowMode)
+    private void runStatementBlockingMannerWithMultipleResults(
+        scope void delegate() sendsStatementDg,
+        scope void delegate(immutable(Result)) processResult,
+        bool isRowByRowMode
+    )
     {
         logDebugV(__FUNCTION__);
         immutable(Result)[] res;
@@ -362,7 +366,7 @@ class Dpq2Connection : dpq2.Connection
         );
     }
 
-    private void runStatementWithRowByRowResult(void delegate() sendsStatementDg, void delegate(immutable(Row)) answerRowProcessDg)
+    private void runStatementWithRowByRowResult(scope void delegate() sendsStatementDg, void delegate(immutable(Row)) answerRowProcessDg)
     {
         runStatementBlockingMannerWithMultipleResults(
                 sendsStatementDg,
