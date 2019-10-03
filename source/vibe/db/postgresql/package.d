@@ -346,7 +346,7 @@ class Dpq2Connection : dpq2.Connection
     ///
     void execStatementRbR(
         string sqlCommand,
-        void delegate(immutable(Row)) answerRowProcessDg,
+        scope void delegate(immutable(Row)) answerRowProcessDg,
         ValueFormat resultFormat = ValueFormat.BINARY
     )
     {
@@ -358,7 +358,7 @@ class Dpq2Connection : dpq2.Connection
     }
 
     /// Ditto
-    void execStatementRbR(in ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
+    void execStatementRbR(in ref QueryParams params, scope void delegate(immutable(Row)) answerRowProcessDg)
     {
         runStatementWithRowByRowResult(
             { sendQueryParams(params); },
@@ -366,7 +366,7 @@ class Dpq2Connection : dpq2.Connection
         );
     }
 
-    private void runStatementWithRowByRowResult(scope void delegate() sendsStatementDg, void delegate(immutable(Row)) answerRowProcessDg)
+    private void runStatementWithRowByRowResult(scope void delegate() sendsStatementDg, scope void delegate(immutable(Row)) answerRowProcessDg)
     {
         runStatementBlockingMannerWithMultipleResults(
                 sendsStatementDg,
