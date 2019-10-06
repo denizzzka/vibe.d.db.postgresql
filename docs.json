@@ -137,6 +137,9 @@
 								"parameters": [
 									{
 										"type": "T delegate(scope LockedConnection conn)",
+										"storageClass": [
+											"scope"
+										],
 										"name": "dg"
 									}
 								],
@@ -144,7 +147,7 @@
 								"kind": "function",
 								"char": 7,
 								"name": "pickConnection",
-								"type": "T(T delegate(scope LockedConnection conn) dg)",
+								"type": "T(scope T delegate(scope LockedConnection conn) dg)",
 								"endchar": 5,
 								"endline": 102
 							}
