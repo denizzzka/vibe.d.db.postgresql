@@ -142,28 +142,7 @@ $('#symbolSearchPane').show();</script>
 						</a>
 					</li>
 				</ul>
-			</nav><h2 id="0">Function as</h2><p>Returns cell value as a native string based type from text or binary formatted field.
-</p>
-			<div class="prototype">
-				<code class="lang-d">
-					<div class="single-prototype">
-			<span class="pln">T</span> <span class="pln">as</span>(T)
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">in </span><a href="../../../dpq2/value/Value.html"><span class="typ">Value</span></a> <span class="pln">v</span>
-			<br/>
-			<span class="pun">)</span><span class="pln"> </span><span class="kwd">pure @trusted</span>
-			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">: </span><span class="typ">string</span><span class="pun">)</span><span class="pun">);</span>
-					</div>
-				</code>
-			</div>
-			
-			<section><h3>Throws</h3>
-<p>AssertError if the db value is NULL and Nullable is not used to retrieve the value
-</p>
-</section>
-<h2 id="1">Function as</h2><p>Returns value as D type value from binary formatted field.
+			</nav><h2 id="0">Function as</h2><p>Returns value as D type value from binary formatted field.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -176,6 +155,27 @@ $('#symbolSearchPane').show();</script>
 			<span class="pun">)</span>
 			<br/>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pun">!</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">: </span><span class="typ">string</span><span class="pun">) &amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">== </span><span class="typ">Bson</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			
+			<section><h3>Throws</h3>
+<p>AssertError if the db value is NULL and Nullable is not used to retrieve the value
+</p>
+</section>
+<h2 id="1">Function as</h2><p>Returns cell value as a native string based type from text or binary formatted field.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">T</span> <span class="pln">as</span>(T)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">in </span><a href="../../../dpq2/value/Value.html"><span class="typ">Value</span></a> <span class="pln">v</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">pure @trusted</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">: </span><span class="typ">string</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

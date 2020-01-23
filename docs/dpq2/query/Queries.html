@@ -160,6 +160,10 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../dpq2/query/Queries.exec.html">exec</a>
 						</td>
 						<td>Perform SQL query to DB
+It uses the old wire protocol and all values are returned in textual
+form. This means that the dpq2.conv.to_d_types.as template will likely
+not work for anything but strings.
+Try to used execParams instead, even if now parameters are present.
 </td>
 					</tr>
 					<tr>

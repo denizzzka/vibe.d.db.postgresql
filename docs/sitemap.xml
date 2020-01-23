@@ -20,6 +20,7 @@
 <url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/from_d_types/toValue.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/geometric.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/geometric/binaryValueAs.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/geometric/Circle.html</loc></url>
@@ -93,6 +94,7 @@
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGtimestamp.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGtimestamptz.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGuuid.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/conv/to_d_types/PGvarbit.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/args.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/args/QueryParams.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/args/QueryParams.args.html</loc></url>

@@ -414,7 +414,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/args.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -555,7 +555,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/connection.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -1006,7 +1006,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/arrays.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/arrays.d",
 		"members": [
 			{
 				"constraint": "isArrayType!T",
@@ -1049,7 +1049,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/from_bson.d",
 		"members": [
 			{
 				"parameters": [
@@ -1079,7 +1079,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/from_d_types.d",
 		"members": [
 			{
 				"constraint": "is(T == Nullable!R, R) && !isArrayType!(typeof(v.get))",
@@ -1206,6 +1206,37 @@
 				"comment": "Convert money.currency to PG value\n\nCaution: here is no check of fractional precision while conversion!\nSee also: PostgreSQL's \"lc_monetary\" description and \"money\" package description\n"
 			},
 			{
+				"constraint": "is(Unqual!T == BitArray)",
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 75,
+				"kind": "template",
+				"char": 7,
+				"members": [
+					{
+						"parameters": [
+							{
+								"type": "T",
+								"name": "v"
+							}
+						],
+						"line": 75,
+						"kind": "function",
+						"char": 7,
+						"name": "toValue",
+						"type": "@trusted Value(T v)",
+						"endchar": 1,
+						"endline": 99
+					}
+				],
+				"name": "toValue",
+				"comment": "Convert std.bitmanip.BitArray to PG value\n"
+			},
+			{
 				"constraint": "is(T : string)",
 				"parameters": [
 					{
@@ -1213,7 +1244,7 @@
 						"name": "T"
 					}
 				],
-				"line": 79,
+				"line": 153,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1229,13 +1260,13 @@
 								"name": "valueFormat"
 							}
 						],
-						"line": 79,
+						"line": 153,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "@trusted Value(T v, ValueFormat valueFormat = ValueFormat.BINARY)",
 						"endchar": 1,
-						"endline": 90
+						"endline": 164
 					}
 				],
 				"name": "toValue",
@@ -1249,7 +1280,7 @@
 						"name": "T"
 					}
 				],
-				"line": 93,
+				"line": 167,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1260,13 +1291,13 @@
 								"name": "v"
 							}
 						],
-						"line": 93,
+						"line": 167,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 97
+						"endline": 171
 					}
 				],
 				"name": "toValue",
@@ -1281,7 +1312,7 @@
 						"name": "T"
 					}
 				],
-				"line": 100,
+				"line": 174,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1292,13 +1323,13 @@
 								"name": "v"
 							}
 						],
-						"line": 100,
+						"line": 174,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "@trusted Value(T v)",
 						"endchar": 1,
-						"endline": 106
+						"endline": 180
 					}
 				],
 				"name": "toValue",
@@ -1312,7 +1343,7 @@
 						"name": "T"
 					}
 				],
-				"line": 109,
+				"line": 183,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1323,13 +1354,13 @@
 								"name": "v"
 							}
 						],
-						"line": 109,
+						"line": 183,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 130
+						"endline": 204
 					}
 				],
 				"name": "toValue",
@@ -1343,7 +1374,7 @@
 						"name": "T"
 					}
 				],
-				"line": 133,
+				"line": 207,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1354,131 +1385,7 @@
 								"name": "v"
 							}
 						],
-						"line": 133,
-						"kind": "function",
-						"char": 7,
-						"name": "toValue",
-						"type": "Value(T v)",
-						"endchar": 1,
-						"endline": 139
-					}
-				],
-				"name": "toValue",
-				"comment": "Constructs Value from TimeOfDay\n"
-			},
-			{
-				"constraint": "is(Unqual!T == TimeStamp) || is(Unqual!T == TimeStampUTC)",
-				"parameters": [
-					{
-						"kind": "type",
-						"name": "T"
-					}
-				],
-				"line": 142,
-				"kind": "template",
-				"char": 7,
-				"members": [
-					{
-						"parameters": [
-							{
-								"type": "T",
-								"name": "v"
-							}
-						],
-						"line": 142,
-						"kind": "function",
-						"char": 7,
-						"name": "toValue",
-						"type": "Value(T v)",
-						"endchar": 1,
-						"endline": 163
-					}
-				],
-				"name": "toValue",
-				"comment": "Constructs Value from TimeStamp or from TimeStampUTC\n"
-			},
-			{
-				"constraint": "is(Unqual!T == DateTime)",
-				"parameters": [
-					{
-						"kind": "type",
-						"name": "T"
-					}
-				],
-				"line": 188,
-				"kind": "template",
-				"char": 7,
-				"members": [
-					{
-						"parameters": [
-							{
-								"type": "T",
-								"name": "v"
-							}
-						],
-						"line": 188,
-						"kind": "function",
-						"char": 7,
-						"name": "toValue",
-						"type": "Value(T v)",
-						"endchar": 1,
-						"endline": 192
-					}
-				],
-				"name": "toValue",
-				"comment": "    Constructs Value from DateTime\n    It uses Timestamp without TZ as a resulting PG type\n"
-			},
-			{
-				"constraint": "is(Unqual!T == SysTime)",
-				"parameters": [
-					{
-						"kind": "type",
-						"name": "T"
-					}
-				],
-				"line": 200,
-				"kind": "template",
-				"char": 7,
-				"members": [
-					{
-						"parameters": [
-							{
-								"type": "T",
-								"name": "v"
-							}
-						],
-						"line": 200,
-						"kind": "function",
-						"char": 7,
-						"name": "toValue",
-						"type": "Value(T v)",
-						"endchar": 1,
-						"endline": 206
-					}
-				],
-				"name": "toValue",
-				"comment": "    Constructs Value from SysTime\n    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.\n    It means that PG value will have 10 times lower precision.\n    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.\n"
-			},
-			{
-				"constraint": "is(Unqual!T == UUID)",
-				"parameters": [
-					{
-						"kind": "type",
-						"name": "T"
-					}
-				],
-				"line": 209,
-				"kind": "template",
-				"char": 7,
-				"members": [
-					{
-						"parameters": [
-							{
-								"type": "T",
-								"name": "v"
-							}
-						],
-						"line": 209,
+						"line": 207,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
@@ -1488,10 +1395,10 @@
 					}
 				],
 				"name": "toValue",
-				"comment": "Constructs Value from UUID\n"
+				"comment": "Constructs Value from TimeOfDay\n"
 			},
 			{
-				"constraint": "is(Unqual!T == Json)",
+				"constraint": "is(Unqual!T == TimeStamp) || is(Unqual!T == TimeStampUTC)",
 				"parameters": [
 					{
 						"kind": "type",
@@ -1515,7 +1422,131 @@
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 223
+						"endline": 237
+					}
+				],
+				"name": "toValue",
+				"comment": "Constructs Value from TimeStamp or from TimeStampUTC\n"
+			},
+			{
+				"constraint": "is(Unqual!T == DateTime)",
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 262,
+				"kind": "template",
+				"char": 7,
+				"members": [
+					{
+						"parameters": [
+							{
+								"type": "T",
+								"name": "v"
+							}
+						],
+						"line": 262,
+						"kind": "function",
+						"char": 7,
+						"name": "toValue",
+						"type": "Value(T v)",
+						"endchar": 1,
+						"endline": 266
+					}
+				],
+				"name": "toValue",
+				"comment": "    Constructs Value from DateTime\n    It uses Timestamp without TZ as a resulting PG type\n"
+			},
+			{
+				"constraint": "is(Unqual!T == SysTime)",
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 274,
+				"kind": "template",
+				"char": 7,
+				"members": [
+					{
+						"parameters": [
+							{
+								"type": "T",
+								"name": "v"
+							}
+						],
+						"line": 274,
+						"kind": "function",
+						"char": 7,
+						"name": "toValue",
+						"type": "Value(T v)",
+						"endchar": 1,
+						"endline": 280
+					}
+				],
+				"name": "toValue",
+				"comment": "    Constructs Value from SysTime\n    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.\n    It means that PG value will have 10 times lower precision.\n    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.\n"
+			},
+			{
+				"constraint": "is(Unqual!T == UUID)",
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 283,
+				"kind": "template",
+				"char": 7,
+				"members": [
+					{
+						"parameters": [
+							{
+								"type": "T",
+								"name": "v"
+							}
+						],
+						"line": 283,
+						"kind": "function",
+						"char": 7,
+						"name": "toValue",
+						"type": "Value(T v)",
+						"endchar": 1,
+						"endline": 287
+					}
+				],
+				"name": "toValue",
+				"comment": "Constructs Value from UUID\n"
+			},
+			{
+				"constraint": "is(Unqual!T == Json)",
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 290,
+				"kind": "template",
+				"char": 7,
+				"members": [
+					{
+						"parameters": [
+							{
+								"type": "T",
+								"name": "v"
+							}
+						],
+						"line": 290,
+						"kind": "function",
+						"char": 7,
+						"name": "toValue",
+						"type": "Value(T v)",
+						"endchar": 1,
+						"endline": 297
 					}
 				],
 				"name": "toValue",
@@ -1527,7 +1558,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/geometric.d",
 		"members": [
 			{
 				"parameters": [
@@ -1790,14 +1821,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/jsonb.d",
 		"members": [],
 		"comment": "\n",
 		"name": "dpq2.conv.jsonb"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/time.d",
 		"members": [
 			{
 				"constraint": "is(T == SysTime)",
@@ -2377,7 +2408,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/to_bson.d",
 		"members": [
 			{
 				"constraint": "is(T == Bson)",
@@ -2419,7 +2450,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/to_d_types.d",
 		"members": [
 			{
 				"kind": "alias",
@@ -2550,6 +2581,14 @@
 				"name": "PGline"
 			},
 			{
+				"kind": "alias",
+				"line": 45,
+				"char": 1,
+				"deco": "S3std8bitmanip8BitArray",
+				"comment": "BitArray\n",
+				"name": "PGvarbit"
+			},
+			{
 				"constraint": "is(T : string)",
 				"parameters": [
 					{
@@ -2557,7 +2596,7 @@
 						"name": "T"
 					}
 				],
-				"line": 54,
+				"line": 55,
 				"kind": "template",
 				"char": 3,
 				"members": [
@@ -2571,13 +2610,13 @@
 								"name": "v"
 							}
 						],
-						"line": 54,
+						"line": 55,
 						"kind": "function",
 						"char": 3,
 						"name": "as",
 						"type": "pure @trusted T(in Value v)",
 						"endchar": 1,
-						"endline": 92
+						"endline": 93
 					}
 				],
 				"name": "as",
@@ -2591,7 +2630,7 @@
 						"name": "T"
 					}
 				],
-				"line": 109,
+				"line": 110,
 				"kind": "template",
 				"char": 3,
 				"members": [
@@ -2605,13 +2644,13 @@
 								"name": "v"
 							}
 						],
-						"line": 109,
+						"line": 110,
 						"kind": "function",
 						"char": 3,
 						"name": "as",
 						"type": "T(in Value v)",
 						"endchar": 1,
-						"endline": 125
+						"endline": 126
 					}
 				],
 				"name": "as",
@@ -2623,7 +2662,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/exception.d",
 		"members": [
 			{
 				"line": 5,
@@ -2640,7 +2679,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/oids.d",
 		"members": [
 			{
 				"parameters": [
@@ -2706,13 +2745,13 @@
 				"comment": "Checks if Oid type can be mapped to native D float\n"
 			},
 			{
-				"line": 203,
+				"line": 205,
 				"kind": "enum",
 				"char": 8,
 				"members": [
 					{
 						"kind": "enum member",
-						"line": 205,
+						"line": 207,
 						"char": 5,
 						"value": "0u",
 						"comment": "\n",
@@ -2720,7 +2759,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 207,
+						"line": 209,
 						"char": 5,
 						"value": "16u",
 						"comment": "\n",
@@ -2728,7 +2767,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 208,
+						"line": 210,
 						"char": 5,
 						"value": "17u",
 						"comment": "\n",
@@ -2736,7 +2775,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 209,
+						"line": 211,
 						"char": 5,
 						"value": "18u",
 						"comment": "\n",
@@ -2744,7 +2783,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 210,
+						"line": 212,
 						"char": 5,
 						"value": "19u",
 						"comment": "\n",
@@ -2752,7 +2791,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 211,
+						"line": 213,
 						"char": 5,
 						"value": "20u",
 						"comment": "\n",
@@ -2760,7 +2799,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 212,
+						"line": 214,
 						"char": 5,
 						"value": "21u",
 						"comment": "\n",
@@ -2768,7 +2807,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 213,
+						"line": 215,
 						"char": 5,
 						"value": "22u",
 						"comment": "\n",
@@ -2776,7 +2815,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 214,
+						"line": 216,
 						"char": 5,
 						"value": "23u",
 						"comment": "\n",
@@ -2784,7 +2823,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 215,
+						"line": 217,
 						"char": 5,
 						"value": "24u",
 						"comment": "\n",
@@ -2792,7 +2831,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 216,
+						"line": 218,
 						"char": 5,
 						"value": "25u",
 						"comment": "\n",
@@ -2800,7 +2839,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 217,
+						"line": 219,
 						"char": 5,
 						"value": "26u",
 						"comment": "\n",
@@ -2808,7 +2847,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 218,
+						"line": 220,
 						"char": 5,
 						"value": "27u",
 						"comment": "\n",
@@ -2816,7 +2855,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 219,
+						"line": 221,
 						"char": 5,
 						"value": "28u",
 						"comment": "\n",
@@ -2824,7 +2863,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 220,
+						"line": 222,
 						"char": 5,
 						"value": "29u",
 						"comment": "\n",
@@ -2832,7 +2871,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 221,
+						"line": 223,
 						"char": 5,
 						"value": "30u",
 						"comment": "\n",
@@ -2840,7 +2879,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 223,
+						"line": 225,
 						"char": 5,
 						"value": "1033u",
 						"comment": "\n",
@@ -2848,7 +2887,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 224,
+						"line": 226,
 						"char": 5,
 						"value": "71u",
 						"comment": "\n",
@@ -2856,7 +2895,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 225,
+						"line": 227,
 						"char": 5,
 						"value": "75u",
 						"comment": "\n",
@@ -2864,7 +2903,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 226,
+						"line": 228,
 						"char": 5,
 						"value": "81u",
 						"comment": "\n",
@@ -2872,7 +2911,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 227,
+						"line": 229,
 						"char": 5,
 						"value": "83u",
 						"comment": "\n",
@@ -2880,7 +2919,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 229,
+						"line": 231,
 						"char": 5,
 						"value": "114u",
 						"comment": "\n",
@@ -2888,7 +2927,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 230,
+						"line": 232,
 						"char": 5,
 						"value": "3802u",
 						"comment": "\n",
@@ -2896,7 +2935,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 231,
+						"line": 233,
 						"char": 5,
 						"value": "142u",
 						"comment": "\n",
@@ -2904,7 +2943,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 232,
+						"line": 234,
 						"char": 5,
 						"value": "194u",
 						"comment": "\n",
@@ -2912,7 +2951,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 233,
+						"line": 235,
 						"char": 5,
 						"value": "210u",
 						"comment": "\n",
@@ -2920,7 +2959,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 235,
+						"line": 237,
 						"char": 5,
 						"value": "600u",
 						"comment": "\n",
@@ -2928,7 +2967,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 236,
+						"line": 238,
 						"char": 5,
 						"value": "601u",
 						"comment": "\n",
@@ -2936,7 +2975,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 237,
+						"line": 239,
 						"char": 5,
 						"value": "602u",
 						"comment": "\n",
@@ -2944,7 +2983,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 238,
+						"line": 240,
 						"char": 5,
 						"value": "603u",
 						"comment": "\n",
@@ -2952,7 +2991,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 239,
+						"line": 241,
 						"char": 5,
 						"value": "604u",
 						"comment": "\n",
@@ -2960,7 +2999,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 240,
+						"line": 242,
 						"char": 5,
 						"value": "628u",
 						"comment": "\n",
@@ -2968,7 +3007,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 242,
+						"line": 244,
 						"char": 5,
 						"value": "700u",
 						"comment": "\n",
@@ -2976,7 +3015,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 243,
+						"line": 245,
 						"char": 5,
 						"value": "701u",
 						"comment": "\n",
@@ -2984,7 +3023,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 244,
+						"line": 246,
 						"char": 5,
 						"value": "702u",
 						"comment": "\n",
@@ -2992,7 +3031,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 245,
+						"line": 247,
 						"char": 5,
 						"value": "703u",
 						"comment": "\n",
@@ -3000,7 +3039,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 246,
+						"line": 248,
 						"char": 5,
 						"value": "704u",
 						"comment": "\n",
@@ -3008,7 +3047,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 247,
+						"line": 249,
 						"char": 5,
 						"value": "705u",
 						"comment": "\n",
@@ -3016,7 +3055,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 249,
+						"line": 251,
 						"char": 5,
 						"value": "718u",
 						"comment": "\n",
@@ -3024,7 +3063,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 250,
+						"line": 252,
 						"char": 5,
 						"value": "790u",
 						"comment": "\n",
@@ -3032,7 +3071,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 251,
+						"line": 253,
 						"char": 5,
 						"value": "829u",
 						"comment": "\n",
@@ -3040,7 +3079,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 252,
+						"line": 254,
 						"char": 5,
 						"value": "869u",
 						"comment": "\n",
@@ -3048,7 +3087,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 253,
+						"line": 255,
 						"char": 5,
 						"value": "650u",
 						"comment": "\n",
@@ -3056,7 +3095,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 255,
+						"line": 257,
 						"char": 5,
 						"value": "1042u",
 						"comment": "\n",
@@ -3064,7 +3103,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 256,
+						"line": 258,
 						"char": 5,
 						"value": "1043u",
 						"comment": "\n",
@@ -3072,7 +3111,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 258,
+						"line": 260,
 						"char": 5,
 						"value": "1082u",
 						"comment": "\n",
@@ -3080,7 +3119,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 259,
+						"line": 261,
 						"char": 5,
 						"value": "1083u",
 						"comment": "\n",
@@ -3088,7 +3127,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 260,
+						"line": 262,
 						"char": 5,
 						"value": "1114u",
 						"comment": "\n",
@@ -3096,7 +3135,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 261,
+						"line": 263,
 						"char": 5,
 						"value": "1184u",
 						"comment": "\n",
@@ -3104,7 +3143,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 262,
+						"line": 264,
 						"char": 5,
 						"value": "1186u",
 						"comment": "\n",
@@ -3112,7 +3151,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 263,
+						"line": 265,
 						"char": 5,
 						"value": "1266u",
 						"comment": "\n",
@@ -3120,7 +3159,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 265,
+						"line": 267,
 						"char": 5,
 						"value": "1560u",
 						"comment": "\n",
@@ -3128,7 +3167,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 266,
+						"line": 268,
 						"char": 5,
 						"value": "1562u",
 						"comment": "\n",
@@ -3136,7 +3175,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 268,
+						"line": 270,
 						"char": 5,
 						"value": "1700u",
 						"comment": "\n",
@@ -3144,7 +3183,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 269,
+						"line": 271,
 						"char": 5,
 						"value": "1790u",
 						"comment": "\n",
@@ -3152,7 +3191,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 270,
+						"line": 272,
 						"char": 5,
 						"value": "2202u",
 						"comment": "\n",
@@ -3160,7 +3199,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 271,
+						"line": 273,
 						"char": 5,
 						"value": "2203u",
 						"comment": "\n",
@@ -3168,7 +3207,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 272,
+						"line": 274,
 						"char": 5,
 						"value": "2204u",
 						"comment": "\n",
@@ -3176,7 +3215,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 273,
+						"line": 275,
 						"char": 5,
 						"value": "2205u",
 						"comment": "\n",
@@ -3184,7 +3223,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 274,
+						"line": 276,
 						"char": 5,
 						"value": "2206u",
 						"comment": "\n",
@@ -3192,7 +3231,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 276,
+						"line": 278,
 						"char": 5,
 						"value": "2950u",
 						"comment": "\n",
@@ -3200,7 +3239,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 277,
+						"line": 279,
 						"char": 5,
 						"value": "3614u",
 						"comment": "\n",
@@ -3208,7 +3247,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 278,
+						"line": 280,
 						"char": 5,
 						"value": "3642u",
 						"comment": "\n",
@@ -3216,7 +3255,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 279,
+						"line": 281,
 						"char": 5,
 						"value": "3615u",
 						"comment": "\n",
@@ -3224,7 +3263,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 280,
+						"line": 282,
 						"char": 5,
 						"value": "3734u",
 						"comment": "\n",
@@ -3232,7 +3271,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 281,
+						"line": 283,
 						"char": 5,
 						"value": "3769u",
 						"comment": "\n",
@@ -3240,7 +3279,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 282,
+						"line": 284,
 						"char": 5,
 						"value": "2970u",
 						"comment": "\n",
@@ -3248,7 +3287,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 284,
+						"line": 286,
 						"char": 5,
 						"value": "3904u",
 						"comment": "\n",
@@ -3256,7 +3295,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 285,
+						"line": 287,
 						"char": 5,
 						"value": "3906u",
 						"comment": "\n",
@@ -3264,7 +3303,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 286,
+						"line": 288,
 						"char": 5,
 						"value": "3908u",
 						"comment": "\n",
@@ -3272,7 +3311,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 287,
+						"line": 289,
 						"char": 5,
 						"value": "3910u",
 						"comment": "\n",
@@ -3280,7 +3319,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 288,
+						"line": 290,
 						"char": 5,
 						"value": "3912u",
 						"comment": "\n",
@@ -3288,7 +3327,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 289,
+						"line": 291,
 						"char": 5,
 						"value": "3926u",
 						"comment": "\n",
@@ -3296,7 +3335,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 292,
+						"line": 294,
 						"char": 5,
 						"value": "143u",
 						"comment": "\n",
@@ -3304,7 +3343,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 293,
+						"line": 295,
 						"char": 5,
 						"value": "3807u",
 						"comment": "\n",
@@ -3312,7 +3351,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 294,
+						"line": 296,
 						"char": 5,
 						"value": "199u",
 						"comment": "\n",
@@ -3320,7 +3359,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 295,
+						"line": 297,
 						"char": 5,
 						"value": "1000u",
 						"comment": "\n",
@@ -3328,7 +3367,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 296,
+						"line": 298,
 						"char": 5,
 						"value": "1001u",
 						"comment": "\n",
@@ -3336,7 +3375,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 297,
+						"line": 299,
 						"char": 5,
 						"value": "1002u",
 						"comment": "\n",
@@ -3344,7 +3383,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 298,
+						"line": 300,
 						"char": 5,
 						"value": "1003u",
 						"comment": "\n",
@@ -3352,7 +3391,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 299,
+						"line": 301,
 						"char": 5,
 						"value": "1005u",
 						"comment": "\n",
@@ -3360,7 +3399,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 300,
+						"line": 302,
 						"char": 5,
 						"value": "1006u",
 						"comment": "\n",
@@ -3368,7 +3407,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 301,
+						"line": 303,
 						"char": 5,
 						"value": "1007u",
 						"comment": "\n",
@@ -3376,7 +3415,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 302,
+						"line": 304,
 						"char": 5,
 						"value": "1008u",
 						"comment": "\n",
@@ -3384,7 +3423,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 303,
+						"line": 305,
 						"char": 5,
 						"value": "1009u",
 						"comment": "\n",
@@ -3392,7 +3431,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 304,
+						"line": 306,
 						"char": 5,
 						"value": "1028u",
 						"comment": "\n",
@@ -3400,7 +3439,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 305,
+						"line": 307,
 						"char": 5,
 						"value": "1010u",
 						"comment": "\n",
@@ -3408,7 +3447,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 306,
+						"line": 308,
 						"char": 5,
 						"value": "1011u",
 						"comment": "\n",
@@ -3416,7 +3455,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 307,
+						"line": 309,
 						"char": 5,
 						"value": "1012u",
 						"comment": "\n",
@@ -3424,7 +3463,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 308,
+						"line": 310,
 						"char": 5,
 						"value": "1013u",
 						"comment": "\n",
@@ -3432,7 +3471,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 309,
+						"line": 311,
 						"char": 5,
 						"value": "1014u",
 						"comment": "\n",
@@ -3440,7 +3479,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 310,
+						"line": 312,
 						"char": 5,
 						"value": "1015u",
 						"comment": "\n",
@@ -3448,7 +3487,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 311,
+						"line": 313,
 						"char": 5,
 						"value": "1016u",
 						"comment": "\n",
@@ -3456,7 +3495,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 312,
+						"line": 314,
 						"char": 5,
 						"value": "1017u",
 						"comment": "\n",
@@ -3464,7 +3503,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 313,
+						"line": 315,
 						"char": 5,
 						"value": "1018u",
 						"comment": "\n",
@@ -3472,7 +3511,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 314,
+						"line": 316,
 						"char": 5,
 						"value": "1019u",
 						"comment": "\n",
@@ -3480,7 +3519,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 315,
+						"line": 317,
 						"char": 5,
 						"value": "1020u",
 						"comment": "\n",
@@ -3488,7 +3527,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 316,
+						"line": 318,
 						"char": 5,
 						"value": "1021u",
 						"comment": "\n",
@@ -3496,7 +3535,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 317,
+						"line": 319,
 						"char": 5,
 						"value": "1022u",
 						"comment": "\n",
@@ -3504,7 +3543,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 318,
+						"line": 320,
 						"char": 5,
 						"value": "1023u",
 						"comment": "\n",
@@ -3512,7 +3551,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 319,
+						"line": 321,
 						"char": 5,
 						"value": "1024u",
 						"comment": "\n",
@@ -3520,7 +3559,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 320,
+						"line": 322,
 						"char": 5,
 						"value": "1025u",
 						"comment": "\n",
@@ -3528,7 +3567,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 321,
+						"line": 323,
 						"char": 5,
 						"value": "1027u",
 						"comment": "\n",
@@ -3536,7 +3575,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 322,
+						"line": 324,
 						"char": 5,
 						"value": "1034u",
 						"comment": "\n",
@@ -3544,7 +3583,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 323,
+						"line": 325,
 						"char": 5,
 						"value": "1040u",
 						"comment": "\n",
@@ -3552,7 +3591,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 324,
+						"line": 326,
 						"char": 5,
 						"value": "1041u",
 						"comment": "\n",
@@ -3560,7 +3599,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 325,
+						"line": 327,
 						"char": 5,
 						"value": "651u",
 						"comment": "\n",
@@ -3568,7 +3607,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 326,
+						"line": 328,
 						"char": 5,
 						"value": "1263u",
 						"comment": "\n",
@@ -3576,7 +3615,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 327,
+						"line": 329,
 						"char": 5,
 						"value": "1115u",
 						"comment": "\n",
@@ -3584,7 +3623,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 328,
+						"line": 330,
 						"char": 5,
 						"value": "1182u",
 						"comment": "\n",
@@ -3592,7 +3631,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 329,
+						"line": 331,
 						"char": 5,
 						"value": "1183u",
 						"comment": "\n",
@@ -3600,7 +3639,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 330,
+						"line": 332,
 						"char": 5,
 						"value": "1185u",
 						"comment": "\n",
@@ -3608,7 +3647,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 331,
+						"line": 333,
 						"char": 5,
 						"value": "1187u",
 						"comment": "\n",
@@ -3616,7 +3655,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 332,
+						"line": 334,
 						"char": 5,
 						"value": "1231u",
 						"comment": "\n",
@@ -3624,7 +3663,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 333,
+						"line": 335,
 						"char": 5,
 						"value": "1270u",
 						"comment": "\n",
@@ -3632,7 +3671,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 334,
+						"line": 336,
 						"char": 5,
 						"value": "1561u",
 						"comment": "\n",
@@ -3640,7 +3679,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 335,
+						"line": 337,
 						"char": 5,
 						"value": "1563u",
 						"comment": "\n",
@@ -3648,7 +3687,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 336,
+						"line": 338,
 						"char": 5,
 						"value": "2201u",
 						"comment": "\n",
@@ -3656,7 +3695,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 337,
+						"line": 339,
 						"char": 5,
 						"value": "2207u",
 						"comment": "\n",
@@ -3664,7 +3703,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 338,
+						"line": 340,
 						"char": 5,
 						"value": "2208u",
 						"comment": "\n",
@@ -3672,7 +3711,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 339,
+						"line": 341,
 						"char": 5,
 						"value": "2209u",
 						"comment": "\n",
@@ -3680,7 +3719,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 340,
+						"line": 342,
 						"char": 5,
 						"value": "2210u",
 						"comment": "\n",
@@ -3688,7 +3727,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 341,
+						"line": 343,
 						"char": 5,
 						"value": "2211u",
 						"comment": "\n",
@@ -3696,7 +3735,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 342,
+						"line": 344,
 						"char": 5,
 						"value": "2951u",
 						"comment": "\n",
@@ -3704,7 +3743,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 343,
+						"line": 345,
 						"char": 5,
 						"value": "3643u",
 						"comment": "\n",
@@ -3712,7 +3751,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 344,
+						"line": 346,
 						"char": 5,
 						"value": "3644u",
 						"comment": "\n",
@@ -3720,7 +3759,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 345,
+						"line": 347,
 						"char": 5,
 						"value": "3645u",
 						"comment": "\n",
@@ -3728,7 +3767,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 346,
+						"line": 348,
 						"char": 5,
 						"value": "3735u",
 						"comment": "\n",
@@ -3736,7 +3775,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 347,
+						"line": 349,
 						"char": 5,
 						"value": "3770u",
 						"comment": "\n",
@@ -3744,7 +3783,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 348,
+						"line": 350,
 						"char": 5,
 						"value": "2949u",
 						"comment": "\n",
@@ -3752,7 +3791,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 349,
+						"line": 351,
 						"char": 5,
 						"value": "3905u",
 						"comment": "\n",
@@ -3760,7 +3799,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 350,
+						"line": 352,
 						"char": 5,
 						"value": "3907u",
 						"comment": "\n",
@@ -3768,7 +3807,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 351,
+						"line": 353,
 						"char": 5,
 						"value": "3909u",
 						"comment": "\n",
@@ -3776,7 +3815,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 352,
+						"line": 354,
 						"char": 5,
 						"value": "3911u",
 						"comment": "\n",
@@ -3784,7 +3823,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 353,
+						"line": 355,
 						"char": 5,
 						"value": "3913u",
 						"comment": "\n",
@@ -3792,7 +3831,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 354,
+						"line": 356,
 						"char": 5,
 						"value": "3927u",
 						"comment": "\n",
@@ -3800,7 +3839,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 357,
+						"line": 359,
 						"char": 5,
 						"value": "2249u",
 						"comment": "\n",
@@ -3808,7 +3847,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 358,
+						"line": 360,
 						"char": 5,
 						"value": "2287u",
 						"comment": "\n",
@@ -3816,7 +3855,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 359,
+						"line": 361,
 						"char": 5,
 						"value": "2275u",
 						"comment": "\n",
@@ -3824,7 +3863,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 360,
+						"line": 362,
 						"char": 5,
 						"value": "2276u",
 						"comment": "\n",
@@ -3832,7 +3871,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 361,
+						"line": 363,
 						"char": 5,
 						"value": "2277u",
 						"comment": "\n",
@@ -3840,7 +3879,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 362,
+						"line": 364,
 						"char": 5,
 						"value": "2278u",
 						"comment": "\n",
@@ -3848,7 +3887,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 363,
+						"line": 365,
 						"char": 5,
 						"value": "2279u",
 						"comment": "\n",
@@ -3856,7 +3895,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 364,
+						"line": 366,
 						"char": 5,
 						"value": "3838u",
 						"comment": "\n",
@@ -3864,7 +3903,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 365,
+						"line": 367,
 						"char": 5,
 						"value": "2280u",
 						"comment": "\n",
@@ -3872,7 +3911,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 366,
+						"line": 368,
 						"char": 5,
 						"value": "2281u",
 						"comment": "\n",
@@ -3880,7 +3919,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 367,
+						"line": 369,
 						"char": 5,
 						"value": "2282u",
 						"comment": "\n",
@@ -3888,7 +3927,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 368,
+						"line": 370,
 						"char": 5,
 						"value": "2283u",
 						"comment": "\n",
@@ -3896,7 +3935,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 369,
+						"line": 371,
 						"char": 5,
 						"value": "2776u",
 						"comment": "\n",
@@ -3904,7 +3943,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 370,
+						"line": 372,
 						"char": 5,
 						"value": "3500u",
 						"comment": "\n",
@@ -3912,7 +3951,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 371,
+						"line": 373,
 						"char": 5,
 						"value": "3115u",
 						"comment": "\n",
@@ -3920,7 +3959,7 @@
 					},
 					{
 						"kind": "enum member",
-						"line": 372,
+						"line": 374,
 						"char": 5,
 						"value": "3831u",
 						"comment": "\n",
@@ -3937,14 +3976,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/package.d",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"name": "dpq2"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/query.d",
 		"members": [
 			{
 				"parameters": [],
@@ -3959,14 +3998,14 @@
 								"name": "SQLcmd"
 							}
 						],
-						"line": 20,
+						"line": 24,
 						"kind": "function",
 						"char": 24,
 						"name": "exec",
 						"type": "immutable(Answer)(string SQLcmd)",
 						"endchar": 5,
-						"endline": 28,
-						"comment": "Perform SQL query to DB\n"
+						"endline": 32,
+						"comment": "Perform SQL query to DB\nIt uses the old wire protocol and all values are returned in textual\nform. This means that the dpq2.conv.to_d_types.as template will likely\nnot work for anything but strings.\nTry to used execParams instead, even if now parameters are present.\n"
 					},
 					{
 						"parameters": [
@@ -3979,13 +4018,13 @@
 								"name": "qp"
 							}
 						],
-						"line": 31,
+						"line": 35,
 						"kind": "function",
 						"char": 24,
 						"name": "execParams",
 						"type": "immutable(Answer)(ref QueryParams qp)",
 						"endchar": 5,
-						"endline": 49,
+						"endline": 53,
 						"comment": "Perform SQL query to DB\n"
 					},
 					{
@@ -3995,13 +4034,13 @@
 								"name": "SQLcmd"
 							}
 						],
-						"line": 52,
+						"line": 56,
 						"kind": "function",
 						"char": 10,
 						"name": "sendQuery",
 						"type": "void(string SQLcmd)",
 						"endchar": 5,
-						"endline": 56,
+						"endline": 60,
 						"comment": "Submits a command to the server without waiting for the result(s)\n"
 					},
 					{
@@ -4015,13 +4054,13 @@
 								"name": "qp"
 							}
 						],
-						"line": 59,
+						"line": 63,
 						"kind": "function",
 						"char": 10,
 						"name": "sendQueryParams",
 						"type": "void(ref QueryParams qp)",
 						"endchar": 5,
-						"endline": 74,
+						"endline": 78,
 						"comment": "Submits a command and separate parameters to the server without waiting for the result(s)\n"
 					},
 					{
@@ -4035,23 +4074,23 @@
 								"name": "qp"
 							}
 						],
-						"line": 77,
+						"line": 81,
 						"kind": "function",
 						"char": 10,
 						"name": "sendQueryPrepared",
 						"type": "void(ref QueryParams qp)",
 						"endchar": 5,
-						"endline": 91,
+						"endline": 95,
 						"comment": "Sends a request to execute a prepared statement with given parameters, without waiting for the result(s)\n"
 					},
 					{
-						"line": 94,
+						"line": 98,
 						"kind": "function",
 						"char": 12,
 						"name": "getNextNotify",
 						"type": "Notify()",
 						"endchar": 5,
-						"endline": 99,
+						"endline": 103,
 						"comment": "Returns null if no notifies was received\n"
 					},
 					{
@@ -4073,13 +4112,13 @@
 								"name": "oids"
 							}
 						],
-						"line": 103,
+						"line": 107,
 						"kind": "function",
 						"char": 23,
 						"name": "prepare",
 						"type": "immutable(Result)(string statementName, string sqlStatement, in Oid[] oids = null)",
 						"endchar": 5,
-						"endline": 117,
+						"endline": 121,
 						"comment": "Submits a request to create a prepared statement with the given parameters, and waits for completion.\nReturns: Result of query preparing\n"
 					},
 					{
@@ -4101,13 +4140,13 @@
 								"name": "oids"
 							}
 						],
-						"line": 122,
+						"line": 126,
 						"kind": "function",
 						"char": 10,
 						"name": "prepareEx",
 						"type": "void(string statementName, string sqlStatement, in Oid[] oids = null)",
 						"endchar": 5,
-						"endline": 128,
+						"endline": 132,
 						"comment": "Submits a request to create a prepared statement with the given parameters, and waits for completion.\n\nThrows an exception if preparing failed.\n"
 					},
 					{
@@ -4121,13 +4160,13 @@
 								"name": "qp"
 							}
 						],
-						"line": 131,
+						"line": 135,
 						"kind": "function",
 						"char": 23,
 						"name": "execPrepared",
 						"type": "immutable(Answer)(ref QueryParams qp)",
 						"endchar": 5,
-						"endline": 148,
+						"endline": 152,
 						"comment": "Submits a request to execute a prepared statement with given parameters, and waits for completion.\n"
 					},
 					{
@@ -4149,13 +4188,13 @@
 								"name": "oids"
 							}
 						],
-						"line": 151,
+						"line": 155,
 						"kind": "function",
 						"char": 10,
 						"name": "sendPrepare",
 						"type": "void(string statementName, string sqlStatement, in Oid[] oids = null)",
 						"endchar": 5,
-						"endline": 162,
+						"endline": 166,
 						"comment": "Sends a request to create a prepared statement with the given parameters, without waiting for completion.\n"
 					},
 					{
@@ -4165,13 +4204,13 @@
 								"name": "statementName"
 							}
 						],
-						"line": 165,
+						"line": 169,
 						"kind": "function",
 						"char": 23,
 						"name": "describePrepared",
 						"type": "immutable(Answer)(string statementName)",
 						"endchar": 5,
-						"endline": 173,
+						"endline": 177,
 						"comment": "Submits a request to obtain information about the specified prepared statement, and waits for completion.\n"
 					},
 					{
@@ -4181,13 +4220,13 @@
 								"name": "statementName"
 							}
 						],
-						"line": 176,
+						"line": 180,
 						"kind": "function",
 						"char": 10,
 						"name": "sendDescribePrepared",
 						"type": "void(string statementName)",
 						"endchar": 5,
-						"endline": 181,
+						"endline": 185,
 						"comment": "Submits a request to obtain information about the specified prepared statement, without waiting for completion.\n"
 					},
 					{
@@ -4197,33 +4236,33 @@
 								"name": "data"
 							}
 						],
-						"line": 186,
+						"line": 190,
 						"kind": "function",
 						"char": 10,
 						"name": "putCopyData",
 						"type": "bool(string data)",
 						"endchar": 5,
-						"endline": 193,
+						"endline": 197,
 						"comment": "Sends a buffer of CSV data to the COPY command\n\nReturns: true if the data was queued, false if it was not queued because of full buffers (this will only happen in nonblocking mode)\n"
 					},
 					{
-						"line": 196,
+						"line": 200,
 						"kind": "function",
 						"char": 23,
 						"name": "putCopyEnd",
 						"type": "immutable(Answer)()",
 						"endchar": 5,
-						"endline": 212,
+						"endline": 216,
 						"comment": "Signals that COPY data send is finished. Finalize and flush the COPY command.\n"
 					},
 					{
-						"line": 217,
+						"line": 221,
 						"kind": "function",
 						"char": 10,
 						"name": "sendPutCopyEnd",
 						"type": "bool()",
 						"endchar": 5,
-						"endline": 227,
+						"endline": 231,
 						"comment": "Signals that COPY data send is finished.\n\nReturns: true if the termination data was sent, zero if it was not sent because the attempt would block (this case is only possible if the connection is in nonblocking mode)\n"
 					}
 				],
@@ -4236,7 +4275,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/result.d",
 		"members": [
 			{
 				"kind": "class",
@@ -5020,7 +5059,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.11/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/value.d",
 		"members": [
 			{
 				"kind": "struct",
