@@ -414,7 +414,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/args.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -555,7 +555,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/connection.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -1006,7 +1006,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/arrays.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/arrays.d",
 		"members": [
 			{
 				"constraint": "isArrayType!T",
@@ -1016,7 +1016,7 @@
 						"name": "T"
 					}
 				],
-				"line": 69,
+				"line": 84,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1031,13 +1031,13 @@
 								"name": "v"
 							}
 						],
-						"line": 69,
+						"line": 84,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "Value(auto ref T v)",
 						"endchar": 1,
-						"endline": 128
+						"endline": 143
 					}
 				],
 				"name": "toValue",
@@ -1049,7 +1049,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/from_bson.d",
 		"members": [
 			{
 				"parameters": [
@@ -1079,7 +1079,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/from_d_types.d",
 		"members": [
 			{
 				"constraint": "is(T == Nullable!R, R) && !isArrayType!(typeof(v.get))",
@@ -1237,7 +1237,7 @@
 				"comment": "Convert std.bitmanip.BitArray to PG value\n"
 			},
 			{
-				"constraint": "is(T : string)",
+				"constraint": "isSomeString!T || isStaticArrayString!T",
 				"parameters": [
 					{
 						"kind": "type",
@@ -1266,7 +1266,7 @@
 						"name": "toValue",
 						"type": "@trusted Value(T v, ValueFormat valueFormat = ValueFormat.BINARY)",
 						"endchar": 1,
-						"endline": 164
+						"endline": 173
 					}
 				],
 				"name": "toValue",
@@ -1280,7 +1280,7 @@
 						"name": "T"
 					}
 				],
-				"line": 167,
+				"line": 176,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1291,13 +1291,13 @@
 								"name": "v"
 							}
 						],
-						"line": 167,
+						"line": 176,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 171
+						"endline": 180
 					}
 				],
 				"name": "toValue",
@@ -1309,37 +1309,6 @@
 					{
 						"kind": "type",
 						"deco": "b",
-						"name": "T"
-					}
-				],
-				"line": 174,
-				"kind": "template",
-				"char": 7,
-				"members": [
-					{
-						"parameters": [
-							{
-								"type": "T",
-								"name": "v"
-							}
-						],
-						"line": 174,
-						"kind": "function",
-						"char": 7,
-						"name": "toValue",
-						"type": "@trusted Value(T v)",
-						"endchar": 1,
-						"endline": 180
-					}
-				],
-				"name": "toValue",
-				"comment": "Constructs Value from boolean\n"
-			},
-			{
-				"constraint": "is(Unqual!T == Date)",
-				"parameters": [
-					{
-						"kind": "type",
 						"name": "T"
 					}
 				],
@@ -1358,23 +1327,23 @@
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
-						"type": "Value(T v)",
+						"type": "@trusted Value(T v)",
 						"endchar": 1,
-						"endline": 204
+						"endline": 189
 					}
 				],
 				"name": "toValue",
-				"comment": "Constructs Value from Date\n"
+				"comment": "Constructs Value from boolean\n"
 			},
 			{
-				"constraint": "is(Unqual!T == TimeOfDay)",
+				"constraint": "is(Unqual!T == Date)",
 				"parameters": [
 					{
 						"kind": "type",
 						"name": "T"
 					}
 				],
-				"line": 207,
+				"line": 192,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1385,7 +1354,7 @@
 								"name": "v"
 							}
 						],
-						"line": 207,
+						"line": 192,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
@@ -1395,10 +1364,10 @@
 					}
 				],
 				"name": "toValue",
-				"comment": "Constructs Value from TimeOfDay\n"
+				"comment": "Constructs Value from Date\n"
 			},
 			{
-				"constraint": "is(Unqual!T == TimeStamp) || is(Unqual!T == TimeStampUTC)",
+				"constraint": "is(Unqual!T == TimeOfDay)",
 				"parameters": [
 					{
 						"kind": "type",
@@ -1422,7 +1391,38 @@
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 237
+						"endline": 222
+					}
+				],
+				"name": "toValue",
+				"comment": "Constructs Value from TimeOfDay\n"
+			},
+			{
+				"constraint": "is(Unqual!T == TimeStamp) || is(Unqual!T == TimeStampUTC)",
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 225,
+				"kind": "template",
+				"char": 7,
+				"members": [
+					{
+						"parameters": [
+							{
+								"type": "T",
+								"name": "v"
+							}
+						],
+						"line": 225,
+						"kind": "function",
+						"char": 7,
+						"name": "toValue",
+						"type": "Value(T v)",
+						"endchar": 1,
+						"endline": 246
 					}
 				],
 				"name": "toValue",
@@ -1436,7 +1436,7 @@
 						"name": "T"
 					}
 				],
-				"line": 262,
+				"line": 271,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1447,13 +1447,13 @@
 								"name": "v"
 							}
 						],
-						"line": 262,
+						"line": 271,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 266
+						"endline": 275
 					}
 				],
 				"name": "toValue",
@@ -1461,37 +1461,6 @@
 			},
 			{
 				"constraint": "is(Unqual!T == SysTime)",
-				"parameters": [
-					{
-						"kind": "type",
-						"name": "T"
-					}
-				],
-				"line": 274,
-				"kind": "template",
-				"char": 7,
-				"members": [
-					{
-						"parameters": [
-							{
-								"type": "T",
-								"name": "v"
-							}
-						],
-						"line": 274,
-						"kind": "function",
-						"char": 7,
-						"name": "toValue",
-						"type": "Value(T v)",
-						"endchar": 1,
-						"endline": 280
-					}
-				],
-				"name": "toValue",
-				"comment": "    Constructs Value from SysTime\n    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.\n    It means that PG value will have 10 times lower precision.\n    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.\n"
-			},
-			{
-				"constraint": "is(Unqual!T == UUID)",
 				"parameters": [
 					{
 						"kind": "type",
@@ -1515,7 +1484,38 @@
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 287
+						"endline": 289
+					}
+				],
+				"name": "toValue",
+				"comment": "    Constructs Value from SysTime\n    Note that SysTime has a precision in hnsecs and PG TimeStamp in usecs.\n    It means that PG value will have 10 times lower precision.\n    And as both types are using long for internal storage it also means that PG TimeStamp can store greater range of values than SysTime.\n"
+			},
+			{
+				"constraint": "is(Unqual!T == UUID)",
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 292,
+				"kind": "template",
+				"char": 7,
+				"members": [
+					{
+						"parameters": [
+							{
+								"type": "T",
+								"name": "v"
+							}
+						],
+						"line": 292,
+						"kind": "function",
+						"char": 7,
+						"name": "toValue",
+						"type": "Value(T v)",
+						"endchar": 1,
+						"endline": 296
 					}
 				],
 				"name": "toValue",
@@ -1529,7 +1529,7 @@
 						"name": "T"
 					}
 				],
-				"line": 290,
+				"line": 299,
 				"kind": "template",
 				"char": 7,
 				"members": [
@@ -1540,13 +1540,13 @@
 								"name": "v"
 							}
 						],
-						"line": 290,
+						"line": 299,
 						"kind": "function",
 						"char": 7,
 						"name": "toValue",
 						"type": "Value(T v)",
 						"endchar": 1,
-						"endline": 297
+						"endline": 306
 					}
 				],
 				"name": "toValue",
@@ -1558,7 +1558,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/geometric.d",
 		"members": [
 			{
 				"parameters": [
@@ -1821,14 +1821,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/jsonb.d",
 		"members": [],
 		"comment": "\n",
 		"name": "dpq2.conv.jsonb"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/time.d",
 		"members": [
 			{
 				"constraint": "is(T == SysTime)",
@@ -2408,7 +2408,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/to_bson.d",
 		"members": [
 			{
 				"constraint": "is(T == Bson)",
@@ -2450,7 +2450,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/to_d_types.d",
 		"members": [
 			{
 				"kind": "alias",
@@ -2589,7 +2589,7 @@
 				"name": "PGvarbit"
 			},
 			{
-				"constraint": "is(T : string)",
+				"constraint": "is(T : const(char)[])",
 				"parameters": [
 					{
 						"kind": "type",
@@ -2623,7 +2623,7 @@
 				"comment": "    Returns cell value as a native string based type from text or binary formatted field.\n    Throws: AssertError if the db value is NULL and Nullable is not used to retrieve the value\n"
 			},
 			{
-				"constraint": "!is(T : string) && !is(T == Bson)",
+				"constraint": "!is(T : const(char)[]) && !is(T == Bson)",
 				"parameters": [
 					{
 						"kind": "type",
@@ -2662,7 +2662,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/exception.d",
 		"members": [
 			{
 				"line": 5,
@@ -2679,7 +2679,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/oids.d",
 		"members": [
 			{
 				"parameters": [
@@ -3976,14 +3976,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/package.d",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"name": "dpq2"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/query.d",
 		"members": [
 			{
 				"parameters": [],
@@ -4275,7 +4275,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/result.d",
 		"members": [
 			{
 				"kind": "class",
@@ -5059,7 +5059,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.12/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/value.d",
 		"members": [
 			{
 				"kind": "struct",
