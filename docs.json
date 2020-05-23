@@ -160,12 +160,13 @@
 				"name": "PostgresClient"
 			},
 			{
-				"kind": "alias",
 				"line": 115,
+				"kind": "alias",
+				"originalType": "VibeLockedConnection!Connection",
 				"char": 1,
+				"name": "LockedConnection",
 				"deco": "S4vibe4core14connectionpool__T16LockedConnectionTCQBx2db10postgresql14Dpq2ConnectionZQCd",
-				"comment": "\n",
-				"name": "LockedConnection"
+				"comment": "\n"
 			},
 			{
 				"line": 120,
@@ -2549,20 +2550,22 @@
 				"name": "PGtime_without_time_zone"
 			},
 			{
-				"kind": "alias",
 				"line": 41,
+				"kind": "alias",
+				"originalType": "TimeStamp",
 				"char": 1,
+				"name": "PGtimestamp",
 				"deco": "S4dpq24conv4time__T10TTimeStampVbi0ZQr",
-				"comment": "Both date and time without time zone\n",
-				"name": "PGtimestamp"
+				"comment": "Both date and time without time zone\n"
 			},
 			{
-				"kind": "alias",
 				"line": 42,
+				"kind": "alias",
+				"originalType": "TimeStampUTC",
 				"char": 1,
+				"name": "PGtimestamptz",
 				"deco": "S4dpq24conv4time__T10TTimeStampVbi1ZQr",
-				"comment": "Both date and time stored in UTC time zone\n",
-				"name": "PGtimestamptz"
+				"comment": "Both date and time stored in UTC time zone\n"
 			},
 			{
 				"kind": "alias",
