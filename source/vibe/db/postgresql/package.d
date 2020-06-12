@@ -70,8 +70,7 @@ class PostgresClient
     /// Get connection from the pool.
     ///
     /// Do not forgot to call .reset() for connection if ConnectionException
-    /// will be catched while using LockedConnection!
-    deprecated("use pickConnection instead or report why lockConnection should be left")
+    /// was caught while using LockedConnection!
     LockedConnection lockConnection()
     {
         logDebugV("get connection from the pool");
@@ -89,7 +88,6 @@ class PostgresClient
     {
         logDebugV("get connection from the pool");
         scope conn = pool.lockConnection();
-        scope(exit) destroy(conn);
 
         try
             return dg(conn);
@@ -465,7 +463,7 @@ version(IntegrationTest) void __integration_test(string connString)
 
     auto client = new PostgresClient(connString, 3);
 
-    client.pickConnection((scope conn) {
+    auto conn = client.lockConnection;
     {
         auto res = conn.execStatement(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
@@ -620,6 +618,4 @@ version(IntegrationTest) void __integration_test(string connString)
         assert(futureNtf.name == "foo");
         assert(futureNtf.extra == "bar");
     }
-
-    }); // pickConnection
 }
