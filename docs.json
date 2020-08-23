@@ -412,7 +412,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/args.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -553,7 +553,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/connection.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -1004,7 +1004,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/arrays.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/arrays.d",
 		"members": [
 			{
 				"constraint": "isArrayType!T",
@@ -1047,7 +1047,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/from_bson.d",
 		"members": [
 			{
 				"parameters": [
@@ -1077,7 +1077,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/from_d_types.d",
 		"members": [
 			{
 				"constraint": "is(T == Nullable!R, R) && !isArrayType!(typeof(v.get))",
@@ -1556,7 +1556,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/geometric.d",
 		"members": [
 			{
 				"parameters": [
@@ -1819,14 +1819,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/jsonb.d",
 		"members": [],
 		"comment": "\n",
 		"name": "dpq2.conv.jsonb"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/time.d",
 		"members": [
 			{
 				"constraint": "is(T == SysTime)",
@@ -2406,7 +2406,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/to_bson.d",
 		"members": [
 			{
 				"constraint": "is(T == Bson)",
@@ -2448,7 +2448,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/to_d_types.d",
 		"members": [
 			{
 				"kind": "alias",
@@ -2662,7 +2662,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/exception.d",
 		"members": [
 			{
 				"line": 5,
@@ -2679,7 +2679,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/oids.d",
 		"members": [
 			{
 				"parameters": [
@@ -3976,14 +3976,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/package.d",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"name": "dpq2"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/query.d",
 		"members": [
 			{
 				"parameters": [],
@@ -4275,7 +4275,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/result.d",
 		"members": [
 			{
 				"kind": "class",
@@ -5059,7 +5059,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.13/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/value.d",
 		"members": [
 			{
 				"kind": "struct",
