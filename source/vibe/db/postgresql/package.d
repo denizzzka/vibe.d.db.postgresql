@@ -155,20 +155,21 @@ class Dpq2Connection : dpq2.Connection
 
             if(resetPoll() != PGRES_POLLING_OK)
             {
-                waitEndOfRead(socketTimeout);
+                auto event = socketEvent();
+                version(Have_vibe_core) {}
+                else scope(exit) destroy(event);
+                event.wait(socketTimeout);
                 continue;
             }
-            else
-            {
-                break;
-            }
+
+            break;
         }
 
         if(settings.afterStartConnectOrReset !is null)
             settings.afterStartConnectOrReset(this);
     }
 
-    private auto waitEndOfRead(in Duration timeout) // TODO: rename to waitEndOf + add FileDescriptorEvent.Trigger argument
+    private auto socketEvent()
     {
         import vibe.core.core;
 
@@ -194,8 +195,9 @@ class Dpq2Connection : dpq2.Connection
 
     private void waitEndOfReadAndConsume(in Duration timeout)
     {
-        auto event = waitEndOfRead(timeout);
-        scope(exit) destroy(event); // Prevents 100% CPU usage
+        auto event = socketEvent();
+        version(Have_vibe_core) {}
+        else scope(exit) destroy(event); // Prevents 100% CPU usage
 
         do
         {
