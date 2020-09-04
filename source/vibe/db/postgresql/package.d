@@ -270,7 +270,6 @@ class Dpq2Connection : dpq2.Connection
 
                     while(true)
                     {
-                        logDebugV("getResult()");
                         auto r = getResult();
 
                         /*
