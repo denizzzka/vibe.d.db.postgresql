@@ -6,7 +6,7 @@ copyright "Copyright © 2016"
 targetType "sourceLibrary"
 
 dependency "dpq2" version="~>1.0.7"
-dependency "vibe-d:core" version=">=0.8.3 <0.10.0"
+dependency "vibe-core" version=">=1.7.0 <2.0.0-0"
 
 configuration "release_app" {
     buildType "release"
@@ -16,14 +16,6 @@ configuration "integration_test" {
     targetType "executable"
     buildType "unittest"
     versions "IntegrationTest"
-}
-
-configuration "integration_test_vibe_core" {
-    targetType "executable"
-    buildType "unittest"
-    versions "IntegrationTest"
-    dependency "vibe-core" version=">=1.4.0 <2.0.0"
-    subConfiguration "vibe-d:core" "vibe-core"
 }
 
 subPackage {
