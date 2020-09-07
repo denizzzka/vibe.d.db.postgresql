@@ -166,6 +166,12 @@
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendQuery.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendQueryParams.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/query/Queries.sendQueryPrepared.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query_gen.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query_gen/d.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query_gen/i.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query_gen/u.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query_gen/wrapStatement.html</loc></url>
+<url><loc>http://127.0.0.1/dpq2/query_gen/wrapStatement.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/result.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/result/Answer.html</loc></url>
 <url><loc>http://127.0.0.1/dpq2/result/Answer.cmdStatus.html</loc></url>

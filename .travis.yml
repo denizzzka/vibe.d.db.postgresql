@@ -27,7 +27,6 @@ before_script:
 script:
   - dub test
   - dub run --config=integration_test -- --conninfo="${CONN_STRING}" --debug=true
-  - dub run --config=integration_test_vibe_core -- --conninfo="${CONN_STRING}" --debug=true
   - dub build :example
 
 matrix:

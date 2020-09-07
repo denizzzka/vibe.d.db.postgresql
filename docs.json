@@ -157,7 +157,7 @@
 				"name": "PostgresClient"
 			},
 			{
-				"line": 113,
+				"line": 112,
 				"kind": "alias",
 				"originalType": "VibeLockedConnection!Connection",
 				"char": 1,
@@ -166,13 +166,13 @@
 				"comment": "\n"
 			},
 			{
-				"line": 118,
+				"line": 117,
 				"kind": "class",
 				"char": 1,
 				"base": "dpq2.connection.Connection",
 				"members": [
 					{
-						"line": 120,
+						"line": 119,
 						"kind": "variable",
 						"char": 14,
 						"name": "socketTimeout",
@@ -182,7 +182,7 @@
 						"comment": "\n"
 					},
 					{
-						"line": 121,
+						"line": 120,
 						"kind": "variable",
 						"char": 14,
 						"name": "statementTimeout",
@@ -201,24 +201,24 @@
 								"name": "settings"
 							}
 						],
-						"line": 126,
+						"line": 125,
 						"kind": "constructor",
 						"originalType": "@trusted (ref const ClientSettings settings)",
 						"char": 5,
 						"name": "this",
 						"deco": "FNeKxS4vibe2db10postgresql14ClientSettingsZCQBmQBkQBk14Dpq2Connection",
 						"endchar": 5,
-						"endline": 138,
+						"endline": 137,
 						"comment": "\n"
 					},
 					{
-						"line": 147,
+						"line": 140,
 						"kind": "function",
 						"char": 10,
 						"name": "reset",
 						"deco": "FZv",
 						"endchar": 5,
-						"endline": 170,
+						"endline": 160,
 						"comment": "Blocks while connection will be established or exception thrown\n"
 					},
 					{
@@ -233,14 +233,14 @@
 								"name": "resultFormat"
 							}
 						],
-						"line": 316,
+						"line": 295,
 						"kind": "function",
 						"originalType": "immutable(Answer)(string sqlCommand, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 23,
 						"name": "execStatement",
 						"deco": "FAyaE4dpq25value11ValueFormatZyCQBb6result6Answer",
 						"endchar": 5,
-						"endline": 326,
+						"endline": 305,
 						"comment": "\n"
 					},
 					{
@@ -253,14 +253,14 @@
 								"name": "params"
 							}
 						],
-						"line": 329,
+						"line": 308,
 						"kind": "function",
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"name": "execStatement",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"endchar": 5,
-						"endline": 334,
+						"endline": 313,
 						"comment": "\n"
 					},
 					{
@@ -279,14 +279,14 @@
 								"name": "resultFormat"
 							}
 						],
-						"line": 342,
+						"line": 321,
 						"kind": "function",
 						"originalType": "void(string sqlCommand, void delegate(immutable(Row)) answerRowProcessDg, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 10,
 						"name": "execStatementRbR",
 						"deco": "FAyaDFyS4dpq26result3RowZvEQt5value11ValueFormatZv",
 						"endchar": 5,
-						"endline": 353,
+						"endline": 332,
 						"comment": "Row-by-row version of execStatement\n\nDelegate called for each received row.\n\nMore info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html\n\n"
 					},
 					{
@@ -303,14 +303,14 @@
 								"name": "answerRowProcessDg"
 							}
 						],
-						"line": 356,
+						"line": 335,
 						"kind": "function",
 						"originalType": "void(ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)",
 						"char": 10,
 						"name": "execStatementRbR",
 						"deco": "FKxS4dpq24args11QueryParamsDFySQBb6result3RowZvZv",
 						"endchar": 5,
-						"endline": 362,
+						"endline": 341,
 						"comment": "Ditto\n"
 					},
 					{
@@ -329,14 +329,14 @@
 								"name": "oids"
 							}
 						],
-						"line": 386,
+						"line": 365,
 						"kind": "function",
 						"originalType": "void(string statementName, string sqlStatement, Oid[] oids = null)",
 						"char": 10,
 						"name": "prepareStatement",
 						"deco": "FAyaQdAkZv",
 						"endchar": 5,
-						"endline": 398,
+						"endline": 377,
 						"comment": "\n"
 					},
 					{
@@ -349,14 +349,14 @@
 								"name": "params"
 							}
 						],
-						"line": 401,
+						"line": 380,
 						"kind": "function",
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"name": "execPreparedStatement",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"endchar": 5,
-						"endline": 406,
+						"endline": 385,
 						"comment": "\n"
 					},
 					{
@@ -366,13 +366,13 @@
 								"name": "preparedStatementName"
 							}
 						],
-						"line": 409,
+						"line": 388,
 						"kind": "function",
 						"char": 23,
 						"name": "describePreparedStatement",
 						"deco": "FAyaZyC4dpq26result6Answer",
 						"endchar": 5,
-						"endline": 414,
+						"endline": 393,
 						"comment": "\n"
 					},
 					{
@@ -383,14 +383,14 @@
 								"name": "timeout"
 							}
 						],
-						"line": 425,
+						"line": 404,
 						"kind": "function",
 						"originalType": "Notify(in Duration timeout = Duration.max)",
 						"char": 12,
 						"name": "waitForNotify",
 						"deco": "FxS4core4time8DurationZC4dpq26result6Notify",
 						"endchar": 5,
-						"endline": 435,
+						"endline": 414,
 						"comment": " Non blocking method to wait for next notification.\n\n Params:\n      timeout = maximal duration to wait for the new Notify to be received\n\n Returns: New Notify or null when no other notification is available or timeout occurs.\n Throws: ConnectionException on connection failure\n"
 					}
 				],
@@ -398,7 +398,7 @@
 				"comment": " dpq2.Connection adopted for using with Vibe.d\n"
 			},
 			{
-				"line": 439,
+				"line": 418,
 				"kind": "class",
 				"char": 1,
 				"base": "dpq2.exception.Dpq2Exception",
@@ -412,7 +412,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/args.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/args.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -553,7 +553,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/connection.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/connection.d",
 		"members": [
 			{
 				"kind": "struct",
@@ -1004,7 +1004,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/arrays.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/arrays.d",
 		"members": [
 			{
 				"constraint": "isArrayType!T",
@@ -1047,7 +1047,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/from_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/from_bson.d",
 		"members": [
 			{
 				"parameters": [
@@ -1077,7 +1077,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/from_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/from_d_types.d",
 		"members": [
 			{
 				"constraint": "is(T == Nullable!R, R) && !isArrayType!(typeof(v.get))",
@@ -1556,7 +1556,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/geometric.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/geometric.d",
 		"members": [
 			{
 				"parameters": [
@@ -1819,14 +1819,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/jsonb.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/jsonb.d",
 		"members": [],
 		"comment": "\n",
 		"name": "dpq2.conv.jsonb"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/time.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/time.d",
 		"members": [
 			{
 				"constraint": "is(T == SysTime)",
@@ -2406,7 +2406,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/to_bson.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/to_bson.d",
 		"members": [
 			{
 				"constraint": "is(T == Bson)",
@@ -2448,7 +2448,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/conv/to_d_types.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/conv/to_d_types.d",
 		"members": [
 			{
 				"kind": "alias",
@@ -2662,7 +2662,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/exception.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/exception.d",
 		"members": [
 			{
 				"line": 5,
@@ -2679,7 +2679,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/oids.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/oids.d",
 		"members": [
 			{
 				"parameters": [
@@ -3976,14 +3976,14 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/package.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/package.d",
 		"members": [],
 		"comment": " Main module\n\n Include it to use common functions.\n",
 		"name": "dpq2"
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/query.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/query.d",
 		"members": [
 			{
 				"parameters": [],
@@ -4275,7 +4275,198 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/result.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/query_gen.d",
+		"members": [
+			{
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 31,
+				"kind": "template",
+				"char": 6,
+				"members": [
+					{
+						"storageClass": [
+							"auto"
+						],
+						"parameters": [
+							{
+								"type": "string",
+								"name": "statementArgName"
+							},
+							{
+								"type": "T",
+								"name": "value"
+							}
+						],
+						"line": 31,
+						"kind": "function",
+						"char": 6,
+						"name": "i",
+						"type": "(string statementArgName, T value)",
+						"endchar": 1,
+						"endline": 34
+					}
+				],
+				"name": "i",
+				"comment": "INSERT-like argument\n"
+			},
+			{
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 37,
+				"kind": "template",
+				"char": 6,
+				"members": [
+					{
+						"storageClass": [
+							"auto"
+						],
+						"parameters": [
+							{
+								"type": "string",
+								"name": "statementArgName"
+							},
+							{
+								"type": "T",
+								"name": "value"
+							}
+						],
+						"line": 37,
+						"kind": "function",
+						"char": 6,
+						"name": "u",
+						"type": "(string statementArgName, T value)",
+						"endchar": 1,
+						"endline": 40
+					}
+				],
+				"name": "u",
+				"comment": "UPDATE-like argument\n"
+			},
+			{
+				"parameters": [
+					{
+						"kind": "type",
+						"name": "T"
+					}
+				],
+				"line": 43,
+				"kind": "template",
+				"char": 6,
+				"members": [
+					{
+						"storageClass": [
+							"auto"
+						],
+						"parameters": [
+							{
+								"type": "T",
+								"name": "value"
+							}
+						],
+						"line": 43,
+						"kind": "function",
+						"char": 6,
+						"name": "d",
+						"type": "(T value)",
+						"endchar": 1,
+						"endline": 46
+					}
+				],
+				"name": "d",
+				"comment": "Argument representing dollar, usable in SELECT statements\n"
+			},
+			{
+				"parameters": [
+					{
+						"kind": "type",
+						"deco": "C4dpq210connection10Connection",
+						"name": "C"
+					},
+					{
+						"kind": "tuple",
+						"name": "T"
+					}
+				],
+				"line": 170,
+				"kind": "template",
+				"char": 6,
+				"members": [
+					{
+						"storageClass": [
+							"auto"
+						],
+						"parameters": [
+							{
+								"type": "C",
+								"name": "conn"
+							},
+							{
+								"type": "T",
+								"name": "statement"
+							}
+						],
+						"line": 170,
+						"kind": "function",
+						"char": 6,
+						"name": "wrapStatement",
+						"type": "(C conn, T statement)",
+						"endchar": 1,
+						"endline": 173
+					}
+				],
+				"name": "wrapStatement",
+				"comment": "\n"
+			},
+			{
+				"constraint": "!is(T[0] == Connection)",
+				"parameters": [
+					{
+						"kind": "tuple",
+						"name": "T"
+					}
+				],
+				"line": 176,
+				"kind": "template",
+				"char": 6,
+				"members": [
+					{
+						"storageClass": [
+							"auto"
+						],
+						"parameters": [
+							{
+								"type": "T",
+								"name": "statement"
+							}
+						],
+						"line": 176,
+						"kind": "function",
+						"char": 6,
+						"name": "wrapStatement",
+						"type": "(T statement)",
+						"endchar": 1,
+						"endline": 180
+					}
+				],
+				"name": "wrapStatement",
+				"comment": "\n"
+			}
+		],
+		"comment": "Generates SQL query with appropriate variable types\n",
+		"name": "dpq2.query_gen"
+	},
+	{
+		"kind": "module",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/result.d",
 		"members": [
 			{
 				"kind": "class",
@@ -5059,7 +5250,7 @@
 	},
 	{
 		"kind": "module",
-		"file": "../../../.dub/packages/dpq2-1.0.14/dpq2/src/dpq2/value.d",
+		"file": "../../../.dub/packages/dpq2-1.0.15/dpq2/src/dpq2/value.d",
 		"members": [
 			{
 				"kind": "struct",
