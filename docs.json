@@ -218,7 +218,7 @@
 						"name": "reset",
 						"deco": "FZv",
 						"endchar": 5,
-						"endline": 169,
+						"endline": 170,
 						"comment": "Blocks while connection will be established or exception thrown\n"
 					},
 					{
@@ -233,14 +233,14 @@
 								"name": "resultFormat"
 							}
 						],
-						"line": 315,
+						"line": 316,
 						"kind": "function",
 						"originalType": "immutable(Answer)(string sqlCommand, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 23,
 						"name": "execStatement",
 						"deco": "FAyaE4dpq25value11ValueFormatZyCQBb6result6Answer",
 						"endchar": 5,
-						"endline": 325,
+						"endline": 326,
 						"comment": "\n"
 					},
 					{
@@ -253,14 +253,14 @@
 								"name": "params"
 							}
 						],
-						"line": 328,
+						"line": 329,
 						"kind": "function",
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"name": "execStatement",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"endchar": 5,
-						"endline": 333,
+						"endline": 334,
 						"comment": "\n"
 					},
 					{
@@ -279,14 +279,14 @@
 								"name": "resultFormat"
 							}
 						],
-						"line": 341,
+						"line": 342,
 						"kind": "function",
 						"originalType": "void(string sqlCommand, void delegate(immutable(Row)) answerRowProcessDg, ValueFormat resultFormat = ValueFormat.BINARY)",
 						"char": 10,
 						"name": "execStatementRbR",
 						"deco": "FAyaDFyS4dpq26result3RowZvEQt5value11ValueFormatZv",
 						"endchar": 5,
-						"endline": 352,
+						"endline": 353,
 						"comment": "Row-by-row version of execStatement\n\nDelegate called for each received row.\n\nMore info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html\n\n"
 					},
 					{
@@ -303,14 +303,14 @@
 								"name": "answerRowProcessDg"
 							}
 						],
-						"line": 355,
+						"line": 356,
 						"kind": "function",
 						"originalType": "void(ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)",
 						"char": 10,
 						"name": "execStatementRbR",
 						"deco": "FKxS4dpq24args11QueryParamsDFySQBb6result3RowZvZv",
 						"endchar": 5,
-						"endline": 361,
+						"endline": 362,
 						"comment": "Ditto\n"
 					},
 					{
@@ -329,14 +329,14 @@
 								"name": "oids"
 							}
 						],
-						"line": 385,
+						"line": 386,
 						"kind": "function",
 						"originalType": "void(string statementName, string sqlStatement, Oid[] oids = null)",
 						"char": 10,
 						"name": "prepareStatement",
 						"deco": "FAyaQdAkZv",
 						"endchar": 5,
-						"endline": 397,
+						"endline": 398,
 						"comment": "\n"
 					},
 					{
@@ -349,14 +349,14 @@
 								"name": "params"
 							}
 						],
-						"line": 400,
+						"line": 401,
 						"kind": "function",
 						"originalType": "immutable(Answer)(ref QueryParams params)",
 						"char": 23,
 						"name": "execPreparedStatement",
 						"deco": "FKxS4dpq24args11QueryParamsZyCQBa6result6Answer",
 						"endchar": 5,
-						"endline": 405,
+						"endline": 406,
 						"comment": "\n"
 					},
 					{
@@ -366,13 +366,13 @@
 								"name": "preparedStatementName"
 							}
 						],
-						"line": 408,
+						"line": 409,
 						"kind": "function",
 						"char": 23,
 						"name": "describePreparedStatement",
 						"deco": "FAyaZyC4dpq26result6Answer",
 						"endchar": 5,
-						"endline": 413,
+						"endline": 414,
 						"comment": "\n"
 					},
 					{
@@ -383,14 +383,14 @@
 								"name": "timeout"
 							}
 						],
-						"line": 424,
+						"line": 425,
 						"kind": "function",
 						"originalType": "Notify(in Duration timeout = Duration.max)",
 						"char": 12,
 						"name": "waitForNotify",
 						"deco": "FxS4core4time8DurationZC4dpq26result6Notify",
 						"endchar": 5,
-						"endline": 434,
+						"endline": 435,
 						"comment": " Non blocking method to wait for next notification.\n\n Params:\n      timeout = maximal duration to wait for the new Notify to be received\n\n Returns: New Notify or null when no other notification is available or timeout occurs.\n Throws: ConnectionException on connection failure\n"
 					}
 				],
@@ -398,7 +398,7 @@
 				"comment": " dpq2.Connection adopted for using with Vibe.d\n"
 			},
 			{
-				"line": 438,
+				"line": 439,
 				"kind": "class",
 				"char": 1,
 				"base": "dpq2.exception.Dpq2Exception",
