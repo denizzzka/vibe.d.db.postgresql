@@ -107,7 +107,6 @@ class PostgresClient
 }
 
 alias Connection = Dpq2Connection;
-deprecated("use Connection instead") alias __Conn = Connection;
 
 ///
 alias LockedConnection = VibeLockedConnection!Connection;
@@ -137,12 +136,6 @@ class Dpq2Connection : dpq2.Connection
             settings.afterStartConnectOrReset(this);
     }
 
-    deprecated("please use .reset() instead")
-    void resetStart()()
-    {
-        reset();
-    }
-
     /// Blocks while connection will be established or exception thrown
     void reset()
     {
@@ -155,10 +148,7 @@ class Dpq2Connection : dpq2.Connection
 
             if(resetPoll() != PGRES_POLLING_OK)
             {
-                auto event = socketEvent();
-                version(Have_vibe_core) {}
-                else scope(exit) destroy(event);
-                event.wait(socketTimeout);
+                socketEvent().wait(socketTimeout);
                 continue;
             }
 
@@ -179,25 +169,14 @@ class Dpq2Connection : dpq2.Connection
             assert((fcntl(this.posixSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
         }
 
-        version(Have_vibe_core)
-        {
-            // vibe-core right now supports only read trigger event
-            // it also closes the socket on scope exit, thus a socket duplication here
-            auto event = createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
-        }
-        else
-        {
-            auto event = createFileDescriptorEvent(this.posixSocket, FileDescriptorEvent.Trigger.any);
-        }
-
-        return event;
+        // vibe-core right now supports only read trigger event
+        // it also closes the socket on scope exit, thus a socket duplication here
+        return createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
     }
 
     private void waitEndOfReadAndConsume(in Duration timeout)
     {
         auto event = socketEvent();
-        version(Have_vibe_core) {}
-        else scope(exit) destroy(event); // Prevents 100% CPU usage
 
         do
         {
