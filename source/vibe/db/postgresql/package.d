@@ -169,9 +169,16 @@ class Dpq2Connection : dpq2.Connection
             assert((fcntl(this.posixSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
         }
 
+        /*
+         * Especially for Win32:
+         * Even though sizeof(SOCKET) is 8, it's safe to cast it to int, because
+         * the value constitutes an index in per-process table of limited size
+         * and not a real pointer.
+         */
+
         // vibe-core right now supports only read trigger event
         // it also closes the socket on scope exit, thus a socket duplication here
-        return createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
+        return createFileDescriptorEvent(cast(int) this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
     }
 
     private void waitEndOfReadAndConsume(in Duration timeout)
