@@ -148,7 +148,7 @@ class Dpq2Connection : dpq2.Connection
 
             if(resetPoll() != PGRES_POLLING_OK)
             {
-                socketEvent().wait(socketTimeout);
+                this.socketEvent().wait(socketTimeout);
                 continue;
             }
 
@@ -159,26 +159,26 @@ class Dpq2Connection : dpq2.Connection
             settings.afterStartConnectOrReset(this);
     }
 
+    version(Posix)
     private auto socketEvent()
     {
         import vibe.core.core;
+        import core.sys.posix.fcntl;
 
-        version(Posix)
-        {
-            import core.sys.posix.fcntl;
-            assert((fcntl(this.posixSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
-        }
-
-        /*
-         * Especially for Win32:
-         * Even though sizeof(SOCKET) is 8, it's safe to cast it to int, because
-         * the value constitutes an index in per-process table of limited size
-         * and not a real pointer.
-         */
+        assert((fcntl(this.posixSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
 
         // vibe-core right now supports only read trigger event
         // it also closes the socket on scope exit, thus a socket duplication here
-        return createFileDescriptorEvent(cast(int) this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
+        return createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
+    }
+    else version(Windows)
+    {
+        private auto socketEvent()
+        {
+            import vibe.db.postgresql.windows: createFileDescriptorEvent;
+
+            return createFileDescriptorEvent(this.posixSocketDuplicate);
+        }
     }
 
     private void waitEndOfReadAndConsume(in Duration timeout)
