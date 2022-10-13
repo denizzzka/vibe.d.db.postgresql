@@ -6,23 +6,14 @@ import core.time: Duration;
 import core.sys.windows.winsock2;
 import std.exception: enforce;
 import std.conv: to;
-import std.socket: SOCKET;
 import dpq2.connection: ConnectionException;
 
-package SocketEvent createFileDescriptorEvent(SOCKET _socket)
+package SocketEvent createFileDescriptorEvent(SOCKET socket, int trigger)
 {
-    //FIXME: SOCKET sizeof mismatch. need to remove cast. Details: https://github.com/etcimon/windows-headers/issues/12
-    auto socket = cast(int) _socket;
-
     WSAEVENT ev = WSACreateEvent();
 
-    if(ev == WSA_INVALID_EVENT)
-        throw new ConnectionException("WSACreateEvent error, code "~WSAGetLastError().to!string);
-
-    auto r = WSAEventSelect(socket, ev, FD_READ);
-
-    if(r)
-        throw new ConnectionException("WSAEventSelect error, code "~WSAGetLastError().to!string);
+    throwConnExHelper!WSACreateEvent(ev == WSA_INVALID_EVENT);
+    throwConnExHelper!WSAEventSelect(WSAEventSelect(socket, ev, trigger));
 
     return SocketEvent(ev);
 }
@@ -47,11 +38,8 @@ struct SocketEvent
     {
         auto idx = WSAWaitForMultipleEvents(1, &event, false, timeout, false);
 
-        if(idx == WSA_WAIT_FAILED)
-            throw new ConnectionException("WSAWaitForMultipleEvents error, code "~WSAGetLastError().to!string);
-
-        if(WSAResetEvent(event) == false)
-            throw new ConnectionException("WSAResetEvent error, code "~WSAGetLastError().to!string);
+        throwConnExHelper!WSAWaitForMultipleEvents(idx == WSA_WAIT_FAILED);
+        throwConnExHelper!WSAResetEvent(WSAResetEvent(event) == false);
 
         if(idx == WSA_WAIT_TIMEOUT)
             return false;
@@ -60,7 +48,23 @@ struct SocketEvent
     }
 }
 
+package const int FD_READ = 1 << FD_READ_BIT;
+
 private:
+
+import std.traits;
+
+auto throwConnExHelper(alias F)(int condition, string file = __FILE__, size_t line = __LINE__)
+if(isCallable!F)
+{
+    enum useGetLastCode = true;
+
+    if(condition)
+        throw new ConnectionException(
+            fullyQualifiedName!F~" error"~(useGetLastCode ? ", code "~WSAGetLastError().to!string : ""),
+            file, line
+        );
+}
 
 alias WSAEVENT = void*;
 
@@ -85,7 +89,6 @@ const WSA_INFINITE = INFINITE;
 const WSA_INVALID_EVENT = WSAEVENT.init;
 const WSA_WAIT_FAILED = cast(DWORD)-1;
 const WSA_WAIT_TIMEOUT = WAIT_TIMEOUT;
-const int FD_READ = 1 << FD_READ_BIT;
 
 extern(Windows) nothrow @nogc
 {

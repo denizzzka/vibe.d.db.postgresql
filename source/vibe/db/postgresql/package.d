@@ -175,9 +175,9 @@ class Dpq2Connection : dpq2.Connection
     {
         private auto socketEvent()
         {
-            import vibe.db.postgresql.windows: createFileDescriptorEvent;
+            import vibe.db.postgresql.windows;
 
-            return createFileDescriptorEvent(this.posixSocketDuplicate);
+            return createFileDescriptorEvent(this.posixSocketDuplicate, FD_READ);
         }
     }
 
