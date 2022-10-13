@@ -15,12 +15,14 @@ package SocketEvent createFileDescriptorEvent(SOCKET socket, int trigger)
     throwConnExHelper!WSACreateEvent(ev == WSA_INVALID_EVENT);
     throwConnExHelper!WSAEventSelect(WSAEventSelect(socket, ev, trigger));
 
-    return new SocketEvent(ev);
+    return SocketEvent(ev);
 }
 
-class SocketEvent
+struct SocketEvent
 {
     private WSAEVENT event;
+
+    this(this) @disable;
 
     this(WSAEVENT ev)
     {
