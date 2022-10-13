@@ -15,13 +15,22 @@ package SocketEvent createFileDescriptorEvent(SOCKET socket, int trigger)
     throwConnExHelper!WSACreateEvent(ev == WSA_INVALID_EVENT);
     throwConnExHelper!WSAEventSelect(WSAEventSelect(socket, ev, trigger));
 
-    return SocketEvent(ev);
+    return new SocketEvent(ev);
 }
 
-struct SocketEvent
+class SocketEvent
 {
     private WSAEVENT event;
-    //TODO: deregister events if struct destroyed?
+
+    this(WSAEVENT ev)
+    {
+        event = ev;
+    }
+
+    ~this()
+    {
+        throwConnExHelper!WSACloseEvent(WSACloseEvent(event) == false);
+    }
 
     void wait()
     {
@@ -95,6 +104,7 @@ extern(Windows) nothrow @nogc
     import core.sys.windows.windef;
 
     WSAEVENT WSACreateEvent();
+    BOOL WSACloseEvent(WSAEVENT);
     int WSAEventSelect(SOCKET, WSAEVENT, int);
     BOOL WSAResetEvent(WSAEVENT);
     DWORD WSAWaitForMultipleEvents(DWORD, const(WSAEVENT)*, BOOL, DWORD, BOOL);
