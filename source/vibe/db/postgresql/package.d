@@ -305,7 +305,7 @@ class Dpq2Connection : dpq2.Connection
     }
 
     ///
-    immutable(Answer) execStatement(in ref QueryParams params)
+    immutable(Answer) execStatement(scope const ref QueryParams params)
     {
         auto res = runStatementBlockingManner({ sendQueryParams(params); });
 
@@ -332,7 +332,7 @@ class Dpq2Connection : dpq2.Connection
     }
 
     /// Ditto
-    void execStatementRbR(in ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
+    void execStatementRbR(scope const ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
     {
         runStatementWithRowByRowResult(
             { sendQueryParams(params); },
@@ -377,7 +377,7 @@ class Dpq2Connection : dpq2.Connection
     }
 
     ///
-    immutable(Answer) execPreparedStatement(in ref QueryParams params)
+    immutable(Answer) execPreparedStatement(scope const ref QueryParams params)
     {
         auto res = runStatementBlockingManner({ sendQueryPrepared(params); });
 
