@@ -18,7 +18,7 @@ subPackage {
     targetType "executable"
     buildType "unittest"
     versions "IntegrationTest"
-    dependency "vibe-d-postgresql" version="*"
+    dependency "vibe-d-postgresql" version="*" dflags="-preview=in"
 }
 
 subPackage {
@@ -26,6 +26,7 @@ subPackage {
     sourcePaths "example"
     targetType "executable"
     versions "VibeDefaultMain"
+    dflags "-preview=in"
     dependency "vibe-d" version="*"
-    dependency "vibe-d-postgresql" version="*"
+    dependency "vibe-d-postgresql" version="*" dflags="-preview=in"
 }
