@@ -21,7 +21,7 @@ version(all)
     {
         readOpts(args);
         if(!debugEnabled)
-            sharedLog.logLevel = LogLevel.warning;
+            globalLogLevel = LogLevel.warning;
 
         db.__integration_test(connString);
 
@@ -30,6 +30,6 @@ version(all)
 
     shared static this()
     {
-        sharedLog.logLevel = LogLevel.trace;
+        globalLogLevel = LogLevel.trace;
     }
 }
