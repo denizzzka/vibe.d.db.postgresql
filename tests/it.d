@@ -1,8 +1,6 @@
-module vibe.db.postgresql.test; // TODO: rename to run_tests or something
-
 import db = vibe.db.postgresql;
 
-version(IntegrationTest)
+version(all)
 {
     import std.getopt;
     import std.experimental.logger;
