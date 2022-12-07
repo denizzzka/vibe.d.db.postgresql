@@ -1,8 +1,6 @@
-module vibe.db.postgresql.test; // TODO: rename to run_tests or something
-
 import db = vibe.db.postgresql;
 
-version(IntegrationTest)
+version(all)
 {
     import std.getopt;
     import std.experimental.logger;
@@ -23,7 +21,7 @@ version(IntegrationTest)
     {
         readOpts(args);
         if(!debugEnabled)
-            sharedLog.logLevel = LogLevel.warning;
+            globalLogLevel = LogLevel.warning;
 
         db.__integration_test(connString);
 
@@ -32,6 +30,6 @@ version(IntegrationTest)
 
     shared static this()
     {
-        sharedLog.logLevel = LogLevel.trace;
+        globalLogLevel = LogLevel.trace;
     }
 }
