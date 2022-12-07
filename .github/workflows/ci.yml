@@ -110,8 +110,8 @@ jobs:
       - name: Build / test 
         if: matrix.build != 'unittest-cov'
         run: |
-          dub test --build=$BUILD
-          dub run --config=integration_test --build=$BUILD -- --conninfo="$CONN_STRING" --debug=true
+          dub test :integration_tests --build=$BUILD
+          dub run :integration_tests --build=$BUILD -- --conninfo="$CONN_STRING" --debug=true
         shell: bash
       - name: Build / test with coverage
         if: matrix.build == 'unittest-cov'
