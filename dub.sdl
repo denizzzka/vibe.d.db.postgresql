@@ -6,7 +6,7 @@ copyright "Copyright © 2016"
 targetType "sourceLibrary"
 
 dependency "dpq2" version="~>1.2.3"
-dependency "vibe-core" version=">=1.9.3"
+dependency "vibe-core" version=">=1.22.4"
 
 configuration "release_app" {
     buildType "release"
