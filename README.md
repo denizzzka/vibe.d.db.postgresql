@@ -20,7 +20,7 @@ void test()
     client.pickConnection(
         (scope conn)
         {
-            immutable result = conn.execStatement(
+            immutable result = conn.exec(
                 "SELECT 123 as first_num, 567 as second_num, 'abc'::text as third_text "~
                 "UNION ALL "~
                 "SELECT 890, 233, 'fgh'::text as third_text",
@@ -36,7 +36,7 @@ void test()
     );
 }
 
-static this()
+void main()
 {
     // params: conninfo string, maximum number of connections in
     // the connection pool
