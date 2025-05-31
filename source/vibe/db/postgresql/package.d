@@ -1,6 +1,8 @@
 /// PostgreSQL database client implementation.
 module vibe.db.postgresql;
 
+import vibe.db.postgresql.query;
+
 public import dpq2: ValueFormat;
 public import dpq2.exception: Dpq2Exception;
 public import dpq2.result;
@@ -291,54 +293,7 @@ class Dpq2Connection : dpq2.Connection
         );
     }
 
-    ///
-    immutable(Answer) execStatement(
-        string sqlCommand,
-        ValueFormat resultFormat = ValueFormat.BINARY
-    )
-    {
-        QueryParams p;
-        p.resultFormat = resultFormat;
-        p.sqlCommand = sqlCommand;
-
-        return execStatement(p);
-    }
-
-    ///
-    immutable(Answer) execStatement(scope const ref QueryParams params)
-    {
-        auto res = runStatementBlockingManner({ sendQueryParams(params); });
-
-        return res.getAnswer;
-    }
-
-    /// Row-by-row version of execStatement
-    ///
-    /// Delegate called for each received row.
-    ///
-    /// More info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html
-    ///
-    void execStatementRbR(
-        string sqlCommand,
-        void delegate(immutable(Row)) answerRowProcessDg,
-        ValueFormat resultFormat = ValueFormat.BINARY
-    )
-    {
-        QueryParams p;
-        p.resultFormat = resultFormat;
-        p.sqlCommand = sqlCommand;
-
-        execStatementRbR(p, answerRowProcessDg);
-    }
-
-    /// Ditto
-    void execStatementRbR(scope const ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
-    {
-        runStatementWithRowByRowResult(
-            { sendQueryParams(params); },
-            answerRowProcessDg
-        );
-    }
+    mixin Queries;
 
     private void runStatementWithRowByRowResult(void delegate() sendsStatementDg, void delegate(immutable(Row)) answerRowProcessDg)
     {
@@ -359,37 +314,6 @@ class Dpq2Connection : dpq2.Connection
                 },
                 true
             );
-    }
-
-    ///
-    void prepareStatement(
-        string statementName,
-        string sqlStatement,
-        Oid[] oids = null
-    )
-    {
-        auto r = runStatementBlockingManner(
-                {sendPrepare(statementName, sqlStatement, oids);}
-            );
-
-        if(r.status != PGRES_COMMAND_OK)
-            throw new ResponseException(r, __FILE__, __LINE__);
-    }
-
-    ///
-    immutable(Answer) execPreparedStatement(scope const ref QueryParams params)
-    {
-        auto res = runStatementBlockingManner({ sendQueryPrepared(params); });
-
-        return res.getAnswer;
-    }
-
-    ///
-    immutable(Answer) describePreparedStatement(string preparedStatementName)
-    {
-        auto res = runStatementBlockingManner({ sendDescribePrepared(preparedStatementName); });
-
-        return res.getAnswer;
     }
 
     /**
@@ -445,7 +369,7 @@ version(IntegrationTest) void __integration_test(string connString)
 
     auto conn = client.lockConnection;
     {
-        auto res = conn.execStatement(
+        auto res = conn.exec(
             "SELECT 123::integer, 567::integer, 'asd fgh'::text",
             ValueFormat.BINARY
         );
@@ -496,19 +420,19 @@ version(IntegrationTest) void __integration_test(string connString)
         QueryParams p;
         p.sqlCommand = `SELECT 123`;
 
-        auto res = conn.execStatement(p);
+        auto res = conn.execParams(p);
 
         assert(res.length == 1);
         assert(res[0][0].as!int == 123);
     }
 
     {
-        conn.prepareStatement("stmnt_name", "SELECT 123::integer");
+        conn.prepareEx("stmnt_name", "SELECT 123::integer");
 
         bool throwFlag = false;
 
         try
-            conn.prepareStatement("wrong_stmnt", "WRONG SQL STATEMENT");
+            conn.prepareEx("wrong_stmnt", "WRONG SQL STATEMENT");
         catch(ResponseException)
             throwFlag = true;
 
@@ -518,7 +442,7 @@ version(IntegrationTest) void __integration_test(string connString)
     {
         import dpq2.oids: OidType;
 
-        auto a = conn.describePreparedStatement("stmnt_name");
+        auto a = conn.describePrepared("stmnt_name");
 
         assert(a.nParams == 0);
         assert(a.OID(0) == OidType.Int4);
@@ -528,7 +452,7 @@ version(IntegrationTest) void __integration_test(string connString)
         QueryParams p;
         p.preparedStatementName = "stmnt_name";
 
-        auto r = conn.execPreparedStatement(p);
+        auto r = conn.execPrepared(p);
 
         assert(r.getAnswer[0][0].as!PGinteger == 123);
     }
@@ -541,7 +465,7 @@ version(IntegrationTest) void __integration_test(string connString)
             client.pickConnection(
                 (scope c)
                 {
-                    immutable answer = c.execStatement("SELECT 'New connection 0'");
+                    immutable answer = c.exec("SELECT 'New connection 0'");
                 }
             );
 
@@ -552,14 +476,14 @@ version(IntegrationTest) void __integration_test(string connString)
             client.pickConnection(
                 (scope c)
                 {
-                    immutable answer = c.execStatement("SELECT 'New connection 1'");
+                    immutable answer = c.exec("SELECT 'New connection 1'");
                 }
             );
 
             return 1;
         });
 
-        immutable answer = conn.execStatement("SELECT 'Old connection'");
+        immutable answer = conn.exec("SELECT 'Old connection'", ValueFormat.BINARY);
 
         assert(future0 == 1);
         assert(future1 == 1);
@@ -583,7 +507,7 @@ version(IntegrationTest) void __integration_test(string connString)
             client.pickConnection(
                 (scope c)
                 {
-                    c.execStatement("LISTEN foo");
+                    c.exec("LISTEN foo");
                     pgNtf = c.waitForNotify();
                 }
             );
@@ -593,7 +517,7 @@ version(IntegrationTest) void __integration_test(string connString)
         });
 
         sleep(10.msecs);
-        conn.execStatement("NOTIFY foo, 'bar'");
+        conn.exec("NOTIFY foo, 'bar'");
 
         assert(futureNtf.name == "foo");
         assert(futureNtf.extra == "bar");

@@ -25,7 +25,6 @@ subPackage {
     name "example"
     sourcePaths "example"
     targetType "executable"
-    versions "VibeDefaultMain"
     dependency "vibe-d" version="*"
     dependency "vibe-d-postgresql" version="*"
 }
