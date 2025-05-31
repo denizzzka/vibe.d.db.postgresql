@@ -1,7 +1,10 @@
 [
+  "dmd-master",
   "dmd-latest",
-  "dmd-2.100.2",
-  "dmd-2.098.1",
+  "dmd-beta",
+  "dmd-2.105.3",
+  "ldc-master",
   "ldc-latest",
-  "ldc-1.28.1"
+  "ldc-beta",
+  "ldc-1.35.0"
 ]
