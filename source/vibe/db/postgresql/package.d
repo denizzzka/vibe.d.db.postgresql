@@ -178,6 +178,24 @@ class Dpq2Connection : dpq2.Connection
         return createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
     }
 
+    /// Select single-row mode for the currently-executing query
+    void setSingleRowModeEx()
+    {
+        if(setSingleRowMode() != 1)
+            throw new ConnectionException("PQsetSingleRowMode failed");
+    }
+
+
+    ///
+    immutable(Result) getResult(in Duration timeout)
+    {
+        // Pipeline methods may provide result without having to maintain a busy flag
+        if(isBusy)
+            waitEndOfReadAndConsume(timeout);
+
+        return super.getResult();
+    }
+
     private void waitEndOfReadAndConsume(in Duration timeout)
     {
         do
@@ -234,24 +252,22 @@ class Dpq2Connection : dpq2.Connection
                 sendsStatementDg();
 
                 if(isRowByRowMode)
-                {
-                    enforce(setSingleRowMode, "Failed to set row-by-row mode");
-                }
+                    setSingleRowModeEx();
 
                 scope(failure)
                 {
                     if(isRowByRowMode)
-                        while(getResult() !is null){} // autoclean of results queue
+                        while(super.getResult() !is null){} // autoclean of results queue
                 }
 
                 scope(exit)
                 {
                     logDebugV("consumeInput()");
-                    consumeInput(); // TODO: redundant call (also called in waitEndOfRead) - can be moved into catch block?
+                    consumeInput(); // TODO: redundant call (also called in waitEndOfReadAndConsume) - can be moved into catch block?
 
                     while(true)
                     {
-                        auto r = getResult();
+                        auto r = super.getResult();
 
                         /*
                          I am trying to check connection status with PostgreSQL server

@@ -119,10 +119,9 @@ jobs:
           dub test --build=$BUILD
           dub run :integration_tests --build=$BUILD -- --conninfo="$CONN_STRING" --debug=true
           dub build :example --build=release
+          dub build :example_pipelining
           dub run doveralls
         shell: bash
       - name: Upload coverage data
         if: matrix.build == 'unittest-cov'
         uses: codecov/codecov-action@v2
-    
-        
