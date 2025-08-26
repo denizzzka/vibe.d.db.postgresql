@@ -10,6 +10,7 @@ public import dpq2.connection: ConnectionException, connStringCheck, ConnectionS
 public import dpq2.args;
 public import derelict.pq.pq;
 
+import vibe.core.core;
 import vibe.core.connectionpool: ConnectionPool, VibeLockedConnection = LockedConnection;
 import vibe.core.log;
 import core.time: Duration, dur;
@@ -122,6 +123,7 @@ class Dpq2Connection : dpq2.Connection
     Duration statementTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings settings;
+    private FileDescriptorEvent event;
 
     ///
     this(const ref ClientSettings settings) @trusted
@@ -129,6 +131,8 @@ class Dpq2Connection : dpq2.Connection
         this.settings = settings;
 
         super(settings.connString);
+        event = createSocketEvent();
+
         setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
 
         import std.conv: to;
@@ -150,7 +154,7 @@ class Dpq2Connection : dpq2.Connection
 
             if(resetPoll() != PGRES_POLLING_OK)
             {
-                socketEvent().wait(socketTimeout);
+                event.wait(socketTimeout);
                 continue;
             }
 
@@ -161,10 +165,8 @@ class Dpq2Connection : dpq2.Connection
             settings.afterStartConnectOrReset(this);
     }
 
-    private auto socketEvent()
+    private auto createSocketEvent()
     {
-        import vibe.core.core;
-
         version(Posix)
         {
             import core.sys.posix.fcntl;
@@ -178,8 +180,6 @@ class Dpq2Connection : dpq2.Connection
 
     private void waitEndOfReadAndConsume(in Duration timeout)
     {
-        auto event = socketEvent();
-
         do
         {
             if(!event.wait(timeout))
@@ -496,7 +496,6 @@ version(IntegrationTest) void __integration_test(string connString)
 
     {
         import core.time : msecs;
-        import vibe.core.core : sleep;
         import vibe.core.concurrency : async;
 
         struct NTF {string name; string extra;}
