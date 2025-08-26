@@ -36,6 +36,13 @@ mixin template Queries()
         return res.getAnswer;
     }
 
+    /// Submits a command to the server without waiting for the result
+    override void sendQuery(string SQLcmd)
+    {
+        auto p = QueryParams(sqlCommand: SQLcmd);
+        sendQueryParams(p);
+    }
+
     /// Row-by-row version of exec
     ///
     /// Delegate called for each received row.
