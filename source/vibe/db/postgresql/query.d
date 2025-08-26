@@ -94,6 +94,20 @@ mixin template Queries()
         return res.getAnswer;
     }
 
+    /// Row-by-row version of execPrepared
+    ///
+    /// Delegate called for each received row.
+    ///
+    /// More info: https://www.postgresql.org/docs/current/libpq-single-row-mode.html
+    ///
+    void execPreparedRbR(scope const ref QueryParams params, void delegate(immutable(Row)) answerRowProcessDg)
+    {
+        runStatementWithRowByRowResult(
+            { sendQueryPrepared(params); },
+            answerRowProcessDg
+        );
+    }
+
     /// Submits a request to obtain information about the specified prepared statement, and waits for completion.
     override immutable(Answer) describePrepared(string preparedStatementName)
     {

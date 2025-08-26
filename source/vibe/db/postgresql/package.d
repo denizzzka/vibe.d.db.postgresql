@@ -427,7 +427,7 @@ version(IntegrationTest) void __integration_test(string connString)
     }
 
     {
-        conn.prepareEx("stmnt_name", "SELECT 123::integer");
+        conn.prepareEx("stmnt_name", "SELECT 123::integer UNION SELECT 456::integer");
 
         bool throwFlag = false;
 
@@ -455,6 +455,25 @@ version(IntegrationTest) void __integration_test(string connString)
         auto r = conn.execPrepared(p);
 
         assert(r.getAnswer[0][0].as!PGinteger == 123);
+    }
+
+    {
+        QueryParams p;
+        p.preparedStatementName = "stmnt_name";
+
+        int[] res;
+
+        conn.execPreparedRbR(
+            p,
+            (immutable(Row) r)
+            {
+                res ~= r.oneCell.as!int;
+            }
+        );
+
+        assert(res.length == 2, res.to!string);
+        assert(res[0] == 123);
+        assert(res[1] == 456);
     }
 
     {
