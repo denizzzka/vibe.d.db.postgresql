@@ -123,6 +123,13 @@ mixin template Queries()
         return res.getAnswer;
     }
 
+    override void cancel()
+    {
+        import vibe.db.postgresql.cancellation;
+
+        cancelRequest(this, socketTimeout);
+    }
+
     deprecated("please use exec(sqlCommand, ValueFormat.BINARY) instead. execStatement() will be removed by 2027")
     immutable(Answer) execStatement(
         string sqlCommand,

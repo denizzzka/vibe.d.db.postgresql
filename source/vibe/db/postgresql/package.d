@@ -6,7 +6,7 @@ import vibe.db.postgresql.query;
 public import dpq2: ValueFormat;
 public import dpq2.exception: Dpq2Exception;
 public import dpq2.result;
-public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart, CancellationException;
+public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
 public import dpq2.args;
 public import derelict.pq.pq;
 
@@ -131,7 +131,7 @@ class Dpq2Connection : dpq2.Connection
         this.settings = settings;
 
         super(settings.connString);
-        event = createSocketEvent();
+        event = this.posixSocketDuplicate.createSocketEvent;
 
         setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
 
@@ -163,19 +163,6 @@ class Dpq2Connection : dpq2.Connection
 
         if(settings.afterStartConnectOrReset !is null)
             settings.afterStartConnectOrReset(this);
-    }
-
-    private auto createSocketEvent()
-    {
-        version(Posix)
-        {
-            import core.sys.posix.fcntl;
-            assert((fcntl(this.posixSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
-        }
-
-        // vibe-core right now supports only read trigger event
-        // it also closes the socket on scope exit, thus a socket duplication here
-        return createFileDescriptorEvent(this.posixSocketDuplicate, FileDescriptorEvent.Trigger.read);
     }
 
     /// Select single-row mode for the currently-executing query
@@ -296,11 +283,13 @@ class Dpq2Connection : dpq2.Connection
                 }
                 catch(PostgresClientTimeoutException e)
                 {
+                    import dpq2.cancellation: CancellationException;
+
                     logDebugV("Exceeded Posgres query time limit");
 
                     try
                         cancel(); // cancel sql query
-                    catch(CancellationException ce) // means successful cancellation
+                    catch(CancellationException ce) // sort of successful cancellation
                         e.msg ~= ", "~ce.msg;
 
                     throw e;
@@ -354,12 +343,31 @@ class Dpq2Connection : dpq2.Connection
     }
 }
 
+package auto createSocketEvent(T)(T newSocket)
+{
+    version(Posix)
+    {
+        import core.sys.posix.fcntl;
+        import std.socket;
+        assert((fcntl(cast(socket_t) newSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
+    }
+
+    // vibe-core right now supports only read trigger event
+    // it also closes the socket on scope exit, thus a socket duplication here
+    return createFileDescriptorEvent(newSocket, FileDescriptorEvent.Trigger.read);
+}
+
 ///
 class PostgresClientTimeoutException : Dpq2Exception
 {
-    this(string file, size_t line)
+    this(string file = __FILE__, size_t line = __LINE__)
     {
-        super("Exceeded Posgres query time limit", file, line);
+        this("Exceeded Posgres query time limit", file, line);
+    }
+
+    this(string msg, string file = __FILE__, size_t line = __LINE__)
+    {
+        super(msg, file, line);
     }
 }
 
