@@ -136,7 +136,9 @@ class Dpq2Connection : dpq2.Connection
         super(settings.connString);
         event = this.posixSocketDuplicate.createReadSocketEvent;
 
+        //TODO: deprecate this functionality?
         setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
+        exec(`set statement_timeout to '`~statementTimeout.total!"usecs".to!string~` us'`);
 
         import std.conv: to;
         logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
@@ -282,31 +284,14 @@ class Dpq2Connection : dpq2.Connection
 
                 try
                 {
-                    waitEndOfReadAndConsume(statementTimeout);
+                    // 10 seconds of head start to allow server interrupt statement due to timeout
+                    waitEndOfReadAndConsume(statementTimeout + 10.seconds);
                 }
                 catch(PostgresClientTimeoutException e)
                 {
-                    import dpq2.cancellation: CancellationException;
-                    import vibe.db.postgresql.cancellation: CancellationTimeoutException;
-
                     logDebugV("Exceeded Posgres query time limit");
-
-                    try
-                        this.cancel();
-                    catch(CancellationTimeoutException cte)
-                    {
-                        Throwable.chainTogether(cte, e);
-                        throw cte;
-                    }
-                    catch(CancellationException ce)
-                    {
-                        Throwable.chainTogether(ce, e);
-                        throw ce;
-                    }
-
-                    // Request has been successfully cancelled
-                    // Just informing that a timeout has occurred
-                    throw e;
+                    reset();
+                    throw(e);
                 }
             }
         );
@@ -581,11 +566,42 @@ version(IntegrationTest) void __integration_test(string connString)
 
     {
         // Request cancellation test
+        import vibe.core.concurrency: async;
+        import vibe.db.postgresql.cancellation: cancelRequest;
+
         QueryParams p;
         p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
 
-        conn.statementTimeout = 4.seconds;
-        conn.socketTimeout = 2.seconds;
+        auto future = async({
+            try
+                conn.execParams(p);
+            catch(ResponseException e)
+                return e.msg; //ERROR:  canceling statement due to user request
+
+            return null;
+        });
+
+        conn.cancel();
+
+        assert(future.getResult !is null);
+    }
+
+    {
+        // Timeouts test
+        conn.exec(`set statement_timeout to '5s'`);
+
+        QueryParams p;
+        p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
+
+        assertThrown!ResponseException(
+            conn.execParams(p)
+        );
+
+        // Internal statement timeout check
+        conn.statementTimeout = 5.seconds;
+        conn.socketTimeout = 3.seconds;
+
+        conn.reset();
 
         assertThrown!PostgresClientTimeoutException(
             conn.execParams(p)
