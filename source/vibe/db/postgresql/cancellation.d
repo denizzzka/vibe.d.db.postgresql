@@ -26,10 +26,19 @@ package void cancelRequest(Connection conn, Duration timeout)
             throw new CancellationException(c.errorMessage);
         else
         {
-            if(!event.wait(timeout))
-                throw new PostgresClientTimeoutException("Exceeded Posgres query cancellation time limit", __FILE__, __LINE__);
+            //FIXME:
+            //~ if(!event.wait(timeout))
+                //~ throw new CancellationTimeoutException;
         }
 
         continue;
+    }
+}
+
+class CancellationTimeoutException : CancellationException
+{
+    this(string file = __FILE__, size_t line = __LINE__)
+    {
+        super("Exceeded Posgres query cancellation time limit", file, line);
     }
 }

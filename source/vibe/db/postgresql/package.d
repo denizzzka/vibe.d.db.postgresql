@@ -14,7 +14,7 @@ import vibe.core.core;
 import vibe.core.connectionpool: ConnectionPool, VibeLockedConnection = LockedConnection;
 import vibe.core.log;
 import core.time;
-import std.exception: enforce;
+import std.exception: assertThrown, enforce;
 import std.conv: to;
 
 ///
@@ -284,14 +284,25 @@ class Dpq2Connection : dpq2.Connection
                 catch(PostgresClientTimeoutException e)
                 {
                     import dpq2.cancellation: CancellationException;
+                    import vibe.db.postgresql.cancellation: CancellationTimeoutException;
 
                     logDebugV("Exceeded Posgres query time limit");
 
                     try
-                        cancel(); // cancel sql query
-                    catch(CancellationException ce) // sort of successful cancellation
-                        e.msg ~= ", "~ce.msg;
+                        this.cancel();
+                    catch(CancellationTimeoutException cte)
+                    {
+                        Throwable.chainTogether(cte, e);
+                        throw cte;
+                    }
+                    catch(CancellationException ce)
+                    {
+                        Throwable.chainTogether(ce, e);
+                        throw ce;
+                    }
 
+                    // Request has been successfully cancelled
+                    // Just informing that a timeout has occurred
                     throw e;
                 }
             }
@@ -573,11 +584,8 @@ version(IntegrationTest) void __integration_test(string connString)
         conn.statementTimeout = 4.seconds;
         conn.socketTimeout = 2.seconds;
 
-        try
-            conn.execParams(p);
-        catch(PostgresClientTimeoutException e)
-        {
-            //TODO: check PostgresCancellationTimeoutException is not next in chain
-        }
+        assertThrown!PostgresClientTimeoutException(
+            conn.execParams(p)
+        );
     }
 }
