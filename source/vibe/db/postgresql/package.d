@@ -54,18 +54,21 @@ class PostgresClient
     {
         cs.connString.connStringCheck;
 
-        pool = new ConnectionPool!Connection(() @safe { return connFactory(cs); }, connNum);
+        this(
+            () @safe { return connFactory(cs); },
+            connNum
+        );
     }
 
     /// Useful for external Connection implementation
     ///
     /// Not cares about checking of connection string
-    this(Connection delegate() const pure @safe connFactory, uint connNum)
+    this(Connection delegate() @safe connFactory, uint connNum)
     {
         enforce(PQisthreadsafe() == 1);
 
         pool = new ConnectionPool!Connection(
-                () @safe { return connFactory(); },
+                connFactory,
                 connNum
             );
     }
