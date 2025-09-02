@@ -150,15 +150,6 @@ class Dpq2Connection : dpq2.Connection
 
             exec("set client_encoding to 'UTF8'");
         }
-
-        if(exec(`show statement_timeout`).oneCell.as!string == "0")
-        {
-            logWarn("statement_timeout parameter is not set\nIt will be forced now to 30 seconds, but this behavior may be changed in the 2027."
-                ~` Please add appropriate setting call exec("set statement_timeout to '30s'")`
-                ~` into your connection factory or afterStartConnectOrReset delegate!`);
-
-            exec("set statement_timeout to '30s'");
-        }
     }
 
     /// Blocks while connection will be established or exception thrown
@@ -299,7 +290,7 @@ class Dpq2Connection : dpq2.Connection
                 try
                 {
                     // 10 seconds of head start to allow server interrupt statement due to timeout
-                    waitEndOfReadAndConsume(statementTimeout + 10.seconds);
+                    waitEndOfReadAndConsume(statementTimeout);
                 }
                 catch(PostgresClientTimeoutException e)
                 {
