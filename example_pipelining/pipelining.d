@@ -1,5 +1,6 @@
 module vibe.db.postgresql.pipelining;
 
+import std.getopt;
 import std.exception;
 import vibe.d;
 import vibe.db.postgresql;
@@ -7,13 +8,16 @@ import dpq2.connection;
 
 PostgresClient client;
 
-void main()
+void main(string[] args)
 {
     enforce(PQlibVersion() >= 14_0000);
 
+    string connString;
+    getopt(args, "conninfo", &connString);
+
     // params: conninfo string, maximum number of connections in
     // the connection pool
-    client = new PostgresClient("dbname=postgres user=postgres", 1);
+    client = new PostgresClient(connString, 1);
 
     foreach(_; 0 .. 10)
     {
