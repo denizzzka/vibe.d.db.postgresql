@@ -136,15 +136,29 @@ class Dpq2Connection : dpq2.Connection
         super(settings.connString);
         event = this.posixSocketDuplicate.createReadSocketEvent;
 
-        //TODO: deprecate this functionality?
-        exec(`set client_encoding to 'UTF8'`);
-        exec(`set statement_timeout to '`~statementTimeout.total!"usecs".to!string~` us'`);
-
         import std.conv: to;
         logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
 
         if(settings.afterStartConnectOrReset !is null)
             settings.afterStartConnectOrReset(this);
+
+        if(exec(`show client_encoding`).oneCell.as!string != "UTF8")
+        {
+            logWarn("client_encoding is not set to UTF8\nIt will be forced now to UTF8, but this behavior may be changed in the 2027."
+                ~` Please add appropriate setting call exec("set client_encoding to 'UTF8'")`
+                ~` into your connection factory or afterStartConnectOrReset delegate!`);
+
+            exec("set client_encoding to 'UTF8'");
+        }
+
+        if(exec(`show statement_timeout`).oneCell.as!string == "0")
+        {
+            logWarn("statement_timeout parameter is not set\nIt will be forced now to 30 seconds, but this behavior may be changed in the 2027."
+                ~` Please add appropriate setting call exec("set statement_timeout to '30s'")`
+                ~` into your connection factory or afterStartConnectOrReset delegate!`);
+
+            exec("set statement_timeout to '30s'");
+        }
     }
 
     /// Blocks while connection will be established or exception thrown
