@@ -373,7 +373,7 @@ class PostgresClientTimeoutException : Dpq2Exception
 {
     this(string file = __FILE__, size_t line = __LINE__)
     {
-        this("Exceeded Posgres query time limit", file, line);
+        this("Exceeded query time limit", file, line);
     }
 
     this(string msg, string file = __FILE__, size_t line = __LINE__)
