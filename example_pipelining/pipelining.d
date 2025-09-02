@@ -41,7 +41,7 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
     {
         // Remove remaining results
         while(conn.pipelineStatus == PGpipelineStatus.PQ_PIPELINE_ABORTED)
-            conn.getResult(conn.socketTimeout);
+            conn.getResult(conn.statementTimeout);
 
         conn.exitPipelineMode;
 
@@ -88,7 +88,7 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
         if(expectedStatus != PGRES_PIPELINE_SYNC)
         {
             // Read result delimiter
-            enforce(conn.getResult(conn.socketTimeout) is null);
+            enforce(conn.getResult(conn.statementTimeout) is null);
         }
 
         return r;
@@ -104,7 +104,7 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
         {
             assert(r.getAnswer.length == 0, "End of table expected");
 
-            enforce(conn.getResult(conn.socketTimeout) is null, "Result delimiter expected");
+            enforce(conn.getResult(conn.statementTimeout) is null, "Result delimiter expected");
 
             return null;
         }
