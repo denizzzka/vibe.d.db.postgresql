@@ -137,7 +137,7 @@ class Dpq2Connection : dpq2.Connection
         event = this.posixSocketDuplicate.createReadSocketEvent;
 
         //TODO: deprecate this functionality?
-        setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
+        exec(`set client_encoding to 'UTF8'`);
         exec(`set statement_timeout to '`~statementTimeout.total!"usecs".to!string~` us'`);
 
         import std.conv: to;
