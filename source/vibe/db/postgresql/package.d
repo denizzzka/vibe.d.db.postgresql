@@ -131,7 +131,7 @@ class Dpq2Connection : dpq2.Connection
         this.settings = settings;
 
         super(settings.connString);
-        event = this.posixSocketDuplicate.createSocketEvent;
+        event = this.posixSocketDuplicate.createReadSocketEvent;
 
         setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
 
@@ -343,7 +343,7 @@ class Dpq2Connection : dpq2.Connection
     }
 }
 
-package auto createSocketEvent(T)(T newSocket)
+package auto createReadSocketEvent(T)(T newSocket)
 {
     version(Posix)
     {

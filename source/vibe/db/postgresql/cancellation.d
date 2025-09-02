@@ -1,7 +1,7 @@
 ///
 module vibe.db.postgresql.cancellation;
 
-import vibe.db.postgresql: Connection, createSocketEvent, PostgresClientTimeoutException;
+import vibe.db.postgresql: Connection, createReadSocketEvent, PostgresClientTimeoutException;
 import dpq2.cancellation;
 import derelict.pq.pq;
 import core.time: Duration;
@@ -17,7 +17,7 @@ package void cancelRequest(Connection conn, Duration timeout)
         if(c.status == CONNECTION_BAD)
             throw new CancellationException(c.errorMessage);
 
-        auto event = createSocketEvent(c.socketDuplicate);
+        auto event = createReadSocketEvent(c.socketDuplicate);
         const r = c.poll;
 
         if(r == PGRES_POLLING_OK)
