@@ -36,7 +36,7 @@ void main(string[] args)
     // the connection pool
     client = new PostgresClient(connString, 4);
 
-    // This function can be invoked in parallel from different Vibe.d processes
+    // This function can be invoked in parallel from different Vibe.d processes or threads
     performDbRequest();
 
     logInfo("Done!");
