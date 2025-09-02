@@ -13,7 +13,7 @@ public import derelict.pq.pq;
 import vibe.core.core;
 import vibe.core.connectionpool: ConnectionPool, VibeLockedConnection = LockedConnection;
 import vibe.core.log;
-import core.time: Duration, dur;
+import core.time;
 import std.exception: enforce;
 import std.conv: to;
 
@@ -563,5 +563,21 @@ version(IntegrationTest) void __integration_test(string connString)
 
         assert(futureNtf.name == "foo");
         assert(futureNtf.extra == "bar");
+    }
+
+    {
+        // Request cancellation test
+        QueryParams p;
+        p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
+
+        conn.statementTimeout = 4.seconds;
+        conn.socketTimeout = 2.seconds;
+
+        try
+            conn.execParams(p);
+        catch(PostgresClientTimeoutException e)
+        {
+            //TODO: check PostgresCancellationTimeoutException is not next in chain
+        }
     }
 }
