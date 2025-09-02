@@ -123,7 +123,7 @@ alias LockedConnection = VibeLockedConnection!Connection;
 class Dpq2Connection : dpq2.Connection
 {
     private shared static immutable Duration socketTimeout = dur!"seconds"(10); ///
-    Duration statementTimeout = dur!"seconds"(30); ///
+    Duration requestTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings settings;
     private FileDescriptorEvent event;
@@ -215,7 +215,7 @@ class Dpq2Connection : dpq2.Connection
 
             if(poll() != PGRES_POLLING_OK)
             {
-                waitEndOfReadAndConsume(statementTimeout);
+                waitEndOfReadAndConsume(requestTimeout);
                 continue;
             }
             else
@@ -290,7 +290,7 @@ class Dpq2Connection : dpq2.Connection
                 try
                 {
                     // 10 seconds of head start to allow server interrupt statement due to timeout
-                    waitEndOfReadAndConsume(statementTimeout);
+                    waitEndOfReadAndConsume(requestTimeout);
                 }
                 catch(PostgresClientTimeoutException e)
                 {
@@ -603,7 +603,7 @@ version(IntegrationTest) void __integration_test(string connString)
         );
 
         // Internal statement timeout check
-        conn.statementTimeout = 5.seconds;
+        conn.requestTimeout = 5.seconds;
 
         conn.reset();
 

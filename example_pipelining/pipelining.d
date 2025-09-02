@@ -41,7 +41,7 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
     {
         // Remove remaining results
         while(conn.pipelineStatus == PGpipelineStatus.PQ_PIPELINE_ABORTED)
-            conn.getResult(conn.statementTimeout);
+            conn.getResult(conn.requestTimeout);
 
         conn.exitPipelineMode;
 
@@ -82,13 +82,13 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
 
     auto processNextResult(in ConnStatusType expectedStatus)
     {
-        auto r = conn.getResult(conn.statementTimeout);
+        auto r = conn.getResult(conn.requestTimeout);
         enforce(r.status == expectedStatus, "status="~r.statusString);
 
         if(expectedStatus != PGRES_PIPELINE_SYNC)
         {
             // Read result delimiter
-            enforce(conn.getResult(conn.statementTimeout) is null);
+            enforce(conn.getResult(conn.requestTimeout) is null);
         }
 
         return r;
@@ -96,7 +96,7 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
 
     auto processNextAnswerRowByRow()
     {
-        auto r = conn.getResult(conn.statementTimeout);
+        auto r = conn.getResult(conn.requestTimeout);
 
         enforce(r !is null, "Unexpected delimiter");
 
@@ -104,7 +104,7 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
         {
             assert(r.getAnswer.length == 0, "End of table expected");
 
-            enforce(conn.getResult(conn.statementTimeout) is null, "Result delimiter expected");
+            enforce(conn.getResult(conn.requestTimeout) is null, "Result delimiter expected");
 
             return null;
         }
