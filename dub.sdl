@@ -5,7 +5,7 @@ license "MIT"
 copyright "Copyright © 2016"
 targetType "sourceLibrary"
 
-dependency "dpq2" version="~>1.2.5-alpha.1"
+dependency "dpq2" version="~>1.3.0-alpha.2"
 dependency "vibe-core" version=">=1.22.4"
 
 configuration "release_app" {
