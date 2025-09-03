@@ -4,7 +4,6 @@ import std.getopt;
 import std.exception;
 import vibe.d;
 import vibe.db.postgresql;
-import dpq2.connection;
 
 PostgresClient client;
 
@@ -15,9 +14,13 @@ void main(string[] args)
     string connString;
     getopt(args, "conninfo", &connString);
 
-    // params: conninfo string, maximum number of connections in
-    // the connection pool
-    client = new PostgresClient(connString, 1);
+    void initConnectionDg(Connection conn)
+    {
+        conn.exec(`set client_encoding to 'UTF8'`);
+        conn.exec(`set statement_timeout to '15 s'`);
+    }
+
+    client = new PostgresClient(connString, 1, &initConnectionDg);
 
     foreach(_; 0 .. 10)
     {
