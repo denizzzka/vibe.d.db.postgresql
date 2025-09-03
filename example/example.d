@@ -20,8 +20,8 @@ void performDbRequest()
         }
     );
 
-    assert(result[0]["second_num"].as!PGinteger == 567);
-    assert(result[1]["third_text"].as!PGtext == "fgh");
+    assert(result[0]["second_num"].as!int == 567);
+    assert(result[1]["third_text"].as!string == "fgh");
 
     foreach (val; rangify(result[0]))
         logInfo("Found entry: %s", val.as!Bson.toJson);
