@@ -13,8 +13,8 @@ public import derelict.pq.pq;
 import vibe.core.core;
 import vibe.core.connectionpool: ConnectionPool, VibeLockedConnection = LockedConnection;
 import vibe.core.log;
-import core.time: Duration, dur;
-import std.exception: enforce;
+import core.time;
+import std.exception: assertThrown, enforce;
 import std.conv: to;
 
 ///
@@ -54,18 +54,21 @@ class PostgresClient
     {
         cs.connString.connStringCheck;
 
-        pool = new ConnectionPool!Connection(() @safe { return connFactory(cs); }, connNum);
+        this(
+            () @safe { return connFactory(cs); },
+            connNum
+        );
     }
 
     /// Useful for external Connection implementation
     ///
     /// Not cares about checking of connection string
-    this(Connection delegate() const pure @safe connFactory, uint connNum)
+    this(Connection delegate() @safe connFactory, uint connNum)
     {
         enforce(PQisthreadsafe() == 1);
 
         pool = new ConnectionPool!Connection(
-                () @safe { return connFactory(); },
+                connFactory,
                 connNum
             );
     }
@@ -109,18 +112,16 @@ class PostgresClient
     }
 }
 
-alias Connection = Dpq2Connection;
-
 ///
 alias LockedConnection = VibeLockedConnection!Connection;
 
 /**
  * dpq2.Connection adopted for using with Vibe.d
  */
-class Dpq2Connection : dpq2.Connection
+class Connection : dpq2.Connection
 {
-    Duration socketTimeout = dur!"seconds"(10); ///
-    Duration statementTimeout = dur!"seconds"(30); ///
+    shared static immutable Duration pollingTimeout = dur!"seconds"(10); /// Timeout for use in polling loops etc
+    Duration requestTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings settings;
     private FileDescriptorEvent event;
@@ -131,15 +132,22 @@ class Dpq2Connection : dpq2.Connection
         this.settings = settings;
 
         super(settings.connString);
-        event = this.posixSocketDuplicate.createSocketEvent;
-
-        setClientEncoding("UTF8"); // TODO: do only if it is different from UTF8
+        event = this.posixSocketDuplicate.createReadSocketEvent;
 
         import std.conv: to;
         logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
 
         if(settings.afterStartConnectOrReset !is null)
             settings.afterStartConnectOrReset(this);
+
+        if(exec(`show client_encoding`).oneCell.as!string != "UTF8")
+        {
+            logWarn("client_encoding is not set to UTF8\nIt will be forced now to UTF8, but this behavior may be changed in the 2027."
+                ~` Please add appropriate setting call exec("set client_encoding to 'UTF8'")`
+                ~` into your connection factory or afterStartConnectOrReset delegate!`);
+
+            exec("set client_encoding to 'UTF8'");
+        }
     }
 
     /// Blocks while connection will be established or exception thrown
@@ -154,7 +162,7 @@ class Dpq2Connection : dpq2.Connection
 
             if(resetPoll() != PGRES_POLLING_OK)
             {
-                event.wait(socketTimeout);
+                event.wait(pollingTimeout);
                 continue;
             }
 
@@ -205,7 +213,7 @@ class Dpq2Connection : dpq2.Connection
 
             if(poll() != PGRES_POLLING_OK)
             {
-                waitEndOfReadAndConsume(socketTimeout);
+                waitEndOfReadAndConsume(pollingTimeout);
                 continue;
             }
             else
@@ -279,20 +287,13 @@ class Dpq2Connection : dpq2.Connection
 
                 try
                 {
-                    waitEndOfReadAndConsume(statementTimeout);
+                    waitEndOfReadAndConsume(requestTimeout);
                 }
                 catch(PostgresClientTimeoutException e)
                 {
-                    import dpq2.cancellation: CancellationException;
-
                     logDebugV("Exceeded Posgres query time limit");
-
-                    try
-                        cancel(); // cancel sql query
-                    catch(CancellationException ce) // sort of successful cancellation
-                        e.msg ~= ", "~ce.msg;
-
-                    throw e;
+                    reset();
+                    throw(e);
                 }
             }
         );
@@ -343,7 +344,7 @@ class Dpq2Connection : dpq2.Connection
     }
 }
 
-package auto createSocketEvent(T)(T newSocket)
+package auto createReadSocketEvent(T)(T newSocket)
 {
     version(Posix)
     {
@@ -362,7 +363,7 @@ class PostgresClientTimeoutException : Dpq2Exception
 {
     this(string file = __FILE__, size_t line = __LINE__)
     {
-        this("Exceeded Posgres query time limit", file, line);
+        this("Exceeded query time limit", file, line);
     }
 
     this(string msg, string file = __FILE__, size_t line = __LINE__)
@@ -563,5 +564,48 @@ version(IntegrationTest) void __integration_test(string connString)
 
         assert(futureNtf.name == "foo");
         assert(futureNtf.extra == "bar");
+    }
+
+    {
+        // Request cancellation test
+        import vibe.core.concurrency: async;
+        import vibe.db.postgresql.cancellation: cancelRequest;
+
+        QueryParams p;
+        p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
+
+        auto future = async({
+            try
+                conn.execParams(p);
+            catch(ResponseException e)
+                return e.msg; //ERROR:  canceling statement due to user request
+
+            return null;
+        });
+
+        conn.cancel();
+
+        assert(future.getResult !is null);
+    }
+
+    {
+        // Timeouts test
+        conn.exec(`set statement_timeout to '5s'`);
+
+        QueryParams p;
+        p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
+
+        assertThrown!ResponseException(
+            conn.execParams(p)
+        );
+
+        // Internal statement timeout check
+        conn.requestTimeout = 5.seconds;
+
+        conn.reset();
+
+        assertThrown!PostgresClientTimeoutException(
+            conn.execParams(p)
+        );
     }
 }
