@@ -112,15 +112,13 @@ class PostgresClient
     }
 }
 
-alias Connection = Dpq2Connection;
-
 ///
 alias LockedConnection = VibeLockedConnection!Connection;
 
 /**
  * dpq2.Connection adopted for using with Vibe.d
  */
-class Dpq2Connection : dpq2.Connection
+class Connection : dpq2.Connection
 {
     private shared static immutable Duration socketTimeout = dur!"seconds"(10); ///
     Duration requestTimeout = dur!"seconds"(30); ///
