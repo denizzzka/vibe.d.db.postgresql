@@ -41,7 +41,7 @@ void requestsInPipeline(scope LockedConnection conn, in bool shouldFail)
     {
         // Remove remaining results
         while(conn.pipelineStatus == PGpipelineStatus.PQ_PIPELINE_ABORTED)
-            conn.getResult(conn.requestTimeout);
+            conn.getResult(conn.pollingTimeout);
 
         conn.exitPipelineMode;
 

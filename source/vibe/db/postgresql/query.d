@@ -127,7 +127,7 @@ mixin template Queries()
     {
         import vibe.db.postgresql.cancellation;
 
-        cancelRequest(this, socketTimeout);
+        cancelRequest(this, requestTimeout);
     }
 
     deprecated("please use exec(sqlCommand, ValueFormat.BINARY) instead. execStatement() will be removed by 2027")

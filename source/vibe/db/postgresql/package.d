@@ -120,7 +120,7 @@ alias LockedConnection = VibeLockedConnection!Connection;
  */
 class Connection : dpq2.Connection
 {
-    private shared static immutable Duration socketTimeout = dur!"seconds"(10); ///
+    shared static immutable Duration pollingTimeout = dur!"seconds"(10); /// Timeout for use in polling loops etc
     Duration requestTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings settings;
@@ -162,7 +162,7 @@ class Connection : dpq2.Connection
 
             if(resetPoll() != PGRES_POLLING_OK)
             {
-                event.wait(socketTimeout);
+                event.wait(pollingTimeout);
                 continue;
             }
 
@@ -213,7 +213,7 @@ class Connection : dpq2.Connection
 
             if(poll() != PGRES_POLLING_OK)
             {
-                waitEndOfReadAndConsume(socketTimeout);
+                waitEndOfReadAndConsume(pollingTimeout);
                 continue;
             }
             else
