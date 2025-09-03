@@ -213,7 +213,7 @@ class Connection : dpq2.Connection
 
             if(poll() != PGRES_POLLING_OK)
             {
-                waitEndOfReadAndConsume(requestTimeout);
+                waitEndOfReadAndConsume(socketTimeout);
                 continue;
             }
             else
@@ -287,7 +287,6 @@ class Connection : dpq2.Connection
 
                 try
                 {
-                    // 10 seconds of head start to allow server interrupt statement due to timeout
                     waitEndOfReadAndConsume(requestTimeout);
                 }
                 catch(PostgresClientTimeoutException e)
