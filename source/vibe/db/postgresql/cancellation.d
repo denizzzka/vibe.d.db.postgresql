@@ -37,6 +37,7 @@ package void cancelRequest(Connection conn, Duration timeout)
     }
 }
 
+///
 class CancellationTimeoutException : CancellationException
 {
     this(string file = __FILE__, size_t line = __LINE__)
