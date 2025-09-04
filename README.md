@@ -1,10 +1,9 @@
 PostgreSQL support for Vibe.d
+====
 
 [API documentation](https://denizzzka.github.io/vibe.d.db.postgresql/)
 
 _Please help us to make documentation better!_
-
-====
 
 Example:
 ```D
