@@ -291,7 +291,7 @@ class Connection : dpq2.Connection
                 }
                 catch(PostgresClientTimeoutException e)
                 {
-                    logDebugV("Exceeded Posgres query time limit");
+                    logDebugV("Exceeded Postgres query time limit");
                     reset();
                     throw(e);
                 }
