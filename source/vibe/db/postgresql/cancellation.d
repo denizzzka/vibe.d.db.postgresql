@@ -3,7 +3,6 @@ module vibe.db.postgresql.cancellation;
 
 import vibe.db.postgresql: Connection, createReadSocketEvent, PostgresClientTimeoutException;
 import dpq2.cancellation;
-import dpq2.socket_stuff: duplicateSocket;
 import derelict.pq.pq;
 import core.time: Duration;
 
@@ -12,7 +11,7 @@ package void cancelRequest(Connection conn, Duration timeout)
 {
     auto c = new Cancellation(conn);
     c.start;
-    auto event = createReadSocketEvent(c.socket.duplicateSocket);
+    auto event = createReadSocketEvent(c.socket);
 
     while(true)
     {

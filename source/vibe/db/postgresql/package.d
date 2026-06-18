@@ -132,7 +132,7 @@ class Connection : dpq2.Connection
         this.settings = settings;
 
         super(settings.connString);
-        event = this.posixSocketDuplicate.createReadSocketEvent;
+        event = this.posixSocket.createReadSocketEvent;
 
         import std.conv: to;
         logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
@@ -344,6 +344,7 @@ class Connection : dpq2.Connection
     }
 }
 
+//TODO: rename newSocket to just socket
 package auto createReadSocketEvent(T)(T newSocket)
 {
     version(Posix)
