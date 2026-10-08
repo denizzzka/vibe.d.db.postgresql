@@ -120,9 +120,9 @@ private final class VibeSocketWaiter : SocketWaiter
 {
     private FileDescriptorEvent ev;
 
-    void attach(dpq2.connection.Connection conn)
+    this(FileDescriptorEvent ev)
     {
-        ev = conn.posixSocket.createReadSocketEvent;
+        this.ev = ev;
     }
 
     override bool wait(SocketWaitMode mode, Duration timeout)
@@ -147,9 +147,8 @@ class Connection : dpq2.async.connection.AsyncConnection
     {
         this.settings = settings;
 
-        auto waiter = new VibeSocketWaiter;
-        super(settings.connString, waiter, pollingTimeout, dur!"seconds"(30));
-        waiter.attach(this);
+        super(settings.connString, (int socket) => new VibeSocketWaiter(createReadSocketEvent(socket)),
+            pollingTimeout, dur!"seconds"(30));
 
         logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
 
@@ -410,7 +409,6 @@ version(IntegrationTest) void __integration_test(string connString)
     {
         // Request cancellation test
         import vibe.core.concurrency: async;
-        import vibe.db.postgresql.cancellation: cancelRequest;
 
         QueryParams p;
         p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
