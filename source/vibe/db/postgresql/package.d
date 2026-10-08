@@ -138,6 +138,7 @@ alias LockedConnection = VibeLockedConnection!Connection;
 class Connection : dpq2.async.connection.AsyncConnection
 {
     shared static immutable Duration pollingTimeout = dur!"seconds"(10); /// Timeout for use in polling loops etc
+    Duration requestTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings settings;
     ///
@@ -146,7 +147,7 @@ class Connection : dpq2.async.connection.AsyncConnection
         this.settings = settings;
 
         super(settings.connString, (int socket) => new VibeSocketWaiter(createReadSocketEvent(socket)),
-            pollingTimeout, dur!"seconds"(30));
+            pollingTimeout, requestTimeout);
 
         logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
 
