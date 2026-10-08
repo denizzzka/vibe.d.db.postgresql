@@ -1,8 +1,6 @@
 /// PostgreSQL database client implementation.
 module vibe.db.postgresql;
 
-import vibe.db.postgresql.query;
-
 public import dpq2: ValueFormat;
 public import dpq2.exception: Dpq2Exception;
 public import dpq2.result;
@@ -194,8 +192,6 @@ class Connection : dpq2.async.connection.AsyncConnection
             throw(e);
         }
     }
-
-    mixin Queries;
 }
 
 package auto createReadSocketEvent(T)(T socket)
