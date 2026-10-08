@@ -9,6 +9,10 @@ public import dpq2.result;
 public import dpq2.connection: ConnectionException, connStringCheck, ConnectionStart;
 public import dpq2.args;
 public import derelict.pq.pq;
+import dpq2.async.waiter : SocketWaiter, SocketWaitMode;
+public import dpq2.async.waiter : PostgresClientTimeoutException;
+static import dpq2.async.connection;
+static import dpq2.connection;
 
 import vibe.core.core;
 import vibe.core.connectionpool: ConnectionPool, VibeLockedConnection = LockedConnection;
@@ -112,29 +116,41 @@ class PostgresClient
     }
 }
 
+private final class VibeSocketWaiter : SocketWaiter
+{
+    private FileDescriptorEvent ev;
+
+    void attach(dpq2.connection.Connection conn)
+    {
+        ev = conn.posixSocket.createReadSocketEvent;
+    }
+
+    override bool wait(SocketWaitMode mode, Duration timeout)
+    {
+        return ev.wait(timeout);
+    }
+}
+
 ///
 alias LockedConnection = VibeLockedConnection!Connection;
 
 /**
- * dpq2.Connection adopted for using with Vibe.d
+ * dpq2's AsyncConnection adopted for using with Vibe.d
  */
-class Connection : dpq2.Connection
+class Connection : dpq2.async.connection.AsyncConnection
 {
     shared static immutable Duration pollingTimeout = dur!"seconds"(10); /// Timeout for use in polling loops etc
-    Duration requestTimeout = dur!"seconds"(30); ///
 
     private const ClientSettings settings;
-    private FileDescriptorEvent event;
-
     ///
     this(const ref ClientSettings settings) @trusted
     {
         this.settings = settings;
 
-        super(settings.connString);
-        event = this.posixSocket.createReadSocketEvent;
+        auto waiter = new VibeSocketWaiter;
+        super(settings.connString, waiter, pollingTimeout, dur!"seconds"(30));
+        waiter.attach(this);
 
-        import std.conv: to;
         logDebugV("creating new connection, delegate isNull="~(settings.afterStartConnectOrReset is null).to!string);
 
         if(settings.afterStartConnectOrReset !is null)
@@ -151,226 +167,50 @@ class Connection : dpq2.Connection
     }
 
     /// Blocks while connection will be established or exception thrown
-    void reset()
+    override void reset()
     {
-        super.resetStart;
-
-        while(true)
-        {
-            if(status() == CONNECTION_BAD)
-                throw new ConnectionException(this);
-
-            if(resetPoll() != PGRES_POLLING_OK)
-            {
-                event.wait(pollingTimeout);
-                continue;
-            }
-
-            break;
-        }
+        super.reset();
 
         if(settings.afterStartConnectOrReset !is null)
             settings.afterStartConnectOrReset(this);
     }
 
-    /// Select single-row mode for the currently-executing query
-    void setSingleRowModeEx()
+    protected override void doQuery(void delegate() doesQueryAndCollectsResults)
     {
-        if(setSingleRowMode() != 1)
-            throw new ConnectionException("PQsetSingleRowMode failed");
-    }
-
-
-    ///
-    immutable(Result) getResult(in Duration timeout)
-    {
-        // Pipeline methods may provide result without having to maintain a busy flag
-        if(isBusy)
-            waitEndOfReadAndConsume(timeout);
-
-        return super.getResult();
-    }
-
-    private void waitEndOfReadAndConsume(in Duration timeout)
-    {
-        do
-        {
-            if(!event.wait(timeout))
-                throw new PostgresClientTimeoutException(__FILE__, __LINE__);
-
-            consumeInput();
-        }
-        while (this.isBusy); // wait until PQgetresult won't block anymore
-    }
-
-    private void doQuery(void delegate() doesQueryAndCollectsResults)
-    {
-        // Try to get usable connection and send SQL command
-        while(true)
-        {
-            if(status() == CONNECTION_BAD)
-                throw new ConnectionException(this, __FILE__, __LINE__);
-
-            if(poll() != PGRES_POLLING_OK)
-            {
-                waitEndOfReadAndConsume(pollingTimeout);
-                continue;
-            }
-            else
-            {
-                break;
-            }
-        }
-
         logDebugV("doesQuery() call");
-        doesQueryAndCollectsResults();
+        super.doQuery(doesQueryAndCollectsResults);
     }
 
-    private immutable(Result) runStatementBlockingManner(void delegate() sendsStatementDg)
-    {
-        immutable(Result)[] res;
-
-        runStatementBlockingMannerWithMultipleResults(sendsStatementDg, (r){ res ~= r; }, false);
-
-        enforce(res.length == 1, "Simple query without row-by-row mode can return only one Result instance, not "~res.length.to!string);
-
-        return res[0];
-    }
-
-    private void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatementDg, void delegate(immutable(Result)) processResult, bool isRowByRowMode)
+    protected override void runStatementBlockingMannerWithMultipleResults(void delegate() sendsStatementDg, void delegate(immutable(Result)) processResult, bool isRowByRowMode)
     {
         logDebugV(__FUNCTION__);
-        immutable(Result)[] res;
 
-        doQuery(()
-            {
-                sendsStatementDg();
-
-                if(isRowByRowMode)
-                    setSingleRowModeEx();
-
-                scope(failure)
-                {
-                    if(isRowByRowMode)
-                        while(super.getResult() !is null){} // autoclean of results queue
-                }
-
-                scope(exit)
-                {
-                    logDebugV("consumeInput()");
-                    consumeInput(); // TODO: redundant call (also called in waitEndOfReadAndConsume) - can be moved into catch block?
-
-                    while(true)
-                    {
-                        auto r = super.getResult();
-
-                        /*
-                         I am trying to check connection status with PostgreSQL server
-                         with PQstatus and it always always return CONNECTION_OK even
-                         when the cable to the server is unplugged.
-                                                    – user1972556 (stackoverflow.com)
-
-                         ...the idea of testing connections is fairly silly, since the
-                         connection might die between when you test it and when you run
-                         your "real" query. Don't test connections, just use them, and
-                         if they fail be prepared to retry everything since you opened
-                         the transaction. – Craig Ringer Jan 14 '13 at 2:59
-                         */
-                        if(status == CONNECTION_BAD)
-                            throw new ConnectionException(this, __FILE__, __LINE__);
-
-                        if(r is null) break;
-
-                        processResult(r);
-                    }
-                }
-
-                try
-                {
-                    waitEndOfReadAndConsume(requestTimeout);
-                }
-                catch(PostgresClientTimeoutException e)
-                {
-                    logDebugV("Exceeded Postgres query time limit");
-                    reset();
-                    throw(e);
-                }
-            }
-        );
+        try
+        {
+            super.runStatementBlockingMannerWithMultipleResults(sendsStatementDg, processResult, isRowByRowMode);
+        }
+        catch (PostgresClientTimeoutException e)
+        {
+            logDebugV("Exceeded Postgres query time limit");
+            throw(e);
+        }
     }
 
     mixin Queries;
-
-    private void runStatementWithRowByRowResult(void delegate() sendsStatementDg, void delegate(immutable(Row)) answerRowProcessDg)
-    {
-        runStatementBlockingMannerWithMultipleResults(
-                sendsStatementDg,
-                (r)
-                {
-                    auto answer = r.getAnswer;
-
-                    enforce(answer.length <= 1, `0 or 1 rows can be received, not `~answer.length.to!string);
-
-                    if(answer.length == 1)
-                    {
-                        enforce(r.status == PGRES_SINGLE_TUPLE, `Wrong result status: `~r.status.to!string);
-
-                        answerRowProcessDg(answer[0]);
-                    }
-                },
-                true
-            );
-    }
-
-    /**
-     * Non blocking method to wait for next notification.
-     *
-     * Params:
-     *      timeout = maximal duration to wait for the new Notify to be received
-     *
-     * Returns: New Notify or null when no other notification is available or timeout occurs.
-     * Throws: ConnectionException on connection failure
-     */
-    Notify waitForNotify(in Duration timeout = Duration.max)
-    {
-        // try read available
-        auto ntf = getNextNotify();
-        if (ntf !is null) return ntf;
-
-        // wait for next one
-        try waitEndOfReadAndConsume(timeout);
-        catch (PostgresClientTimeoutException) return null;
-        return getNextNotify();
-    }
 }
 
-//TODO: rename newSocket to just socket
-package auto createReadSocketEvent(T)(T newSocket)
+package auto createReadSocketEvent(T)(T socket)
 {
     version(Posix)
     {
         import core.sys.posix.fcntl;
         import std.socket;
-        assert((fcntl(cast(socket_t) newSocket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
+        assert((fcntl(cast(socket_t) socket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
     }
 
     // vibe-core right now supports only read trigger event
     // it also closes the socket on scope exit, thus a socket duplication here
-    return createFileDescriptorEvent(newSocket, FileDescriptorEvent.Trigger.read);
-}
-
-///
-class PostgresClientTimeoutException : Dpq2Exception
-{
-    this(string file = __FILE__, size_t line = __LINE__)
-    {
-        this("Exceeded query time limit", file, line);
-    }
-
-    this(string msg, string file = __FILE__, size_t line = __LINE__)
-    {
-        super(msg, file, line);
-    }
+    return createFileDescriptorEvent(socket, FileDescriptorEvent.Trigger.read);
 }
 
 unittest
