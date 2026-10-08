@@ -1,46 +1,14 @@
-///
 module vibe.db.postgresql.cancellation;
 
-import vibe.db.postgresql: Connection, createReadSocketEvent, PostgresClientTimeoutException;
-import dpq2.cancellation;
-import derelict.pq.pq;
-import core.time: Duration;
+import vibe.db.postgresql : Connection;
+import dpq2.async.cancellation;
+import core.time : Duration;
 
-///
+deprecated("please use dpq2.async.cancellation.CancellationTimeoutException instead. CancellationTimeoutException will be removed after September 2027")
+public alias CancellationTimeoutException = dpq2.async.cancellation.CancellationTimeoutException;
+
+deprecated("please use Connection.cancelRequest() instead. cancelRequest() will be removed after September 2027")
 package void cancelRequest(Connection conn, Duration timeout)
 {
-    auto c = new Cancellation(conn);
-    c.start;
-    auto event = createReadSocketEvent(c.socket);
-
-    while(true)
-    {
-        if(c.status == CONNECTION_BAD)
-            throw new CancellationException(c.errorMessage);
-
-        const r = c.poll;
-
-        if(r == PGRES_POLLING_OK)
-            break;
-        else if(r == PGRES_POLLING_FAILED)
-            throw new CancellationException(c.errorMessage);
-        else if(r == PGRES_POLLING_READING)
-        {
-            // On success cancellation socket will be closed without any
-            // data receive and wait() will return false. So there is no
-            // point in checking whether wait() was executed successfully
-            event.wait(timeout);
-        }
-
-        continue;
-    }
-}
-
-///
-class CancellationTimeoutException : CancellationException
-{
-    this(string file = __FILE__, size_t line = __LINE__)
-    {
-        super("Exceeded cancellation time limit", file, line);
-    }
+    conn.cancelRequest(timeout);
 }
