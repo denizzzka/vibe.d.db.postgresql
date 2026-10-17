@@ -205,7 +205,7 @@ package auto createReadSocketEvent(T)(T socket)
     }
 
     // vibe-core right now supports only read trigger event
-    // it also closes the socket on scope exit, thus a socket duplication here
+    // FileDescriptorEvent owns and closes the socket, so it must outlive the connection
     return createFileDescriptorEvent(socket, FileDescriptorEvent.Trigger.read);
 }
 
@@ -223,225 +223,33 @@ unittest
     assert(raised);
 }
 
-version(IntegrationTest) void __integration_test(string connString)
+version(AsyncIntegrationTests)
 {
-    setLogLevel = LogLevel.debugV;
+    import dpq2.async.tests : _integration_test;
+    import vibe.core.concurrency : async, Future;
 
-    auto client = new PostgresClient(connString, 3);
-
-    auto conn = client.lockConnection;
+    private struct DetachedTask(F)
     {
-        auto res = conn.exec(
-            "SELECT 123::integer, 567::integer, 'asd fgh'::text",
-            ValueFormat.BINARY
-        );
+        private F future;
 
-        assert(res.getAnswer[0][1].as!PGinteger == 567);
+        void join()
+        {
+            future.getResult();
+        }
     }
 
+    private auto runDetachedTask(scope void delegate() dg)
     {
-        // Row-by-row result receiving
-        int[] res;
-
-        conn.execStatementRbR(
-            `SELECT generate_series(0, 3) as i, pg_sleep(0.2)`,
-            (immutable(Row) r)
-            {
-                res ~= r[0].as!int;
-            }
-        );
-
-        assert(res.length == 4);
+        return DetachedTask!(typeof(async({ dg(); return true; })))(
+            async({ dg(); return true; }));
     }
 
+    void __integration_test(string connString)
     {
-        // Row-by-row result receiving: error while receiving
-        size_t rowCounter;
-
-        QueryParams p;
-        p.sqlCommand =
-            `SELECT 1.0 / (generate_series(1, 100000) % 80000)`; // division by zero error at generate_series=80000
-
-        bool assertThrown;
-
-        try
-            conn.execStatementRbR(p,
-                (immutable(Row) r)
-                {
-                    rowCounter++;
-                }
-            );
-        catch(ResponseException) // catches ERROR:  division by zero
-            assertThrown = true;
-
-        assert(assertThrown);
-        assert(rowCounter > 0);
-    }
-
-    {
-        QueryParams p;
-        p.sqlCommand = `SELECT 123`;
-
-        auto res = conn.execParams(p);
-
-        assert(res.length == 1);
-        assert(res[0][0].as!int == 123);
-    }
-
-    {
-        conn.prepareEx("stmnt_name", "SELECT 123::integer UNION SELECT 456::integer");
-
-        bool throwFlag = false;
-
-        try
-            conn.prepareEx("wrong_stmnt", "WRONG SQL STATEMENT");
-        catch(ResponseException)
-            throwFlag = true;
-
-        assert(throwFlag);
-    }
-
-    {
-        import dpq2.oids: OidType;
-
-        auto a = conn.describePrepared("stmnt_name");
-
-        assert(a.nParams == 0);
-        assert(a.OID(0) == OidType.Int4);
-    }
-
-    {
-        QueryParams p;
-        p.preparedStatementName = "stmnt_name";
-
-        auto r = conn.execPrepared(p);
-
-        assert(r.getAnswer[0][0].as!PGinteger == 123);
-    }
-
-    {
-        QueryParams p;
-        p.preparedStatementName = "stmnt_name";
-
-        int[] res;
-
-        conn.execPreparedRbR(
-            p,
-            (immutable(Row) r)
-            {
-                res ~= r.oneCell.as!int;
-            }
-        );
-
-        assert(res.length == 2, res.to!string);
-        assert(res[0] == 123);
-        assert(res[1] == 456);
-    }
-
-    {
-        // Fibers test
-        import vibe.core.concurrency;
-
-        auto future0 = async({
-            client.pickConnection(
-                (scope c)
-                {
-                    immutable answer = c.exec("SELECT 'New connection 0'");
-                }
-            );
-
-            return 1;
-        });
-
-        auto future1 = async({
-            client.pickConnection(
-                (scope c)
-                {
-                    immutable answer = c.exec("SELECT 'New connection 1'");
-                }
-            );
-
-            return 1;
-        });
-
-        immutable answer = conn.exec("SELECT 'Old connection'", ValueFormat.BINARY);
-
-        assert(future0 == 1);
-        assert(future1 == 1);
-        assert(answer.length == 1);
-    }
-
-    {
-        assert(conn.escapeIdentifier("abc") == "\"abc\"");
-    }
-
-    {
-        import core.time : msecs;
-        import vibe.core.concurrency : async;
-
-        struct NTF {string name; string extra;}
-
-        auto futureNtf = async({
-            Notify pgNtf;
-
-            client.pickConnection(
-                (scope c)
-                {
-                    c.exec("LISTEN foo");
-                    pgNtf = c.waitForNotify();
-                }
-            );
-
-            assert(pgNtf !is null);
-            return NTF(pgNtf.name.idup, pgNtf.extra.idup);
-        });
-
-        sleep(10.msecs);
-        conn.exec("NOTIFY foo, 'bar'");
-
-        assert(futureNtf.name == "foo");
-        assert(futureNtf.extra == "bar");
-    }
-
-    {
-        // Request cancellation test
-        import vibe.core.concurrency: async;
-
-        QueryParams p;
-        p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
-
-        auto future = async({
-            try
-                conn.execParams(p);
-            catch(ResponseException e)
-                return e.msg; //ERROR:  canceling statement due to user request
-
-            return null;
-        });
-
-        conn.cancel();
-
-        assert(future.getResult !is null);
-    }
-
-    {
-        // Timeouts test
-        conn.exec(`set statement_timeout to '5s'`);
-
-        QueryParams p;
-        p.sqlCommand = `SELECT pg_sleep_for('1 minute')`;
-
-        assertThrown!ResponseException(
-            conn.execParams(p)
-        );
-
-        // Internal statement timeout check
-        conn.requestTimeout = 5.seconds;
-
-        conn.reset();
-
-        assertThrown!PostgresClientTimeoutException(
-            conn.execParams(p)
-        );
+        _integration_test!(
+            (int fd) => new VibeSocketWaiter(createReadSocketEvent(fd)),
+            runDetachedTask,
+            sleep
+        )(connString);
     }
 }
