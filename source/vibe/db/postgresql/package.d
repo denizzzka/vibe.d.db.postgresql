@@ -204,9 +204,10 @@ package auto createReadSocketEvent(T)(T socket)
         assert((fcntl(cast(socket_t) socket, F_GETFL, 0) & O_NONBLOCK), "Socket assumed to be non-blocking already");
     }
 
+    import socket_stuff : duplicateSocket;
+
     // vibe-core right now supports only read trigger event
-    // FileDescriptorEvent owns and closes the socket, so it must outlive the connection
-    return createFileDescriptorEvent(socket, FileDescriptorEvent.Trigger.read);
+    return createFileDescriptorEvent(cast(int) duplicateSocket(cast(int) socket), FileDescriptorEvent.Trigger.read);
 }
 
 unittest
@@ -226,22 +227,13 @@ unittest
 version(AsyncIntegrationTests)
 {
     import dpq2.async.tests : _integration_test;
-    import vibe.core.concurrency : async, Future;
+    import vibe.core.core : runTask;
+    import vibe.core.task : Task;
 
-    private struct DetachedTask(F)
+    private Task runDetachedTask(scope void delegate() dg)
     {
-        private F future;
-
-        void join()
-        {
-            future.getResult();
-        }
-    }
-
-    private auto runDetachedTask(scope void delegate() dg)
-    {
-        return DetachedTask!(typeof(async({ dg(); return true; })))(
-            async({ dg(); return true; }));
+        auto d = cast(void delegate() nothrow) dg;
+        return runTask(() nothrow @system { d(); });
     }
 
     void __integration_test(string connString)

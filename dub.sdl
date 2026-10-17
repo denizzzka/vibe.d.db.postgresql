@@ -6,6 +6,7 @@ copyright "Copyright © 2016"
 targetType "sourceLibrary"
 
 dependency "dpq2" version="~>1.3.2"
+dependency "misc:socket_stuff" version="~>0.0.4"
 dependency "vibe-core" version=">=1.22.4"
 
 configuration "release_app" {
